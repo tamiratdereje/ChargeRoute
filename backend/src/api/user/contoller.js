@@ -1,4 +1,5 @@
 
+const bcrypt = require('bcryptjs');
 
 const User = require('./model')
 const AppError = require('../../utils/apperror')
@@ -80,12 +81,43 @@ exports.getMe = async (req, res, next) => {
 exports.deleteUser = async (req, res, next) => {
 
     try {
-      const user = await User.findById(req.params.id);
+      const user = await User.findById(req.user_id);
       if (!user)
         return next(new AppError("There is no user with the specified id", 400));
   
       await User.findByIdAndDelete(req.params.id);
   
+      return res.status(200).json({
+        success: true,
+      });
+
+    } catch (error) {
+      next(new AppError("server error", 500));
+    }
+
+  };
+
+  
+// change password
+
+exports.changePassword = async (req, res, next) => {
+    
+    try {
+
+      const {oldPassword, currentPassword} = req.body;
+      const user = await User.findById(req.params.id);
+
+      if (!user)
+        return next(new AppError("There is no user with the specified id", 400));
+      
+      const isMatch = await user.matchPassword(oldPassword);
+
+      if (isMatch) {
+        user.password = currentPassword;
+        await user.save();
+      }
+
+        
       return res.status(200).json({
         success: true,
       });
