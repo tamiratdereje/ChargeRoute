@@ -1,7 +1,8 @@
-
+const errorHandler = require('../api/geh/index.js')
 
 const app = require('express');
 
+const chargeStationRoute = require('../api/charge_Station/routes.js')
 
 const cors = require("cors");
 
@@ -12,6 +13,10 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+app.use('/api/v1/chargeStation', chargeStationRoute );
+
+
+app.use(errorHandler);
 
 
 // Handle URL which don't exist
