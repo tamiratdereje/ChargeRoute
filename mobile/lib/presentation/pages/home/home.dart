@@ -1,12 +1,11 @@
 import 'package:charge_station_finder/presentation/pages/core/widgets/appBar.dart';
+import 'package:charge_station_finder/presentation/pages/home/widgets/charger_tile.dart';
 import 'package:charge_station_finder/presentation/pages/home/widgets/nearby_header.dart';
 import 'package:charge_station_finder/presentation/pages/home/widgets/searchField.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({super.key});
-  var cards = const <Widget>[];
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,11 +15,14 @@ class HomePage extends StatelessWidget {
         children: [
           const SearchField(),
           const NearbyHeader(),
-          ListView.builder(
-            itemBuilder: (context, index) => cards[index],
-            itemCount: cards.length,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
+          Expanded(
+            child: ListView.builder(
+              itemBuilder: (context, index) {
+                return const ChargerTile();
+              },
+              itemCount: 10,
+              shrinkWrap: true,
+            ),
           ),
         ],
       ),
