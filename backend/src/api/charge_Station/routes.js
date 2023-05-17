@@ -13,7 +13,7 @@ router.route("/")
 router.route("/:id")
                 .get(protect, chargeStationController.getChargeStation)
                 .delete(protect, chargeStationController.deleteChargeStation)
-                .update(protect, chargeStationController.updateChargeStation)
+                .patch(protect, chargeStationController.updateChargeStation)
 
 router.route("/all")
                 .get(protect, chargeStationController.getAllChargeStation)

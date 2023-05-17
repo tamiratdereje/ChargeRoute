@@ -1,6 +1,6 @@
 const errorHandler = require('../api/geh/index.js')
-
-const app = require('express');
+const express = require('express')
+const app = express();
 
 const chargeStationRoute = require('../api/charge_Station/routes.js')
 const userRoute = require('../api/user/routes.js')
