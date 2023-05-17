@@ -16,7 +16,7 @@ router.route("/:id")
                 .patch(protect, chargeStationController.updateChargeStation)
 
 router.route("/all")
-                .get(protect, chargeStationController.getAllChargeStation)
+                .get(chargeStationController.getAllChargeStation)
 
 router.route("/rate")
                 .post(protect, chargeStationController.rateChargeStation)
