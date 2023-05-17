@@ -61,6 +61,7 @@ exports.updateChargeStation = async (req, res, next) => {
 
 // Delete chargeStation_
 exports.deleteChargeStation = async (req, res, next) => {
+
     try {
       const getChargeStation = await ChargeStation.findById(req.params.id);
       if (!getChargeStation)
@@ -81,15 +82,45 @@ exports.deleteChargeStation = async (req, res, next) => {
   
 // get chargeStation_
 exports.getChargeStation = async (req, res, next) => {
+
     try {
-      const chargeStation = await ChargeStation.findById(req.params.id).populate({
+      const chargeStation = await ChargeStation.findById(req.params.id);
+      var ratingSum = 0;
+
+      const ratings = await Rating.find({chargeStation : chargeStation._id}).populate({
         path:'comments'
-      });;
-  
-      // Respond
+      });
+      var ratingSum = 0;
+
+      for (var i = 0; i< ratings.length; i++){
+        ratingSum += ratings[i].rating
+      }
+      console.log(ratingSum)
+
+      var count = ratings.length
+      if (count === 0) {
+        count = 1;
+      }
+
+      var voted = false;
+      if (chargeStation.user === req.user_id){
+        voted = true
+      }
+
+      var newObect = {
+        _id: chargeStation._id,
+        name: chargeStation.name,
+        description: chargeStation.description,
+        phone: chargeStation.phone,
+        address: chargeStation.address,
+        user: chargeStation.user,
+        rating: ratingSum/count,
+        voted: voted
+      }
+   
       return res.status(200).json({
         success: true,
-        data: chargeStation,
+        data: newObect,
       });
 
     } catch (error) {
@@ -99,9 +130,52 @@ exports.getChargeStation = async (req, res, next) => {
   
   // get chargeStation_
   exports.getAllChargeStation = async (_, res, next) => {
+
     try {
      const chargeStations = await ChargeStation.find();
-    
+
+     var output = []
+     for (var chargeStation of chargeStations) {
+
+      const ratings = await Rating.find({chargeStation : chargeStation._id})
+      var ratingSum = 0;
+      for (var i = 0; i< ratings.length; i++){
+        ratingSum += ratings[i].rating
+      }
+      console.log(ratingSum)
+
+      var count = ratings.length
+      if (count === 0) {
+        count = 1;
+      }
+
+      var voted = false;
+      if (chargeStation.user === req.user_id){
+        voted = true
+      }
+
+      var newObect = {
+        _id: chargeStation._id,
+        name: chargeStation.name,
+        description: chargeStation.description,
+        phone: chargeStation.phone,
+        address: chargeStation.address,
+        user: chargeStation.user,
+        rating: ratingSum/count,
+        voted: voted
+      }
+      console.log(newObect)
+      output.push(newObect);
+      
+
+    }
+
+
+   return res.status(200).json({
+      success: true,
+      data: output,
+    });
+     
      // Respond
      return res.status(200).json({
         success: true,
@@ -118,9 +192,47 @@ exports.getChargeStation = async (req, res, next) => {
     try {
       const chargeStations = await ChargeStation.find({ user: req.user_id });
        // Respond
+
+      var output = []
+       for (var chargeStation of chargeStations) {
+
+        const ratings = await Rating.find({chargeStation : chargeStation._id})
+        var ratingSum = 0;
+        for (var i = 0; i< ratings.length; i++){
+          ratingSum += ratings[i].rating
+        }
+        console.log(ratingSum)
+
+        var count = ratings.length
+        if (count === 0) {
+          count = 1;
+        }
+
+        var voted = false;
+        if (chargeStation.user === req.user_id){
+          voted = true
+        }
+
+        var newObect = {
+          _id: chargeStation._id,
+          name: chargeStation.name,
+          description: chargeStation.description,
+          phone: chargeStation.phone,
+          address: chargeStation.address,
+          user: chargeStation.user,
+          rating: ratingSum/count,
+          voted: voted
+        }
+        console.log(newObect)
+        output.push(newObect);
+        
+
+      }
+
+
      return res.status(200).json({
         success: true,
-        data: chargeStations,
+        data: output,
       });
 
     } catch (error) {
@@ -138,11 +250,47 @@ exports.getChargeStation = async (req, res, next) => {
       }
 
       const chargeStations = await ChargeStation.find({ address: {$regex: address}});
-    
-       // Respond
+
+      var output = []
+       for (var chargeStation of chargeStations) {
+
+        const ratings = await Rating.find({chargeStation : chargeStation._id})
+        var ratingSum = 0;
+        for (var i = 0; i< ratings.length; i++){
+          ratingSum += ratings[i].rating
+        }
+        console.log(ratingSum)
+
+        var count = ratings.length
+        if (count === 0) {
+          count = 1;
+        }
+
+        var voted = false;
+        if (chargeStation.user === req.user_id){
+          voted = true
+        }
+
+        var newObect = {
+          _id: chargeStation._id,
+          name: chargeStation.name,
+          description: chargeStation.description,
+          phone: chargeStation.phone,
+          address: chargeStation.address,
+          user: chargeStation.user,
+          rating: ratingSum/count,
+          voted: voted
+        }
+        console.log(newObect)
+        output.push(newObect);
+        
+
+      }
+
+
      return res.status(200).json({
         success: true,
-        data: chargeStations,
+        data: output,
       });
 
     } catch (error) {
@@ -165,6 +313,12 @@ exports.rateChargeStation = async (req, res, next) => {
 
 
   try {
+
+    const prevRating = await Rating.findOne( {chargeStation : req.body.chargeStation, user : req.body.user});
+
+    if (prevRating) {
+      return next(new AppError("You have already rated this one"))
+    }
     // create rating
     const rating = await Rating.create(req.body);
 
@@ -178,10 +332,44 @@ exports.rateChargeStation = async (req, res, next) => {
 };
 
 
+// unrate
+exports.unRateChargeStation = async (req, res, next) => {
 
-  
+  // const 
+  const ratingId = req.body.ratingId;
+  const chargeStationId = req.body.chargeStationId;
 
+  if (!ratingId || chargeStationId) {
+    return next(new AppError("Request body is missing", 400));
+  }
 
+  try {
+    // create rating
+
+    const rating = await Rating.findById(ratingId);
+    if (!rating) {
+      return next(new AppError("no rating with given id", 400));
+    }
+
+    prevRating = rating.rating;
+
+    const chargeStation = await ChargeStation.findById(chargeStationId);
+    if (!chargeStation) {
+      return next(new AppError("no chargeStation with given id", 400));
+    }
+
+    chargeStation.rating
+
+    
+
+    return res.status(200).json({
+      data: rating,
+      success: true,
+    });
+  } catch (error) {
+    next(new AppError("Server Error", 500));
+  }
+};
 
 // create
 exports.commentChargeStation = async (req, res, next) => {
@@ -209,3 +397,5 @@ exports.commentChargeStation = async (req, res, next) => {
     next(new AppError("Server Error", 500));
   }
 };
+
+
