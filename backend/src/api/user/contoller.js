@@ -57,7 +57,7 @@ exports.login = async (req, res, next) => {
           });
         
     } catch (error) {
-        next(new AppError("Server error", 500));
+        next(error);
     }
 
 };

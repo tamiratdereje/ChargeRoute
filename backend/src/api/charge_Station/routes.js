@@ -6,7 +6,7 @@ const router = express.Router();
 const {protect, authorize} = require('../../middleware/auth.js')
 
 router.route("/")
-                .post(protect, chargeStationController.createChargeStation)
+                .post(protect, authorize("provider"), chargeStationController.createChargeStation)
                 .get(protect, chargeStationController.getMyChargeStations)
 
 
@@ -21,5 +21,7 @@ router.route("/all")
 router.route("/rate")
                 .post(protect, chargeStationController.rateChargeStation)
 
+router.route("/search")
+                .post(protect, chargeStationController.getNearChargeStations)
 
 module.exports = router;

@@ -125,6 +125,29 @@ exports.getChargeStation = async (req, res, next) => {
       next(error);
     }
   };
+
+  
+  exports.getNearChargeStations = async (req, res, next) => {
+    try {
+      const {address} = req.body
+
+      if (!address){
+        return next(new AppError("There is no address given", 400));
+      }
+
+      const chargeStations = await ChargeStation.find({ address: {$regex: address}});
+    
+       // Respond
+     return res.status(200).json({
+        success: true,
+        data: chargeStations,
+      });
+
+    } catch (error) {
+      next(error);
+    }
+  };
+
   
 
 
