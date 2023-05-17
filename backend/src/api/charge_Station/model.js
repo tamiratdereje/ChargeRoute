@@ -46,7 +46,13 @@ const ChargeStationSchema = new mongoose.Schema({
       ref: 'User',
       required: true
     }
-});
+},
+{
+  toJSON:{virtuals: true},
+  toObject: {virtuals: true}
+
+}
+);
 
 
 const RatingSchema = new mongoose.Schema({
@@ -55,6 +61,17 @@ const RatingSchema = new mongoose.Schema({
   rating: { type: Number, required: true, min: 1, max: 5 }
 });
 
+
+const CommentSchema = new mongoose.Schema({
+  commentor: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  chargeStation: { type: mongoose.Schema.Types.ObjectId, ref: 'ChargeStation', required: true },
+  description:{
+    type: String,
+    required : [true, "Please add a description"],
+    maxlength : [500, 'Name can not be more than 50 characters']
+},
+
+});
 
 RatingSchema.pre('save', async function(next) {
 
@@ -79,11 +96,20 @@ RatingSchema.pre('save', async function(next) {
 });
 
 
+ChargeStationSchema.virtual('comments', {
+  ref: 'Comment',
+  localField: '_id',
+  foreignField: 'chargeStation',
+  justOne: false
+});
+
 const ChargeStation = mongoose.model('ChargeStation', ChargeStationSchema);
 const Rating = mongoose.model('Rating', RatingSchema);
+const Comment = mongoose.model('Comment', CommentSchema);
 
 
 module.exports = {
   ChargeStation: ChargeStation,
-  Rating: Rating
+  Rating: Rating,
+  Comment: Comment
 }

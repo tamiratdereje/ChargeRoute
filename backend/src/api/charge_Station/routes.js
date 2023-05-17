@@ -24,4 +24,8 @@ router.route("/rate")
 router.route("/search")
                 .post(protect, chargeStationController.getNearChargeStations)
 
+router.route("/comment")
+                .post(protect, chargeStationController.commentChargeStation)
+
+
 module.exports = router;

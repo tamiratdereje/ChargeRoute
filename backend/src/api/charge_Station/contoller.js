@@ -1,4 +1,4 @@
-const { ChargeStation, Rating } = require("./model.js");
+const { ChargeStation, Rating, Comment } = require("./model.js");
 
 const AppError = require("../../utils/apperror.js");
 
@@ -82,7 +82,9 @@ exports.deleteChargeStation = async (req, res, next) => {
 // get chargeStation_
 exports.getChargeStation = async (req, res, next) => {
     try {
-      const chargeStation = await ChargeStation.findById(req.params.id);
+      const chargeStation = await ChargeStation.findById(req.params.id).populate({
+        path:'comments'
+      });;
   
       // Respond
       return res.status(200).json({
@@ -168,6 +170,39 @@ exports.rateChargeStation = async (req, res, next) => {
 
     return res.status(200).json({
       data: rating,
+      success: true,
+    });
+  } catch (error) {
+    next(new AppError("Server Error", 500));
+  }
+};
+
+
+
+  
+
+
+
+// create
+exports.commentChargeStation = async (req, res, next) => {
+
+  const comment = {
+    "commentor" : req.user_id,
+    "description" : req.body.description,
+    "chargeStation" : req.body.chargeStation
+  }
+
+  if (!req.body.chargeStation || req.body.description ) {
+    return next(new AppError("Request body is missing", 400));
+  }
+
+
+  try {
+    // create comment
+    const createComment = await Comment.create(comment);
+
+    return res.status(200).json({
+      data: createComment,
       success: true,
     });
   } catch (error) {
