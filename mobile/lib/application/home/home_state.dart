@@ -12,7 +12,7 @@ class HomeStateLoading extends HomeState {
 }
 
 class HomeStateSuccess extends HomeState {
-  final List<Map<String, String>> results;
+  final List<Charger> results;
 
   HomeStateSuccess(this.results);
 }

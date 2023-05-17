@@ -73,9 +73,10 @@ class _HomePageState extends State<HomePage> {
                     return ListView.builder(
                       itemBuilder: (context, index) {
                         return ChargerTile(
-                          name: state.results[index]["name"]!,
-                          address: state.results[index]["address"]!,
-                          rating: double.parse(state.results[index]["rating"]!),
+                          name: state.results[index].name,
+                          address: state.results[index].address,
+                          rating: state.results[index].rating,
+                          wattage: state.results[index].wattage,
                         );
                       },
                       itemCount: state.results.length,

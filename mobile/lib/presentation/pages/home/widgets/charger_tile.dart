@@ -4,12 +4,14 @@ class ChargerTile extends StatelessWidget {
   final String name;
   final String address;
   final double rating;
+  final double wattage;
 
   const ChargerTile({
     super.key,
     this.name = "Charger Name",
     this.address = "Address",
     this.rating = 4.5,
+    this.wattage = 50,
   });
 
   @override
@@ -55,7 +57,7 @@ class ChargerTile extends StatelessWidget {
                         size: 15,
                         color: Colors.grey,
                       ),
-                      const SizedBox(width: 5),
+                      const SizedBox(width: 2),
                       Text(
                         address,
                         style: const TextStyle(
@@ -69,9 +71,23 @@ class ChargerTile extends StatelessWidget {
                         size: 15,
                         color: Colors.grey,
                       ),
-                      const SizedBox(width: 5),
+                      const SizedBox(width: 2),
                       Text(
                         rating.toStringAsFixed(1),
+                        style: const TextStyle(
+                          fontSize: 15,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      const Icon(
+                        Icons.bolt,
+                        size: 15,
+                        color: Colors.grey,
+                      ),
+                      const SizedBox(width: 2),
+                      Text(
+                        "${wattage.toStringAsFixed(0)}W",
                         style: const TextStyle(
                           fontSize: 15,
                           color: Colors.grey,
