@@ -1,5 +1,6 @@
-
+import 'package:charge_station_finder/application/home/home_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'presentation/pages/create_station/createStation.dart';
 import 'presentation/pages/home/home.dart';
@@ -15,15 +16,18 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primaryColor: Colors.black,
-        platform: TargetPlatform.android,
-        useMaterial3: true,
+    return BlocProvider<HomeBloc>(
+      create: (context) => HomeBloc(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primaryColor: Colors.black,
+          platform: TargetPlatform.android,
+          useMaterial3: true,
+        ),
+        home: MyHomePage(),
       ),
-      home: MyHomePage(),
     );
   }
 }
@@ -35,6 +39,7 @@ class MyHomePage extends StatefulWidget {
     const ProfilePage(),
   ];
   int index = 0;
+
   void onTap(int index) {
     this.index = index;
   }
