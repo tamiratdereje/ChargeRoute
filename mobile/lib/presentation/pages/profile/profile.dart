@@ -1,9 +1,12 @@
 // profile page
 
-import 'package:charge_station_finder/presentation/pages/core/widgets/appBar.dart';
-import 'package:charge_station_finder/presentation/pages/create_station/widgets/inputFieldHeader.dart';
-import 'package:charge_station_finder/presentation/pages/profile/widgets/profileTile.dart';
+
+
 import 'package:flutter/material.dart';
+
+import '../core/widgets/appBar.dart';
+import '../create_station/widgets/inputFieldHeader.dart';
+import 'widgets/profileTile.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
