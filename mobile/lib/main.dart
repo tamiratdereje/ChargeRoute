@@ -1,4 +1,5 @@
 import 'package:charge_station_finder/application/home/home_bloc.dart';
+import 'package:charge_station_finder/presentation/pages/station_detail/station_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
           platform: TargetPlatform.android,
           useMaterial3: true,
         ),
-        home: MyHomePage(),
+        home: StationDetail(),
       ),
     );
   }
