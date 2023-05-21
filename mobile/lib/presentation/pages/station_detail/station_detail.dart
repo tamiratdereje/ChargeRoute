@@ -1,10 +1,13 @@
 import 'package:charge_station_finder/application/charger_detail/charger_detail_bloc.dart';
-import 'package:charge_station_finder/domain/core/charger_detail.dart';
-import 'package:charge_station_finder/domain/core/review.dart';
+import 'package:charge_station_finder/domain/review/review.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../domain/charger/charger_detail.dart';
+
 class StationDetail extends StatefulWidget {
+  const StationDetail({super.key});
+
   @override
   _StationDetailState createState() => _StationDetailState();
 }

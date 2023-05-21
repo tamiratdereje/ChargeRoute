@@ -1,7 +1,8 @@
-import 'package:charge_station_finder/domain/core/charger_detail.dart';
-import 'package:charge_station_finder/domain/core/review.dart';
+import 'package:charge_station_finder/domain/review/review.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../domain/charger/charger_detail.dart';
 
 part 'charger_detail_event.dart';
 part 'charger_detail_state.dart';

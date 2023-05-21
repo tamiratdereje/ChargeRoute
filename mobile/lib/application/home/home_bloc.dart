@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:charge_station_finder/domain/core/charger.dart';
+import 'package:charge_station_finder/domain/charger/charger.dart';
 import 'package:flutter/foundation.dart';
 
 part 'home_event.dart';
