@@ -1,4 +1,4 @@
-import 'package:charge_station_finder/domain/core/review.dart';
+import 'package:charge_station_finder/domain/review/review.dart';
 
 class ChargerDetail {
   final String id;
