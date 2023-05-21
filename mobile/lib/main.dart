@@ -1,4 +1,6 @@
+import 'package:charge_station_finder/application/admin/admin_bloc.dart';
 import 'package:charge_station_finder/application/home/home_bloc.dart';
+import 'package:charge_station_finder/presentation/pages/admin/admin_main_page.dart';
 import 'package:charge_station_finder/presentation/pages/station_detail/station_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,19 +19,25 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<HomeBloc>(
-      create: (context) => HomeBloc(),
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primaryColor: Colors.black,
-          platform: TargetPlatform.android,
-          useMaterial3: true,
-        ),
-        home: StationDetail(),
-      ),
-    );
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider<HomeBloc>(
+            create: (context) => HomeBloc(),
+          ),
+          BlocProvider<AdminBloc>(
+            create: (context) => AdminBloc(),
+          ),
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Flutter Demo',
+          theme: ThemeData(
+            primaryColor: Colors.black,
+            platform: TargetPlatform.android,
+            useMaterial3: true,
+          ),
+          home: AdminMainPage(),
+        ));
   }
 }
 
