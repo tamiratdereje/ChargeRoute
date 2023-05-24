@@ -7,19 +7,22 @@ import 'package:http/http.dart' as http;
 
 
 class AdminProvider {
-  final String baseUrl = "";
-  final String token = "";
+  final String baseUrl = "https://charge-route.onrender.com/api/v1/user";
+  final String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NjRiMTIzMjY4OTJjZTQ0OGE0YWUyYSIsImlhdCI6MTY4NDY5OTM0MiwiZXhwIjoxNjg3MjkxMzQyfQ.-HXeKUNxGtaatkQiYcOW7zg2VXN4sXd-g8sIZ9RTHwo";
 
   
   Future<void> createUser(AdminModel adminModel) async {
-
+    print(adminModel.toJson());
     final response = await http.post(Uri.parse(baseUrl),
     headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8',  "token": token},
     body: jsonEncode(adminModel)
     );
 
-    if (response.statusCode == 201) {
-      print(response.body);
+    print(response.statusCode);
+
+    if (response.statusCode != 200) {
+      throw Exception('failed to create');
+
     }
 
   }
@@ -51,31 +54,7 @@ class AdminProvider {
       } 
     }
 
-  Future<void> deleteRole(String id) async {
-
-      final response = await http.delete(Uri.parse("$baseUrl/role/$id"),
-        headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8',  "token": token},
-      );     
-
-      if (response.statusCode != 200){
-        print(response.body);
-        throw Exception('failed to delete');
-      } 
-  }
-
-  Future<void> createRole(String role) async {
-
-    final response = await http.post(Uri.parse("$baseUrl/role"),
-    headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8',  "token": token},
-    body: jsonEncode(role)
-    );
-
-    if (response.statusCode == 201) {
-      print(response.body);
-    }
-
-  }
-
+ 
 
     Future<List<AdminModel>> getUsers() async {
 
@@ -98,6 +77,26 @@ class AdminProvider {
 
           } else {
           throw Exception("error fetching users");
+        }
+    }
+
+
+    Future<AdminModel> getUser(String id) async {
+
+        final response = await http
+            .get(Uri.parse("$baseUrl/$id"),
+             headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8',  "token": token},
+             );
+
+        if (response.statusCode == 200) {
+
+          final json =jsonDecode(response.body);
+          AdminModel user = AdminModel.fromJson(json["data"]);
+          
+          return user;
+
+          } else {
+          throw Exception("error fetching user");
         }
     }
  

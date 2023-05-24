@@ -5,6 +5,8 @@ const AdminState();
 
 @override
   List<Object> get props => [];
+
+  void maybeMap({required Null Function() orElse, required Null Function(dynamic state) addUserSuccess, required Null Function(dynamic state) addUserFailure}) {}
 }
 
 
@@ -22,7 +24,7 @@ class AdminSuccessState extends AdminState {
 
 
 class AdminFailureState extends AdminState{
-  final Error error ;
+  final Object error ;
 
   AdminFailureState({required this.error});
 

@@ -19,6 +19,9 @@ class CSFFormField extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
           ),
+          onChanged: (value) {
+            onChanged(value);
+          },
         );
       },
     );

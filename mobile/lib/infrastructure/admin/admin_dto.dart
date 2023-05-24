@@ -6,6 +6,7 @@ class AdminModel extends Equatable {
   final String name;
   final String email;
   final String role;
+  String? password;
   
 
   AdminModel({
@@ -13,26 +14,28 @@ class AdminModel extends Equatable {
     required this.name,
     required this.email,
     required this.role,
+    this.password
   });
 
 
 
   factory AdminModel.fromJson(Map<String, dynamic> json) {
     return AdminModel(
-      id: json['id'],
+      id: json['id'] ?? '',
       name: json['name'],
       email: json['email'],
       role: json['role'],
-      
+      password: json['password'] ?? '',
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      'id': id ?? '',
       'name': name,
       'email': email,
       'role': role,
+      'password': password ?? '',
     };
   }
   

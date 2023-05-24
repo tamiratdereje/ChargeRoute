@@ -49,4 +49,13 @@ class AdminUpdateUserEvent extends AdminEvent {
 }
 
 
+class AdminUserDetailEvent extends AdminEvent {
+
+  final AdminDomain adminDomain;
+  AdminUserDetailEvent({required this.adminDomain});
+
+  @override
+  List<Object> get props => [];
+}
+
 

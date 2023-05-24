@@ -1,7 +1,5 @@
-import 'package:charge_station_finder/presentation/pages/admin/admin_add_role.dart';
 import 'package:charge_station_finder/presentation/pages/admin/admin_add_users.dart';
 import 'package:charge_station_finder/presentation/pages/admin/admin_home_page.dart';
-import 'package:charge_station_finder/presentation/pages/admin/roles_page.dart';
 import 'package:charge_station_finder/presentation/pages/profile/profile.dart';
 import 'package:flutter/material.dart';
 
@@ -9,7 +7,6 @@ class AdminMainPage extends StatefulWidget {
   List<Widget> pages = [
     const AdminHomePage(),
     const AdminAddUser(),
-    const RolesPage(),
     const ProfilePage(),
   ];
   int index = 0;
@@ -39,9 +36,6 @@ class _AdminMainPageState extends State<AdminMainPage> {
           BottomNavigationBarItem(
               icon: Icon(Icons.add_box_rounded), label: 'Add Users'),
          
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline), label: 'Roles'),
-
           BottomNavigationBarItem(
                         icon: Icon(Icons.person_outline), label: 'Profile'),
           
