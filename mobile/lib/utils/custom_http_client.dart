@@ -109,7 +109,7 @@ class CustomHttpClient {
       return response;
     }
     var decoded = json.decode(response.body);
-    var message = decoded['message'] as String?;
+    var message = decoded['error'] as String?;
 
     if (response.statusCode >= 400 && response.statusCode < 500) {
       throw ApiException(message ?? 'Bad request', response.statusCode);

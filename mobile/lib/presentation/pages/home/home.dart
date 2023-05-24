@@ -96,6 +96,7 @@ class _HomePageState extends State<HomePage> {
                           Text(
                             state.message,
                             style: const TextStyle(fontSize: 20),
+                            textAlign: TextAlign.center,
                           ),
                         ],
                       ),
