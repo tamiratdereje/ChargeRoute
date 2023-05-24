@@ -68,7 +68,7 @@ exports.login = async (req, res, next) => {
 exports.getMe = async (req, res, next) => {
 
     // user is already available in req due to the protect middleware
-    const user = await User.find().populate({
+    const user = await User.findById(req.user_id).populate({
       path:'chargeStations'
     });
 

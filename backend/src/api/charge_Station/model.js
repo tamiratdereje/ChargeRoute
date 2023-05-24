@@ -32,13 +32,14 @@ const ChargeStationSchema = new mongoose.Schema({
       unique: true
     },
 
-    rating : {
-      type: Number,
-    },
-
     address: {
       type: String,
       required: [true, 'Please add an address']
+    },
+
+    wattage: {
+      type : Number,
+      required : true
     },
       
     user: {
@@ -46,7 +47,13 @@ const ChargeStationSchema = new mongoose.Schema({
       ref: 'User',
       required: true
     }
-});
+},
+{
+  toJSON:{virtuals: true},
+  toObject: {virtuals: true}
+
+}
+);
 
 
 const RatingSchema = new mongoose.Schema({
@@ -56,34 +63,33 @@ const RatingSchema = new mongoose.Schema({
 });
 
 
-RatingSchema.pre('save', async function(next) {
+const CommentSchema = new mongoose.Schema({
+  commentor: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  chargeStation: { type: mongoose.Schema.Types.ObjectId, ref: 'ChargeStation', required: true },
+  description:{
+    type: String,
+    required : [true, "Please add a description"],
+    maxlength : [500, 'Name can not be more than 50 characters']
+},
 
-  const Rating = mongoose.model('Rating');
-  const ChargeStationMain = mongoose.model('ChargeStation');
-
-  const rating = this;
-
-  // Get all ratings for this item
-  const ratings = await Rating.find({ chargeStation: rating.chargeStation });
-
-  // Calculate the average rating
-  const sum = ratings.reduce((total, rating) => total + rating.rating, 0);
-  const avg = sum / ratings.length;
-
-  // Update the average rating on the item object
-  const chargeStationMain = await ChargeStationMain.findById(rating.chargeStation);
-  chargeStationMain.averageRating = avg;
-  await chargeStationMain.save();
-
-  next();
 });
+
+ChargeStationSchema.virtual('comments', {
+  ref: 'Comment',
+  localField: '_id',
+  foreignField: 'chargeStation',
+  justOne: false
+});
+
 
 
 const ChargeStation = mongoose.model('ChargeStation', ChargeStationSchema);
 const Rating = mongoose.model('Rating', RatingSchema);
+const Comment = mongoose.model('Comment', CommentSchema);
 
 
 module.exports = {
   ChargeStation: ChargeStation,
-  Rating: Rating
+  Rating: Rating,
+  Comment: Comment
 }

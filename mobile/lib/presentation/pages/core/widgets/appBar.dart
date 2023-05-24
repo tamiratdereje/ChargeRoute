@@ -14,6 +14,7 @@ class CHSAppBar {
           text,
           style: const TextStyle(color: Colors.white),
         ),
+
         backgroundColor: Theme.of(context).primaryColor);
   }
 }
