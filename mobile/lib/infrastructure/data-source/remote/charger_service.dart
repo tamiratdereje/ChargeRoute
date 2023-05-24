@@ -31,7 +31,7 @@ class RemoteChargerSource {
         body: json.encode({
           'address': address,
         }));
-    return response.then((value) => (json.decode(value.body) as List)
+    return response.then((value) => (json.decode(value.body)["data"] as List)
         .map((e) => ChargerDto.fromJson(e))
         .toList());
   }
