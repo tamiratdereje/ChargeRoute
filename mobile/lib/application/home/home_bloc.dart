@@ -14,14 +14,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       await Future.delayed(const Duration(seconds: 2));
       emit(HomeStateError("Error fetching results"));
       await Future.delayed(const Duration(seconds: 2));
-      emit(HomeStateSuccess(const [
-        Charger(
-            name: "Charger 1",
-            wattage: 50,
-            address: "Address 1",
-            rating: 4,
-            id: "1"),
-      ]));
+      emit(HomeStateSuccess(const []));
     });
   }
 }
