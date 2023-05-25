@@ -18,9 +18,11 @@ class AdminGetUsersEvent extends AdminEvent {
 
 
 class AdminDeleteUserEvent extends AdminEvent {
+  List<AdminDomain> adminDomains = [];
+
 
   String id;
-  AdminDeleteUserEvent({required this.id});
+  AdminDeleteUserEvent({required this.id, required this.adminDomains});
 
   
   @override
@@ -40,9 +42,10 @@ class AdminCreateUserEvent extends AdminEvent {
 
 
 class AdminUpdateUserEvent extends AdminEvent {
+  List<AdminDomain> adminDomains = [];
 
   final AdminDomain adminDomain;
-  AdminUpdateUserEvent({required this.adminDomain});
+  AdminUpdateUserEvent({required this.adminDomain, required this.adminDomains});
 
   @override
   List<Object> get props => [];

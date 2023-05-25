@@ -1,6 +1,7 @@
 import 'package:charge_station_finder/application/admin/admin_bloc.dart';
 import 'package:charge_station_finder/application/home/home_bloc.dart';
 import 'package:charge_station_finder/domain/charger/charger_repository_interface.dart';
+import 'package:charge_station_finder/presentation/pages/admin/admin_home_page.dart';
 import 'package:charge_station_finder/presentation/pages/admin/admin_main_page.dart';
 import 'package:charge_station_finder/utils/custom_http_client.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
                   HomeBloc(chargerRepository: chargerRepository),
             ),
             BlocProvider<AdminBloc>(
-              create: (context) => AdminBloc(),
+              create: (context) => AdminBloc()..add(AdminGetUsersEvent()),
             ),
           ],
           child: MaterialApp(
@@ -53,7 +54,7 @@ class MyApp extends StatelessWidget {
               platform: TargetPlatform.android,
               useMaterial3: true,
             ),
-            home: AdminMainPage(),
+            home: AdminHomePage(),
           )),
     );
   }

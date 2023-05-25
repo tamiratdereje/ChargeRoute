@@ -56,18 +56,21 @@ class _AdminHomePageState extends State<AdminHomePage> {
                 itemBuilder: (context, index) {
                   return UserCard(
                     adminDomain: AdminDomain(
+                      id: state.adminDomains[index].id,
                         email: state.adminDomains[index].email, name: state.adminDomains[index].name, role: state.adminDomains[index].role),
                     onEdit: (value) {
                       BlocProvider.of<AdminBloc>(context)
-                          .add(AdminUpdateUserEvent(adminDomain: value));
+                          .add(AdminUpdateUserEvent(adminDomains: state.adminDomains,adminDomain: value));
                     },
-                    onDelete: () {},
+                    onDelete: (value) {
+                      BlocProvider.of<AdminBloc>(context)
+                          .add(AdminDeleteUserEvent(adminDomains: state.adminDomains, id: value));
+                    },
                   );
                 })); 
 
         } else if (state is AdminLoadingState){
           
-
           return Scaffold(body: Center(child: CircularProgressIndicator(color: Colors.red, strokeWidth: 5, backgroundColor: Colors.green,),),);
 
         } else {
@@ -142,9 +145,11 @@ class UserCard extends StatelessWidget {
                     context: context,
                     builder: (BuildContext context) {
                       return AdminUpdateUserPage(
+                        previousId: adminDomain.id!,
                         previousEmail: adminDomain.email,
                         previousName: adminDomain.name,
                         previousRole: adminDomain.role,
+
                       );
                     },
                   ))!;
@@ -158,7 +163,9 @@ class UserCard extends StatelessWidget {
                   Icons.delete,
                   size: 15,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  showDeleteUserConfirmation(context, 'JohnDoe', onDelete(adminDomain.id) );                  
+                },
               )
             ],
           )
@@ -167,3 +174,55 @@ class UserCard extends StatelessWidget {
     );
   }
 }
+
+
+class DeleteUserConfirmationDialog extends StatelessWidget {
+  final String username;
+  final VoidCallback onConfirm;
+
+  const DeleteUserConfirmationDialog({
+    required this.username,
+    required this.onConfirm,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Confirm Deletion'),
+      content: Text('Are you sure you want to delete the user $username?'),
+      actions: [
+        TextButton(
+          child: Text('Cancel'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        TextButton(
+          child: Text('Delete'),
+          onPressed: onConfirm,
+        ),
+      ],
+    );
+  }
+}
+
+
+void showDeleteUserConfirmation(BuildContext context, String username, Function() onDelete) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return DeleteUserConfirmationDialog(
+          username: username,
+          onConfirm: () {
+            // Delete user logic
+            // You can perform the deletion operation here
+            // For demonstration purposes, let's just print a message
+            print('User $username deleted.');
+            onDelete();
+            Navigator.of(context).pop();
+
+          },
+        );
+      },
+    );
+  }

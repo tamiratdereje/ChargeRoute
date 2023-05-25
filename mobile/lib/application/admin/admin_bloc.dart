@@ -34,10 +34,10 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
     on<AdminDeleteUserEvent>(((event, emit) async {
       
       try {
-        emit(AdminLoadingState());
-        List<AdminDomain> adminDomain =  AdminDomain(email: "dummy", name: "yeab", role: "provider") as List<AdminDomain>;
+        emit(AdminLoadingState());        
         await adminRepository.deleteUser(event.id);
-        emit(AdminSuccessState(adminDomains: adminDomain));
+        event.adminDomains.removeWhere((element) => element.id == event.id);
+        emit(AdminSuccessState(adminDomains: event.adminDomains));
 
       } catch (e) {
         emit(AdminFailureState(error: e)); 
@@ -55,7 +55,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
         emit(AdminSuccessState(adminDomains: adminDomains));
         
       } catch (e) {
-         emit(AdminFailureState(error: e)); 
+         emit(AdminFailureState(error: e.toString())); 
       }
 
     }));
@@ -65,9 +65,16 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
       
       try {
         emit(AdminLoadingState());
-        List<AdminDomain> adminDomains = event.adminDomain as List<AdminDomain>;
+
         await adminRepository.editUser(event.adminDomain);
-        emit(AdminSuccessState(adminDomains: adminDomains));
+
+        for (var i = 0; i < event.adminDomains.length; i++) {
+          if (event.adminDomain.id == event.adminDomains[i].id) {
+            event.adminDomains[i] = event.adminDomain;
+          }
+        }
+
+        emit(AdminSuccessState(adminDomains: event.adminDomains));
         
       } catch (e) {
         emit(AdminFailureState(error: e)); 

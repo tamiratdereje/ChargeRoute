@@ -7,9 +7,10 @@ import 'package:http/http.dart' as http;
 
 
 class AdminProvider {
-  final String baseUrl = "http://localhost:3000/api/v1/user/";
-  final String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NjRiMTIzMjY4OTJjZTQ0OGE0YWUyYSIsImlhdCI6MTY4NDY5OTM0MiwiZXhwIjoxNjg3MjkxMzQyfQ.-HXeKUNxGtaatkQiYcOW7zg2VXN4sXd-g8sIZ9RTHwo";
+  final String baseUrl = "http://localhost:4500/api/v1/user";
+  final String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NjRiMTIzMjY4OTJjZTQ0OGE0YWUyYSIsImlhdCI6MTY4NDk4NDc2NCwiZXhwIjoxNjg3NTc2NzY0fQ.YCguBsZeIf7fACYrz3qcsShFjF7JYZnv60QYrkvyHfY";
   http.Client client = http.Client();
+
   Future<void> createUser(AdminModel adminModel) async {
     print(adminModel.toJson());
     
@@ -27,11 +28,10 @@ class AdminProvider {
 
   }
 
-  Future<void> editUser(AdminModel adminModel) async {
+  Future<AdminModel> editUser(AdminModel adminModel) async {
 
     String id = adminModel.id!;
-
-    final response = await client.put(Uri.parse("$baseUrl/$id"),
+    final response = await client.put(Uri.parse("$baseUrl/update/$id"),
     headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8',  "token": token},
     body: jsonEncode(adminModel)
     );
@@ -39,6 +39,7 @@ class AdminProvider {
     if (response.statusCode != 200){
         throw Exception('failed to edit');
       }
+    return adminModel;
 
   }
 
@@ -49,7 +50,6 @@ class AdminProvider {
       );     
 
       if (response.statusCode != 200){
-        print(response.body);
         throw Exception('failed to delete');
       } 
     }
@@ -60,13 +60,10 @@ class AdminProvider {
 
       try {
         
-        String token = "";
         final response = await client
             .get(Uri.parse("$baseUrl/all"),
              headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8',  "token": token},
              );
-        print(response.statusCode);
-        print(response.body);
         
       final json =jsonDecode(response.body);
       List<dynamic> users = json["data"] ?? [];
@@ -78,9 +75,7 @@ class AdminProvider {
         print(e);
         throw Exception("error fetching users");
 
-      }
-
-        
+      }        
     }
 
 

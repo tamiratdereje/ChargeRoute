@@ -23,7 +23,6 @@ class AdminRepository {
         email: adminDomain.email,
         name: adminDomain.name,
         role: adminDomain.role,
-        password: adminDomain.password
 
         );
 
@@ -47,7 +46,7 @@ class AdminRepository {
               password: e.password ?? '',
             ))
         .toList();
-        
+
     return adminDomain;
   }
 
