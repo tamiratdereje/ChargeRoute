@@ -6,8 +6,6 @@ import 'package:dartz/dartz.dart';
 import 'charger_detail.dart';
 
 abstract class ChargerRepositoryInterface {
-  Future<Either<Failure, List<Charger>>> getChargers();
-
   Future<Either<Failure, List<Charger>>> getChargersByAddress(String address);
 
   Future<Either<Failure, ChargerDetail>> getChargerDetail(String id);

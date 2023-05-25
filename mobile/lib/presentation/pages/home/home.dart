@@ -24,6 +24,10 @@ class _HomePageState extends State<HomePage> {
       builder: (context, state) {
         return Scaffold(
           appBar: CHSAppBar.build(context, "Home", () {}, false),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {},
+            child: const Icon(Icons.add),
+          ),
           body: Column(
             children: [
               SearchField(
@@ -96,6 +100,7 @@ class _HomePageState extends State<HomePage> {
                           Text(
                             state.message,
                             style: const TextStyle(fontSize: 20),
+                            textAlign: TextAlign.center,
                           ),
                         ],
                       ),

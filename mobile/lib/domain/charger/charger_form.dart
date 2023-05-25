@@ -5,7 +5,6 @@ class ChargerForm extends Equatable {
   final String description;
   final String phone;
   final String address;
-  final double rating;
   final double wattage;
 
   const ChargerForm({
@@ -13,24 +12,9 @@ class ChargerForm extends Equatable {
     required this.description,
     required this.phone,
     required this.address,
-    required this.rating,
     required this.wattage,
   });
 
-  String toJson() {
-    return '''
-    {
-      "name": "$name",
-      "description": "$description",
-      "phone": "$phone",
-      "address": "$address",
-      "rating": $rating,
-      "wattage": $wattage
-    }
-    ''';
-  }
-
   @override
-  List<Object?> get props =>
-      [name, description, phone, address, rating, wattage];
+  List<Object?> get props => [name, description, phone, address, wattage];
 }
