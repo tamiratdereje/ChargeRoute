@@ -67,7 +67,6 @@ class MyApp extends StatelessWidget {
                     state is ProviderAuthenticated) {
                   httpClient.authToken =
                       (state as Authenticated).userData!.token;
-                  debugPrint((state as Authenticated).userData!.token);
                 }
               },
               child: MaterialApp(
