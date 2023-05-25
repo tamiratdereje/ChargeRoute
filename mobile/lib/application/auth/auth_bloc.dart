@@ -19,14 +19,14 @@ part 'auth_state.dart';
 
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
-  final IAuthenticationRepository authRepository = AuthenticationRepository();
+  final IAuthenticationRepository authRepository;
 
-  AuthenticationBloc() : super(Empty()) {
+  AuthenticationBloc({required this.authRepository}) : super(Empty()) {
     on<SignUpEvent>(_onSignUp);
     on<LoginEvent>(_onLogin);
     on<LogoutEvent>(_onLogout);
-    on<GetUserAuthCredentialEvent>(_onGetUserAuthCredential);
     on<DeleteAccountEvent>(_onDeleteAccount);
+    on<GetUserAuthCredentialEvent>(_onGetUser);
   }
 
   AuthenticationState get initialState => Empty();
@@ -62,28 +62,29 @@ class AuthenticationBloc
     emit(_eitherLogoutOrError(failureOrNoReturns));
   }
 
-  void _onGetUserAuthCredential(GetUserAuthCredentialEvent event,
+  void _onGetUser(GetUserAuthCredentialEvent event,
       Emitter<AuthenticationState> emit) async {
-    emit(Loading());
     final failureOrAuthCredential =
         await authRepository.getUserAuthCredential();
     emit(_eitherLoginOrError(failureOrAuthCredential));
   }
 
   AuthenticationState _eitherLoginOrError(
-      Either<Failure, UserAuthCredential> failureOrAuthCredential) {
+      Either<Failure, UserData> failureOrAuthCredential) {
     return failureOrAuthCredential.fold(
-      (failure) => Error(message: _mapFailureToMessage(failure)),
-      (authCredential) =>
-          Loaded(AuthStatus.authenticated, userAuthCredential: authCredential),
-    );
+        (failure) => Error(message: _mapFailureToMessage(failure)),
+        (authCredential) => authCredential.user.role == 'admin'
+            ? AdminAuthenticated(userData: authCredential)
+            : authCredential.user.role == 'user'
+                ? UserAuthenticated(userData: authCredential)
+                : ProviderAuthenticated(userData: authCredential));
   }
 
   AuthenticationState _eitherLogoutOrError(
       Either<Failure, NoReturns> failureOrNoReturn) {
     return failureOrNoReturn.fold(
       (failure) => Error(message: _mapFailureToMessage(failure)),
-      (_) => Loaded(AuthStatus.unauthenticated),
+      (_) => Unauthenticated(),
     );
   }
 

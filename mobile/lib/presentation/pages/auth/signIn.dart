@@ -37,11 +37,17 @@ class _SignInState extends State<SignIn> {
               backgroundColor: Colors.redAccent,
             );
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          } else if (state is Loaded) {
+          } else if (state is UserAuthenticated) {
             const snackBar = SnackBar(
                 backgroundColor: Colors.green, content: Text('Success'));
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          } else if (state is AuthenticationLoading) {
+
+          } else if(state is AdminAuthenticated){
+            const snackBar = SnackBar(
+                backgroundColor: Colors.green, content: Text('Success'));
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
+          else if (state is AuthenticationLoading) {
             const loading = SnackBar(
                 content: Center(
               child: CircularProgressIndicator(

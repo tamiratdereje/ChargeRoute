@@ -4,7 +4,7 @@ class ChangePasswordDto {
 
   ChangePasswordDto({required this.newPassword, required this.oldPassword});
   // to json
-  Map<String, dynamic> toJson() {
+  Map<String, String> toJson() {
     return {
       "newPassword": newPassword,
       "oldPassword": oldPassword,

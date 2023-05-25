@@ -1,34 +1,61 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
-class UserAuthCredential extends Equatable {
-  final String email;
-  final String accessToken;
-  final String userRole;
+class UserAuthCredential extends Equatable{
+  String id;
+  String name;
+  String email;
+  String role;
+  String password;
+  String createdAt;
+  @override
+  List<Object?> get props => [id, name, email, password, role, createdAt];
 
-  const UserAuthCredential({
+  UserAuthCredential({ 
+    required this.id,
+    required this.name,
     required this.email,
-    required this.accessToken,
-    required this.userRole,
+    required this.role,
+    required this.password,
+    required this.createdAt,
   });
+  // to json
+  Map<String, dynamic> toJson() => {
+    '_id': id,
+    'name': name,
+    'email': email,
+    'role': role,
+    'password': password,
+    'createdAt': createdAt,
+  };
 
-  // from json to object
   factory UserAuthCredential.fromJson(Map<String, dynamic> json) {
     return UserAuthCredential(
-      email: json['email'],
-      accessToken: json['accessToken'],
-      userRole: json['userRole'],
+      id: json["_id"],
+      name: json["name"],
+      email: json["email"],
+      role: json["role"],
+      password: json["password"],
+      createdAt: json["createdAt"],
     );
   }
+}
 
-  // to json
-  Map<String, dynamic> toJson() {
-    return {
-      'email': email,
-      'accessToken': accessToken,
-      'userRole': userRole,
-    };
-  }
-
+class UserData extends Equatable{
+  UserAuthCredential user;
+  String token;
   @override
-  List<Object?> get props => [email, accessToken, userRole];
+  List<Object?> get props => [user, token];
+  UserData({required this.user, required this.token});
+
+  Map<String, dynamic> toJson() => {
+    'data': user.toJson(),
+    'token': token,
+  };
+  factory UserData.fromJson(Map<String, dynamic> json) {
+    return UserData(
+      user: UserAuthCredential.fromJson(json["data"]),
+      token: json["token"],
+    );
+  }
 }

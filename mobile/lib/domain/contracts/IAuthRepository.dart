@@ -8,11 +8,11 @@ import '../auth/models/signUpForm.dart';
 import '../../infrastructure/dto/userAuthCredential.dart';
 
 abstract class IAuthenticationRepository {
-  Future<Either<Failure, UserAuthCredential>> login({
+  Future<Either<Failure, UserData>> login({
     required SignInForm signInForm,
   });
   Future<Either<Failure, NoReturns>> logout();
-  Future<Either<Failure, UserAuthCredential>> getUserAuthCredential();
+  Future<Either<Failure, UserData>> getUserAuthCredential();
   Future<Either<Failure, NoReturns>> signUp({
     required SignUpForm signUpForm,
   });

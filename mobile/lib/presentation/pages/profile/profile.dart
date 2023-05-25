@@ -15,97 +15,106 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<AuthenticationBloc, AuthenticationState>(
         listener: (_, state) {
-          if (state is Error) {
-            final snackBar = SnackBar(
-              content: Text(state.message!),
-              backgroundColor: Colors.redAccent,
-            );
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          } else if (state is Loaded) {
-            const snackBar = SnackBar(
-                backgroundColor: Colors.green, content: Text('Success'));
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          } else if (state is AuthenticationLoading) {
-            const loading = SnackBar(
-                content: Center(
-              child: CircularProgressIndicator(
-                color: Colors.white,
-              ),
-            ));
-            ScaffoldMessenger.of(context).showSnackBar(loading);
-          }
-        },
-      child: Scaffold(
-      appBar: CHSAppBar.build(context, "Profile", () {}, true),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const InputFieldHeader(text: "Information"),
-              ProfileTile(
-                enabled: false,
-                icon: Icon(Icons.person),
-                text: "Name",
-                onPressed: () {},
-                trailingText: "John Doe",
-              ),
-              ProfileTile(
-                  enabled: false,
-                  icon: Icon(Icons.email),
-                  text: "Email",
-                  onPressed: () {},
-                  trailingText: "john@gmail.com"),
-              ProfileTile(
-                  enabled: false,
-                  icon: Icon(Icons.phone),
-                  text: "Phone",
-                  onPressed: () {},
-                  trailingText: "+91 9876543210"),
-              const SizedBox(
-                height: 16,
-              ),
-              const InputFieldHeader(text: "Edit Profile"),
-              ProfileTile(
-                  enabled: true,
-                  icon: Icon(Icons.password),
-                  text: "Change Password",
-                  onPressed: () {},
-                  trailingText: ""),
-              ProfileTile(
-                  enabled: true,
-                  icon: Icon(Icons.logout),
-                  text: "Logout",
-                  onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (context) => CRAlert(
-                            onPressed: dispatchLogoutEvent,
-                            content: "Are you sure you want to logout?"));
-                  },
-                  trailingText: ""),
-              ProfileTile(
-                  color: Colors.redAccent,
-                  enabled: true,
-                  icon: const Icon(
-                    Icons.delete,
-                    color: Colors.redAccent,
-                  ),
-                  text: "Delete Account",
-                  onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (context) => CRAlert(
-                            onPressed: dispatchDeleteAccountEvent,
-                            content:
-                                "Are you sure you want to delete your account?"));
-                  },
-                  trailingText: ""),
-            ],
+      if (state is Error) {
+        final snackBar = SnackBar(
+          content: Text(state.message!),
+          backgroundColor: Colors.redAccent,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      } else if (state is Loaded) {
+        const snackBar =
+            SnackBar(backgroundColor: Colors.green, content: Text('Success'));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      } else if (state is AuthenticationLoading) {
+        const loading = SnackBar(
+            content: Center(
+          child: CircularProgressIndicator(
+            color: Colors.white,
           ),
-        ),
-      ),
+        ));
+        ScaffoldMessenger.of(context).showSnackBar(loading);
+      }
+    }, child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+      builder: (builder, state) {
+        return (state is Authenticated) ? Scaffold(
+          appBar: CHSAppBar.build(context, "Profile", () {}, false),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const InputFieldHeader(text: "Information"),
+                  ProfileTile(
+                    enabled: false,
+                    icon: Icon(Icons.person),
+                    text: 'Name',
+                    onPressed: () {},
+                    trailingText: (state as Authenticated).userData!.user.name,
+                  ),
+                  ProfileTile(
+                      enabled: false,
+                      icon: Icon(Icons.email),
+                      text: "Email",
+                      onPressed: () {},
+                      trailingText: (state as Authenticated).userData!.user.email),
+                  ProfileTile(
+                      enabled: false,
+                      icon: Icon(Icons.account_circle),
+                      text: "Role",
+                      onPressed: () {},
+                      trailingText: (state as Authenticated).userData!.user.role),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  const InputFieldHeader(text: "Edit Profile"),
+                  ProfileTile(
+                      enabled: true,
+                      icon: Icon(Icons.password),
+                      text: "Change Password",
+                      onPressed: () {},
+                      trailingText: ""),
+                  ProfileTile(
+                      enabled: true,
+                      icon: Icon(Icons.logout),
+                      text: "Logout",
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) => CRAlert(
+                                onPressed: dispatchLogoutEvent,
+                                content: "Are you sure you want to logout?"));
+                      },
+                      trailingText: ""),
+                  ProfileTile(
+                      color: Colors.redAccent,
+                      enabled: true,
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Colors.redAccent,
+                      ),
+                      text: "Delete Account",
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) => CRAlert(
+                                onPressed: dispatchDeleteAccountEvent,
+                                content:
+                                    "Are you sure you want to delete your account?"));
+                      },
+                      trailingText: ""),
+                ],
+              ),
+            ),
+          ),
+        ): Scaffold(
+          appBar: CHSAppBar.build(context, "Profile", () {}, false),
+          body: const Center(
+            child: Text("Please login to view your profile"),
+            // Todo redirect to login page
+            
+          ),);
+      },
     ));
   }
 

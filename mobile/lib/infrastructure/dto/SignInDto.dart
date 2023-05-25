@@ -10,6 +10,7 @@ class SignInDto{
     required this.email,
     required this.password,
   });
+
   // to json
   Map<String, dynamic> toJson() => {
     'email': email,
