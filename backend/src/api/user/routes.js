@@ -16,5 +16,7 @@ router.route("/login")
 
 router.route("/changePassword")
         .post(protect, userController.changePassword);
+router.route("/all")
+        .get(userController.getAllUsers);
 
 module.exports = router;

@@ -79,6 +79,21 @@ exports.getMe = async (req, res, next) => {
     });
   };
 
+  
+//  get getAllUsers
+exports.getAllUsers = async (req, res, next) => {
+
+  // user is already available in req due to the protect middleware
+  const user = await User.find.populate({
+    path:'chargeStations'
+  });
+
+
+  res.status(200).json({
+    success: true,
+    data: user,
+  });
+};
 
 // delete user
 exports.deleteUser = async (req, res, next) => {

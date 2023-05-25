@@ -7,7 +7,7 @@ class NearbyHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return  Container(
           margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-          child: const Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children:  [
               Text(

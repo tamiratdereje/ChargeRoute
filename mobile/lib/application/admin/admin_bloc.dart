@@ -50,6 +50,8 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
       try {
         emit(AdminLoadingState());
         List<AdminDomain> adminDomains = await adminRepository.getUsers();
+        print(adminDomains.length);
+        print("\n\n\n\n\n\n\n\n\n\\n\n\n\n\n\n\n\n");
         emit(AdminSuccessState(adminDomains: adminDomains));
         
       } catch (e) {

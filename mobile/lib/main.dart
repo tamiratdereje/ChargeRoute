@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
             create: (context) => HomeBloc(),
           ),
           BlocProvider<AdminBloc>(
-            create: (context) => AdminBloc(),
+            create: (context) => AdminBloc()..add(AdminGetUsersEvent()),
           ),
         ],
         child: MaterialApp(

@@ -18,21 +18,66 @@ class AdminHomePage extends StatefulWidget {
 class _AdminHomePageState extends State<AdminHomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: CHSAppBar.build(context, "All Users", () {}, false),
-        body: ListView.builder(
-            itemCount: 15,
-            itemBuilder: (context, index) {
-              return UserCard(
-                adminDomain:
-                    AdminDomain(email: "email", name: "alalalal", role: "role"),
-                onEdit: (value) {
-                  BlocProvider.of<AdminBloc>(context).add(AdminUpdateUserEvent(
-                      adminDomain: value));
-                },
-                onDelete: () {},
-              );
-            }));
+    return BlocConsumer<AdminBloc, AdminState>(
+      listener: (context, state) {
+        if (state is AdminSuccessState) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("User Added Successfully"),
+              backgroundColor: Colors.green,
+            ),
+          );
+        } else if (state is AdminFailureState) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("${state.error}User Added Failed"),
+              backgroundColor: Colors.red,
+            ),
+          );
+        } else if (state is AdminLoadingState){
+           ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Users are loading "),
+              backgroundColor: const Color.fromARGB(255, 6, 24, 6),
+            ),
+          );
+        }
+      },
+      builder: (context, state) {
+        
+        if (state is AdminSuccessState){
+
+          
+
+          return Scaffold(
+            appBar: CHSAppBar.build(context, "All Users", () {}, false),
+            body: ListView.builder(
+                itemCount: state.adminDomains.length,
+                itemBuilder: (context, index) {
+                  return UserCard(
+                    adminDomain: AdminDomain(
+                        email: state.adminDomains[index].email, name: state.adminDomains[index].name, role: state.adminDomains[index].role),
+                    onEdit: (value) {
+                      BlocProvider.of<AdminBloc>(context)
+                          .add(AdminUpdateUserEvent(adminDomain: value));
+                    },
+                    onDelete: () {},
+                  );
+                })); 
+
+        } else if (state is AdminLoadingState){
+          
+
+          return Scaffold(body: Center(child: CircularProgressIndicator(color: Colors.red, strokeWidth: 5, backgroundColor: Colors.green,),),);
+
+        } else {
+          
+
+          return Scaffold(body: Center(child: Text("Error while fetching "),),);
+        }
+        
+      },
+    );
   }
 }
 
@@ -41,11 +86,11 @@ class UserCard extends StatelessWidget {
   final Function(AdminDomain adminDomain) onEdit;
   final Function onDelete;
 
-   UserCard(
-      {required this.adminDomain,
-      required this.onEdit,
-      required this.onDelete,
-      });
+  UserCard({
+    required this.adminDomain,
+    required this.onEdit,
+    required this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +105,7 @@ class UserCard extends StatelessWidget {
           width: 1,
         ),
       ),
-      child:  Row(
+      child: Row(
         children: [
           const CircleAvatar(
             child: Text("Y"),
@@ -68,47 +113,55 @@ class UserCard extends StatelessWidget {
           const SizedBox(
             width: 30,
           ),
-          const Column(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Yeab solomon"),
-              SizedBox(height: 13,),
-              Text("Provider"),
+              Text(adminDomain.name),
+              SizedBox(
+                height: 13,
+              ),
+              Text(adminDomain.role),
             ],
           ),
-
-          const Spacer(flex: 1,),
-          Column(children: [
-
-            IconButton(
-              padding: EdgeInsets.zero,
-              icon: const Icon(Icons.edit, size: 15,),
-              onPressed: () async {
-
-                AdminDomain adminDomain_ =
+          const Spacer(
+            flex: 1,
+          ),
+          Column(
+            children: [
+              IconButton(
+                padding: EdgeInsets.zero,
+                icon: const Icon(
+                  Icons.edit,
+                  size: 15,
+                ),
+                onPressed: () async {
+                  AdminDomain adminDomain_ =
                       (await showModalBottomSheet<AdminDomain?>(
                     isScrollControlled: true,
-                    backgroundColor:Colors.black.withOpacity(0.5) ,
+                    backgroundColor: Colors.black.withOpacity(0.5),
                     context: context,
                     builder: (BuildContext context) {
                       return AdminUpdateUserPage(
                         previousEmail: adminDomain.email,
                         previousName: adminDomain.name,
                         previousRole: adminDomain.role,
-                          );
+                      );
                     },
                   ))!;
 
                   onEdit(adminDomain_);
-              },
-            ),
-            IconButton(
-              padding: EdgeInsets.zero,
-              icon: const Icon(Icons.delete, size: 15,),
-              onPressed: () {},
-            )
-          
-          ],)
+                },
+              ),
+              IconButton(
+                padding: EdgeInsets.zero,
+                icon: const Icon(
+                  Icons.delete,
+                  size: 15,
+                ),
+                onPressed: () {},
+              )
+            ],
+          )
         ],
       ),
     );

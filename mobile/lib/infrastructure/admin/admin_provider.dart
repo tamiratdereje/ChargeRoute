@@ -7,13 +7,13 @@ import 'package:http/http.dart' as http;
 
 
 class AdminProvider {
-  final String baseUrl = "https://charge-route.onrender.com/api/v1/user";
+  final String baseUrl = "http://localhost:3000/api/v1/user/";
   final String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NjRiMTIzMjY4OTJjZTQ0OGE0YWUyYSIsImlhdCI6MTY4NDY5OTM0MiwiZXhwIjoxNjg3MjkxMzQyfQ.-HXeKUNxGtaatkQiYcOW7zg2VXN4sXd-g8sIZ9RTHwo";
-
-  
+  http.Client client = http.Client();
   Future<void> createUser(AdminModel adminModel) async {
     print(adminModel.toJson());
-    final response = await http.post(Uri.parse(baseUrl),
+    
+    final response = await client.post(Uri.parse(baseUrl),
     headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8',  "token": token},
     body: jsonEncode(adminModel)
     );
@@ -31,7 +31,7 @@ class AdminProvider {
 
     String id = adminModel.id!;
 
-    final response = await http.put(Uri.parse("$baseUrl/$id"),
+    final response = await client.put(Uri.parse("$baseUrl/$id"),
     headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8',  "token": token},
     body: jsonEncode(adminModel)
     );
@@ -44,7 +44,7 @@ class AdminProvider {
 
   Future<void> deleteUser(String id) async {
 
-      final response = await http.delete(Uri.parse("$baseUrl/$id"),
+      final response = await client.delete(Uri.parse("$baseUrl/$id"),
         headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8',  "token": token},
       );     
 
@@ -58,32 +58,35 @@ class AdminProvider {
 
     Future<List<AdminModel>> getUsers() async {
 
-
+      try {
+        
         String token = "";
-        final response = await http
-            .get(Uri.parse(baseUrl),
+        final response = await client
+            .get(Uri.parse("$baseUrl/all"),
              headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8',  "token": token},
              );
+        print(response.statusCode);
+        print(response.body);
+        
+      final json =jsonDecode(response.body);
+      List<dynamic> users = json["data"] ?? [];
+      List<AdminModel> related1 = users.map((user) => AdminModel.fromJson(user)).toList();          
+      return related1;
 
-        if (response.statusCode == 200) {
+      } catch (e) {
 
-          final json =jsonDecode(response.body);
-           List<dynamic> users = json["data"] ?? [];
+        print(e);
+        throw Exception("error fetching users");
 
-          List<AdminModel> related1 = users.map((user) => AdminModel.fromJson(user)).toList();
-          
-          
-          return related1;
+      }
 
-          } else {
-          throw Exception("error fetching users");
-        }
+        
     }
 
 
     Future<AdminModel> getUser(String id) async {
 
-        final response = await http
+        final response = await client
             .get(Uri.parse("$baseUrl/$id"),
              headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8',  "token": token},
              );
