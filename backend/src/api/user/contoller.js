@@ -79,6 +79,19 @@ exports.getMe = async (req, res, next) => {
     });
   };
 
+  
+//  get getAllUsers
+exports.getAllUsers = async (req, res, next) => {
+
+  // user is already available in req due to the protect middleware
+  const user = await User.find();
+  // console.log(user)
+
+  res.status(200).json({
+    success: true,
+    data: user,
+  });
+};
 
 // delete user
 exports.deleteUser = async (req, res, next) => {
@@ -130,3 +143,40 @@ exports.changePassword = async (req, res, next) => {
     }
 
   };
+
+
+
+  exports.editUser = async (req, res, next) => {
+    
+    try {
+      delete req.body.password;
+
+
+      const user = await User.findById(req.body.id);
+
+      if (!user)
+        return next(new AppError("There is no user with the specified id", 400));
+      const newone = await User.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            {
+              runValidators:true,
+              new: true,
+            }
+        
+        );
+      console.log("Ddalal adlaldadldl")
+      console.log(newone)
+      return res.status(200).json({
+        success: true,
+        "data": "user updated successfully"
+      });
+
+    } catch (error) {
+      console.log(error)
+      next(new AppError("server error", 500));
+    }
+
+  };
+
+

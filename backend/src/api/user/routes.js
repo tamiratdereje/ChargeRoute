@@ -16,5 +16,10 @@ router.route("/login")
 
 router.route("/changePassword")
         .post(protect, userController.changePassword);
+router.route("/all")
+        .get(userController.getAllUsers);
 
+router.route("/update/:id")
+        .put(userController.editUser);
+        
 module.exports = router;
