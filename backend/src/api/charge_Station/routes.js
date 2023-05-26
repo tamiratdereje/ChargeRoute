@@ -26,6 +26,7 @@ router.route("/search")
 
 router.route("/comment")
     .post(protect, chargeStationController.commentChargeStation)
-
+    .delete(protect, chargeStationController.deleteComment)
+    .patch(protect, chargeStationController.updateComment)
 
 module.exports = router;
