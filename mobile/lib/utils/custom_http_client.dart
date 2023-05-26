@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:charge_station_finder/common/exceptions/ApiException.dart';
 import 'package:charge_station_finder/utils/extensions.dart';
+import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 
 import '../common/constants.dart';
@@ -112,6 +113,7 @@ class CustomHttpClient {
     var message = decoded['error'] as String?;
 
     if (response.statusCode >= 400 && response.statusCode < 500) {
+      debugPrint('Error: ${response.statusCode} - ${response.body}');
       throw ApiException(message ?? 'Bad request', response.statusCode);
     } else if (response.statusCode >= 500) {
       throw ServerException(message ?? 'Server error', response.statusCode);
@@ -121,15 +123,15 @@ class CustomHttpClient {
 
   Future<http.Response> interceptForLogging(http.Response response) async {
     var request = response.request;
-    print('>> ${request?.url}');
-    print('Headers\n ${request?.headers}');
+    debugPrint('>> ${request?.url}');
+    debugPrint('Headers\n ${request?.headers}');
 
     if (request is http.Request) {
-      print('Body\n ${request.body}');
+      debugPrint('Body\n ${request.body}');
     }
 
-    print('Res Code\n ${response.statusCode}');
-    print('Res Body\n ${response.body}');
+    debugPrint('Res Code\n ${response.statusCode}');
+    debugPrint('Res Body\n ${response.body}');
     return response;
   }
 }

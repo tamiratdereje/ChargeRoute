@@ -2,17 +2,22 @@ import 'package:charge_station_finder/application/admin/admin_bloc.dart';
 import 'package:charge_station_finder/application/auth/auth_bloc.dart';
 import 'package:charge_station_finder/application/home/home_bloc.dart';
 import 'package:charge_station_finder/domain/charger/charger_repository_interface.dart';
+import 'package:charge_station_finder/domain/contracts/IAuthRepository.dart';
+import 'package:charge_station_finder/infrastructure/dto/userAuthCredential.dart';
 import 'package:charge_station_finder/presentation/pages/admin/admin_home_page.dart';
 import 'package:charge_station_finder/presentation/routes/routeConfig.dart';
 import 'package:charge_station_finder/utils/custom_http_client.dart';
+import 'package:charge_station_finder/presentation/pages/auth/signUp.dart';
+import 'package:charge_station_finder/presentation/pages/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'infrastructure/repository/authRepository.dart';
 import 'infrastructure/repository/charger_repository_impl.dart';
 import 'infrastructure/repository/review_repository_impl.dart';
-import 'presentation/pages/create_station/createStation.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'application/auth/auth_bloc.dart';
+import 'presentation/pages/auth/signIn.dart';
 import 'presentation/pages/home/home.dart';
-import 'presentation/pages/profile/profile.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,6 +34,8 @@ class MyApp extends StatelessWidget {
     var reviewRepository = ReviewRepositoryImpl(httpClient: httpClient);
     var chargerRepository = ChargerRepositoryImpl(
         httpClient: httpClient, reviewRepository: reviewRepository);
+    var authenticationRepository =
+        AuthenticationRepository(httpClient: httpClient);
 
     return MultiRepositoryProvider(
       providers: [
@@ -36,6 +43,9 @@ class MyApp extends StatelessWidget {
             create: (context) => reviewRepository),
         RepositoryProvider<ChargerRepositoryInterface>(
             create: (context) => chargerRepository),
+        RepositoryProvider<IAuthenticationRepository>(
+          create: (context) => authenticationRepository,
+        )
       ],
       child: MultiBlocProvider(
           providers: [
@@ -46,21 +56,30 @@ class MyApp extends StatelessWidget {
             BlocProvider<AdminBloc>(
               create: (context) => AdminBloc()..add(AdminGetUsersEvent()),
             ),
+            BlocProvider<AuthenticationBloc>(
+                create: (context) =>
+                    AuthenticationBloc(authRepository: authenticationRepository)
+                      ..add(GetUserAuthCredentialEvent()))
           ],
-          child: MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Flutter Demo',
-            theme: ThemeData(
-              primaryColor: Colors.black,
-              platform: TargetPlatform.android,
-              useMaterial3: true,
-            ),
-            builder: (context, state) => RouterMain(
-                  adminBloc: BlocProvider.of<AdminBloc>(context)),
-            // home: BlocBuilder<AuthBloc, AuthState> (
-            //   builder: (context, state) => RouterMain(authenticationBloc: authenticationBloc),
-            // ),
-          )),
+          child: BlocListener<AuthenticationBloc, AuthenticationState>(
+              listener: (_, state) {
+                if (state is UserAuthenticated ||
+                    state is AdminAuthenticated ||
+                    state is ProviderAuthenticated) {
+                  httpClient.authToken =
+                      (state as Authenticated).userData!.token;
+                }
+              },
+              child: MaterialApp(
+                debugShowCheckedModeBanner: false,
+                title: 'Flutter Demo',
+                theme: ThemeData(
+                  primaryColor: Colors.black,
+                  platform: TargetPlatform.android,
+                  useMaterial3: true,
+                ),
+                home: ProfilePage(),
+              ))),
     );
   }
 }
@@ -68,7 +87,7 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   List<Widget> pages = [
     HomePage(),
-    const CreateStation(),
+    ProfilePage(),
     const ProfilePage(),
   ];
   int index = 0;
@@ -86,32 +105,23 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: widget.pages[widget.index],
-      bottomNavigationBar: BottomNavigationBar(
-        selectedIconTheme: const IconThemeData(color: Colors.black),
-        unselectedIconTheme: const IconThemeData(color: Colors.grey),
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.grey,
-        showUnselectedLabels: true,
-        onTap: (int i) {
-          setState(() {
-            widget.onTap(i);
-          });
-        },
-        type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.add_box_rounded), label: 'Add'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline), label: 'Profile'),
-        ],
-        currentIndex: widget.index,
-      ), //bottom navigation bar
-    );
+    return ProfilePage();
   }
 }
+
+
+
+// child: MaterialApp(
+//             debugShowCheckedModeBanner: false,
+//             title: 'Flutter Demo',
+//             theme: ThemeData(
+//               primaryColor: Colors.black,
+//               platform: TargetPlatform.android,
+//               useMaterial3: true,
+//             ),
+//             builder: (context, state) => RouterMain(
+//                   adminBloc: BlocProvider.of<AdminBloc>(context)),
+//             // home: BlocBuilder<AuthBloc, AuthState> (
+//             //   builder: (context, state) => RouterMain(authenticationBloc: authenticationBloc),
+//             // ),
+//           )),

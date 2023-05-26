@@ -60,6 +60,8 @@ class _AdminAddUserState extends State<AdminAddUser> {
                   text: "Full Name",
                 ),
                 CSFFormField(
+                    controller: _fullNameController,
+                    obscureText: false,
                     hintText: "Yeab Solomon",
                     onChanged: (value) {
                       setState(() {
@@ -70,6 +72,8 @@ class _AdminAddUserState extends State<AdminAddUser> {
                   text: "Email",
                 ),
                 CSFFormField(
+                    controller: _emailController,
+                    obscureText: false,
                     hintText: "yeab@gmail.com",
                     onChanged: (value) {
                       setState(() {
@@ -80,6 +84,8 @@ class _AdminAddUserState extends State<AdminAddUser> {
                   text: "Role",
                 ),
                 CSFFormField(
+                    controller: _roleController,
+                    obscureText: false,
                     hintText: "User or Provider",
                     onChanged: (value) {
                       setState(() {
@@ -90,6 +96,8 @@ class _AdminAddUserState extends State<AdminAddUser> {
                   text: "Password",
                 ),
                 CSFFormField(
+                    controller: _passwordController,
+                    obscureText: false,
                     hintText: "yeab1234",
                     onChanged: (value) {
                       setState(() {
