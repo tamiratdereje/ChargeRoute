@@ -20,8 +20,8 @@ class ChargerDto extends Equatable {
       json['description'],
       json['address'],
       json['phone'],
-      json['wattage'],
-      json['rating'],
+      0.0,
+      0.0,
     );
   }
 
@@ -33,7 +33,7 @@ class ChargerDto extends Equatable {
       address: address,
       phone: phone,
       wattage: wattage,
-      rating: rating!,
+      rating: 0.0,
     );
   }
 
