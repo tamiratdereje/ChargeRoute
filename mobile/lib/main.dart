@@ -1,21 +1,14 @@
 import 'package:charge_station_finder/application/admin/admin_bloc.dart';
-import 'package:charge_station_finder/application/create_station/create_station_bloc.dart';
 import 'package:charge_station_finder/application/auth/auth_bloc.dart';
+import 'package:charge_station_finder/application/create_station/create_station_bloc.dart';
 import 'package:charge_station_finder/application/home/home_bloc.dart';
 import 'package:charge_station_finder/domain/charger/charger_repository_interface.dart';
 import 'package:charge_station_finder/domain/contracts/IAuthRepository.dart';
-import 'package:charge_station_finder/presentation/pages/create_station/createStation.dart';
-import 'package:charge_station_finder/infrastructure/dto/userAuthCredential.dart';
-import 'package:charge_station_finder/presentation/pages/admin/admin_home_page.dart';
-import 'package:charge_station_finder/presentation/routes/routeConfig.dart';
-import 'package:charge_station_finder/utils/custom_http_client.dart';
-import 'package:charge_station_finder/presentation/pages/auth/signUp.dart';
 import 'package:charge_station_finder/presentation/pages/profile/profile.dart';
 import 'package:charge_station_finder/utils/custom_http_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'application/auth/auth_bloc.dart';
 import 'infrastructure/repository/authRepository.dart';
 import 'infrastructure/repository/charger_repository_impl.dart';
 import 'infrastructure/repository/review_repository_impl.dart';
@@ -83,7 +76,7 @@ class MyApp extends StatelessWidget {
                   platform: TargetPlatform.android,
                   useMaterial3: true,
                 ),
-                home: CreateStation(),
+                home: HomePage(),
               ))),
     );
   }
