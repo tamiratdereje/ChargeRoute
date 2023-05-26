@@ -115,8 +115,7 @@ exports.getChargeStation = async (req, res, next) => {
         address: chargeStation.address,
         user: chargeStation.user,
         rating: ratingSum/count,
-        voted: voted,
-        comments: chargeStation.comments
+        voted: voted
       }
    
       return res.status(200).json({
