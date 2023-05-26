@@ -77,7 +77,7 @@ class MyApp extends StatelessWidget {
                   platform: TargetPlatform.android,
                   useMaterial3: true,
                 ),
-                home: StationDetail(),
+                home: const HomePage(),
               ))),
     );
   }
@@ -104,6 +104,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return ProfilePage();
+    return const HomePage();
   }
 }

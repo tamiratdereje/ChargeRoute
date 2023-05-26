@@ -37,7 +37,7 @@ class ChargerDto extends Equatable {
       address: address,
       phone: phone,
       wattage: wattage,
-      rating: rating!,
+      rating: 0.0,
     );
   }
 
