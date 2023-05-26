@@ -4,6 +4,8 @@ import 'package:charge_station_finder/application/create_station/create_station_
 import 'package:charge_station_finder/application/home/home_bloc.dart';
 import 'package:charge_station_finder/domain/charger/charger_repository_interface.dart';
 import 'package:charge_station_finder/domain/contracts/IAuthRepository.dart';
+import 'package:charge_station_finder/presentation/pages/auth/signIn.dart';
+import 'package:charge_station_finder/presentation/pages/create_station/createStation.dart';
 import 'package:charge_station_finder/presentation/pages/profile/profile.dart';
 import 'package:charge_station_finder/utils/custom_http_client.dart';
 import 'package:flutter/material.dart';
@@ -21,11 +23,10 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    var httpClient = CustomHttpClient();
 
+    var httpClient = CustomHttpClient();
     var reviewRepository = ReviewRepositoryImpl(httpClient: httpClient);
     var chargerRepository = ChargerRepositoryImpl(
         httpClient: httpClient, reviewRepository: reviewRepository);
@@ -76,7 +77,7 @@ class MyApp extends StatelessWidget {
                   platform: TargetPlatform.android,
                   useMaterial3: true,
                 ),
-                home: const HomePage(),
+                home: const CreateStation(),
               ))),
     );
   }

@@ -6,10 +6,11 @@ import 'package:charge_station_finder/domain/charger/charger_detail.dart';
 import 'package:charge_station_finder/domain/charger/charger_form.dart';
 import 'package:charge_station_finder/domain/charger/charger_repository_interface.dart';
 import 'package:charge_station_finder/domain/review/review_repository_interface.dart';
+import 'package:charge_station_finder/infrastructure/data-source/local/database.dart';
 import 'package:charge_station_finder/infrastructure/dto/charger_dto.dart';
 import 'package:charge_station_finder/utils/custom_http_client.dart';
 import 'package:dartz/dartz.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../data-source/remote/charger_service.dart';
 
@@ -100,16 +101,37 @@ class ChargerRepositoryImpl extends ChargerRepositoryInterface {
   }
 
   @override
-  Future<Either<Failure, List<Charger>>> getChargersByAddress(
-      String address) async {
+  Future<Either<Failure, List<Charger>>> fetchChargers(String address) async {
     try {
       var res = await remoteChargerSource.getChargersByAddress(address);
-      return right(res.map((e) => e.toDomain()).toList());
+      await CRDatabase.deleteChargers();
+      debugPrint("Deleting chargers");
+      await CRDatabase.insertChargers(res.map((e) => e.toJson()).toList());
+      var local_result = await CRDatabase.getChargers(address);
+      return right(local_result);
     } on ServerException catch (e) {
       return left(Failure(e.message));
     } on ApiException catch (e) {
       return left(Failure(e.message));
     } on Exception catch (e) {
+      debugPrint(e.toString());
+      return left(Failure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<Charger>>> getChargersByAddress(
+      String address) async {
+    try {
+      var res = await CRDatabase.getChargers(address);
+      debugPrint(res.toString());
+      return right(res);
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
+    } on ApiException catch (e) {
+      return left(Failure(e.message));
+    } on Exception catch (e) {
+      debugPrint(e.toString());
       return left(Failure(e.toString()));
     }
   }

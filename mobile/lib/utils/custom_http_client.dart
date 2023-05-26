@@ -42,7 +42,7 @@ class CustomHttpClient {
       'Content-Type': contentType,
       if (_authToken != null) 'Authorization': 'Bearer $_authToken'
     };
-
+    debugPrint(baseUrl + url);
     return runInterceptors(_httpClient.post(
       (baseUrl + url).asUri,
       headers: headersWithContentTypeAndAuth,
@@ -93,7 +93,7 @@ class CustomHttpClient {
       'Content-Type': contentType,
       if (_authToken != null) 'Authorization': 'Bearer $_authToken'
     };
-
+    
     return runInterceptors(_httpClient.delete(
       (baseUrl + url).asUri,
       headers: headersWithContentTypeAndAuth,

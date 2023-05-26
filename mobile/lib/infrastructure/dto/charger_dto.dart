@@ -25,6 +25,18 @@ class ChargerDto extends Equatable {
     );
   }
 
+  factory ChargerDto.fromDb(Map<String,dynamic> queryResult){
+    return ChargerDto(
+      queryResult['id'],
+      queryResult['name'],
+      queryResult['description'],
+      queryResult['address'],
+      queryResult['phone'],
+      queryResult['wattage'],
+      queryResult['rating'],
+    );
+  }
+
   Charger toDomain() {
     return Charger(
       id: id!,
@@ -32,7 +44,7 @@ class ChargerDto extends Equatable {
       description: description,
       address: address,
       phone: phone,
-      wattage: wattage,
+      wattage: wattage ?? -1,
       rating: 0.0,
     );
   }
@@ -47,8 +59,8 @@ class ChargerDto extends Equatable {
       'description': description,
       'address': address,
       'phone': phone,
-      'wattage': wattage,
-      'rating': rating,
+      'wattage': wattage ?? -1,
+      'rating': rating ?? 0,
     };
   }
 }
