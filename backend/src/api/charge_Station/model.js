@@ -39,24 +39,20 @@ const ChargeStationSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'User',
     required: true
-  }
+  },
+  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }]
 },
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
-
   }
 );
-
-
-
 
 const RatingSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   chargeStation: { type: mongoose.Schema.Types.ObjectId, ref: 'ChargeStation', required: true },
   rating: { type: Number, required: true, min: 1, max: 5 }
 });
-
 
 const CommentSchema = new mongoose.Schema({
   commentor: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
@@ -67,12 +63,6 @@ const CommentSchema = new mongoose.Schema({
     maxlength: [500, 'Name can not be more than 50 characters']
   },
 
-});
-
-ChargeStationSchema.virtual('comments', {
-  ref: 'Comment',
-  localField: 'chargeStation',
-  foreignField: '_id'
 });
 
 const ChargeStation = mongoose.model('ChargeStation', ChargeStationSchema);
