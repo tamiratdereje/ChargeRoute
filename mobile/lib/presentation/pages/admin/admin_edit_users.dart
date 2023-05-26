@@ -2,6 +2,7 @@ import 'package:charge_station_finder/domain/admin/admin_model.dart';
 import 'package:flutter/material.dart';
 
 class AdminUpdateUserPage extends StatefulWidget {
+  
   final String previousName;
   final String previousEmail;
   final String previousRole;
@@ -13,6 +14,7 @@ class AdminUpdateUserPage extends StatefulWidget {
       required this.previousRole,
       required this.previousId,
       super.key});
+
 
   @override
   State<AdminUpdateUserPage> createState() => _AdminUpdateUserPageState();
