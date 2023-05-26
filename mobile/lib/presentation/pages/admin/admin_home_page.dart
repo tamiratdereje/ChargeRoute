@@ -23,7 +23,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
         if (state is AdminSuccessState) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text("User Added Successfully"),
+              content: Text("User loeaded Successfully"),
               backgroundColor: Colors.green,
             ),
           );
@@ -71,7 +71,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
 
         } else if (state is AdminLoadingState){
           
-          return Scaffold(body: Center(child: CircularProgressIndicator(color: Colors.red, strokeWidth: 5, backgroundColor: Colors.green,),),);
+          return Scaffold(body: Center(child: CircularProgressIndicator(color: const Color.fromARGB(255, 238, 147, 141), strokeWidth: 3, backgroundColor: const Color.fromARGB(255, 0, 253, 8),),),);
 
         } else {
           

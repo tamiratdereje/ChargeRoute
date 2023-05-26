@@ -1,4 +1,5 @@
 class AppRoutes{
+
     static const HOME = '/';
     static const LOGIN = '/login';
     static const SIGNUP = '/signup';
@@ -7,5 +8,10 @@ class AppRoutes{
     static const ADD_STATION = '/add-station'; 
     static const STATION_DETAILS = '/station-details';
     static const STATION_LIST = '/station-list';
-  
+    static const ADMINHOMEPAGE = '/admin-homepage';
+    static const ADMINEDITUSERS = '/admin-edit-users';
+    static const ADMINADDUSERS = '/admin-add-users';
+    static const ADMINDELETEUSER = '/admin-delete-user';
+    static const BOTTOMNAVADMINPAGE = '/admin-main-page';
+    
 }
