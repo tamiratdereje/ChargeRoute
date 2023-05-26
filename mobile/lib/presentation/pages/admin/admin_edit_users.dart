@@ -1,8 +1,10 @@
 import 'package:charge_station_finder/domain/admin/admin_model.dart';
+import 'package:charge_station_finder/presentation/routes/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class AdminUpdateUserPage extends StatefulWidget {
-  
+
   final String previousName;
   final String previousEmail;
   final String previousRole;
@@ -171,7 +173,6 @@ class _AdminUpdateUserPageState extends State<AdminUpdateUserPage> {
                           //     return null;
                           //   };
                           // }
-    
                           return Navigator.pop(
                               context,
                               AdminDomain(

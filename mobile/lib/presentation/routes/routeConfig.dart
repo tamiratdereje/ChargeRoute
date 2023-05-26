@@ -9,13 +9,16 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../application/auth/auth_bloc.dart';
+import 'bottom_nav/admin_bottom_nav.dart';
 
 class RouterMain extends StatelessWidget {
   // final AuthBloc authenticationBloc;
   final AdminBloc adminBloc;
   late final GoRouter _router;
   String? redirector(state) {
-    return null;
+    // !Tod abel add the comment below while you add authentication.
+    // if auntheticated and role == admin: return AppRoutes.BOTTOMNAVADMINPAGE;
+    return AppRoutes.BOTTOMNAVADMINPAGE;
   }
 
   RouterMain({required this.adminBloc, Key? key}) : super(key: key) {
@@ -33,12 +36,17 @@ class RouterMain extends StatelessWidget {
           pageBuilder: (context, state) =>
               const MaterialPage(child: AdminAddUser()),
         ),
+        
         GoRoute(
           path: AppRoutes.PROFILE,
           pageBuilder: (context, state) =>
               const MaterialPage(child: ProfilePage()),
         ),
-
+        GoRoute(
+          path: AppRoutes.BOTTOMNAVADMINPAGE,
+          pageBuilder: (context, state) =>
+              MaterialPage(child: BottomNavAdminPage()),
+        ),
         // GoRoute(
         //   path: AppRoutes.ADMINEDITUSERS,
         //   pageBuilder: (context, state) =>
@@ -54,8 +62,9 @@ class RouterMain extends StatelessWidget {
         routerDelegate: _router.routerDelegate,
         routeInformationParser: _router.routeInformationParser,
         title: 'Charge Station Finder',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ));
+        // theme: ThemeData(
+        //   primarySwatch: Colors.blue,
+        // )
+        );
   }
 }

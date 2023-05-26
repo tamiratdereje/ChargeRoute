@@ -9,9 +9,9 @@ class AppRoutes{
     static const STATION_DETAILS = '/station-details';
     static const STATION_LIST = '/station-list';
     static const ADMINHOMEPAGE = '/admin-homepage';
-    static const ADMINUSERSLIST = '/admin-users-list';
     static const ADMINEDITUSERS = '/admin-edit-users';
     static const ADMINADDUSERS = '/admin-add-users';
     static const ADMINDELETEUSER = '/admin-delete-user';
+    static const BOTTOMNAVADMINPAGE = '/admin-main-page';
     
 }
