@@ -39,8 +39,7 @@ const ChargeStationSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'User',
     required: true
-  },
-  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
+  }
 },
   {
     toJSON: { virtuals: true },
@@ -48,6 +47,8 @@ const ChargeStationSchema = new mongoose.Schema({
 
   }
 );
+
+
 
 
 const RatingSchema = new mongoose.Schema({
@@ -70,17 +71,13 @@ const CommentSchema = new mongoose.Schema({
 
 ChargeStationSchema.virtual('comments', {
   ref: 'Comment',
-  localField: '_id',
-  foreignField: 'chargeStation',
-  justOne: false
+  localField: 'chargeStation',
+  foreignField: '_id'
 });
-
-
 
 const ChargeStation = mongoose.model('ChargeStation', ChargeStationSchema);
 const Rating = mongoose.model('Rating', RatingSchema);
 const Comment = mongoose.model('Comment', CommentSchema);
-
 
 module.exports = {
   ChargeStation: ChargeStation,
