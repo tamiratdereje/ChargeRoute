@@ -16,6 +16,12 @@ class ChargerDetailEventPostReview extends ChargerDetailEvent {
   ChargerDetailEventPostReview(this.chargerId, this.content);
 }
 
+class ChargerDetailEventDeleteCharger extends ChargerDetailEvent {
+  final String chargerId;
+
+  ChargerDetailEventDeleteCharger(this.chargerId);
+}
+
 class ChargerDetailEventDeleteReview extends ChargerDetailEvent {
   final String reviewId;
 

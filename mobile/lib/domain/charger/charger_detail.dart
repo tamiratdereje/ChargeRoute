@@ -8,6 +8,8 @@ class ChargerDetail {
   final String address;
   final double rating;
   final double wattage;
+  final bool hasUserRated;
+  final String user;
 
   final List<Review> reviews;
 
@@ -20,6 +22,8 @@ class ChargerDetail {
     required this.rating,
     required this.wattage,
     required this.reviews,
+    required this.hasUserRated,
+    required this.user,
   });
 
   ChargerDetail copyWith({
@@ -41,6 +45,8 @@ class ChargerDetail {
       rating: rating ?? this.rating,
       wattage: wattage ?? this.wattage,
       reviews: reviews ?? this.reviews,
+      hasUserRated: hasUserRated,
+      user: user,
     );
   }
 }

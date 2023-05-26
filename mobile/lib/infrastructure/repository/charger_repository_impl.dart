@@ -25,15 +25,8 @@ class ChargerRepositoryImpl extends ChargerRepositoryInterface {
   Future<Either<Failure, void>> addCharger(ChargerForm form) async {
     try {
       await remoteChargerSource.addCharger(
-        ChargerDto(
-          null,
-          form.name,
-          form.description,
-          form.address,
-          form.phone,
-          form.wattage,
-          null,
-        ),
+        ChargerDto(null, form.name, form.description, form.address, form.phone,
+            form.wattage, null, false, null),
       );
       return right(null);
     } on ServerException catch (e) {
@@ -62,8 +55,16 @@ class ChargerRepositoryImpl extends ChargerRepositoryInterface {
   @override
   Future<Either<Failure, void>> editCharger(ChargerForm form, String id) async {
     try {
-      await remoteChargerSource.editCharger(ChargerDto(id, form.name,
-          form.description, form.address, form.phone, form.wattage, null));
+      await remoteChargerSource.editCharger(ChargerDto(
+          id,
+          form.name,
+          form.description,
+          form.address,
+          form.phone,
+          form.wattage,
+          null,
+          false,
+          null));
       return right(null);
     } on ServerException catch (e) {
       return left(Failure(e.message));
@@ -87,6 +88,8 @@ class ChargerRepositoryImpl extends ChargerRepositoryInterface {
           rating: value.rating!,
           wattage: value.wattage,
           reviews: [],
+          hasUserRated: value.hasUserRated,
+          user: value.user!,
         ));
       });
     } on ServerException catch (e) {

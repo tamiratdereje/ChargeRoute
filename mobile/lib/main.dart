@@ -3,12 +3,13 @@ import 'package:charge_station_finder/application/auth/auth_bloc.dart';
 import 'package:charge_station_finder/application/create_station/create_station_bloc.dart';
 import 'package:charge_station_finder/application/home/home_bloc.dart';
 import 'package:charge_station_finder/domain/charger/charger_repository_interface.dart';
-import 'package:charge_station_finder/domain/contracts/IAuthRepository.dart';
 import 'package:charge_station_finder/presentation/pages/profile/profile.dart';
+import 'package:charge_station_finder/presentation/pages/station_detail/station_detail.dart';
 import 'package:charge_station_finder/utils/custom_http_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'domain/contracts/IAuthRepository.dart';
 import 'infrastructure/repository/authRepository.dart';
 import 'infrastructure/repository/charger_repository_impl.dart';
 import 'infrastructure/repository/review_repository_impl.dart';
@@ -61,12 +62,12 @@ class MyApp extends StatelessWidget {
           ],
           child: BlocListener<AuthenticationBloc, AuthenticationState>(
               listener: (_, state) {
-                if (state is UserAuthenticated ||
-                    state is AdminAuthenticated ||
-                    state is ProviderAuthenticated) {
-                  httpClient.authToken =
-                      (state as Authenticated).userData!.token;
-                }
+                // if (state is UserAuthenticated ||
+                //     state is AdminAuthenticated ||
+                //     state is ProviderAuthenticated) {
+                //   httpClient.authToken =
+                //       (state as Authenticated).userData!.token;
+                // }
               },
               child: MaterialApp(
                 debugShowCheckedModeBanner: false,
@@ -76,7 +77,7 @@ class MyApp extends StatelessWidget {
                   platform: TargetPlatform.android,
                   useMaterial3: true,
                 ),
-                home: HomePage(),
+                home: StationDetail(),
               ))),
     );
   }

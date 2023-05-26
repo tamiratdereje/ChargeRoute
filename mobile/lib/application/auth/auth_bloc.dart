@@ -1,17 +1,13 @@
-import 'dart:io';
-
 import 'package:charge_station_finder/domain/auth/models/signInFormForm.dart';
-import 'package:charge_station_finder/infrastructure/repository/authRepository.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meta/meta.dart';
 
 import '../../domain/auth/models/noReturn.dart';
 import '../../domain/auth/models/signUpForm.dart';
-import '../../infrastructure/dto/userAuthCredential.dart';
 import '../../domain/contracts/IAuthRepository.dart';
+import '../../infrastructure/dto/userAuthCredential.dart';
 import '../core/failure.dart';
 
 part 'auth_event.dart';

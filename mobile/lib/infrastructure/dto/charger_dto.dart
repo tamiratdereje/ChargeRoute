@@ -8,10 +8,12 @@ class ChargerDto extends Equatable {
   final String address;
   final String phone;
   final double wattage;
+  final bool hasUserRated;
   final double? rating;
+  final String? user;
 
   const ChargerDto(this.id, this.name, this.description, this.address,
-      this.phone, this.wattage, this.rating);
+      this.phone, this.wattage, this.rating, this.hasUserRated, this.user);
 
   factory ChargerDto.fromJson(Map<String, dynamic> json) {
     return ChargerDto(
@@ -22,6 +24,8 @@ class ChargerDto extends Equatable {
       json['phone'],
       (json['wattage'] as double?) ?? -1,
       json['rating']!.toDouble(),
+      json['voted'],
+      json['user'],
     );
   }
 

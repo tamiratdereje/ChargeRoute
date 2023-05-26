@@ -3,6 +3,7 @@ import 'package:charge_station_finder/domain/review/review.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../application/auth/auth_bloc.dart';
 import '../../../domain/charger/charger_detail.dart';
 
 class StationDetail extends StatefulWidget {
@@ -24,13 +25,16 @@ class _StationDetailState extends State<StationDetail> {
     rating: -1,
     wattage: -1,
     reviews: [],
+    hasUserRated: false,
+    user: "",
   );
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          ChargerDetailBloc()..add(ChargerDetailEventLoad("1")),
+      create: (context) => ChargerDetailBloc(
+        chargerRepository: context.read(),
+      )..add(ChargerDetailEventLoad("6464b5757c6df924fab36901")),
       child: BlocConsumer<ChargerDetailBloc, ChargerDetailState>(
         listener: (context, state) {
           isLoaded |= state is ChargerDetailStateLoaded;
@@ -44,6 +48,31 @@ class _StationDetailState extends State<StationDetail> {
           return Scaffold(
             appBar: AppBar(
               title: const Text('Station Detail'),
+              actions: (isLoaded &&
+                      detail.user ==
+                          (context.read<AuthenticationBloc>().state
+                                  as Authenticated)
+                              .userData!
+                              .user
+                              .id)
+                  ? [
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () {
+                          Navigator.of(context).pushNamed('/edit-station');
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () {
+                          context
+                              .read<ChargerDetailBloc>()
+                              .add(ChargerDetailEventDeleteCharger(detail.id));
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ]
+                  : [],
             ),
             body: SingleChildScrollView(
               child: Column(

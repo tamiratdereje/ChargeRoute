@@ -7,24 +7,32 @@ import 'package:http/http.dart' as http;
 
 import '../common/constants.dart';
 import '../common/exceptions/ServerException.dart';
+import '../infrastructure/data-source/local/sharedPrefHelper.dart';
 
 class CustomHttpClient {
   static String baseUrl = Constants.baseUrl;
 
   final http.Client _httpClient = http.Client();
-  String? _authToken;
 
   CustomHttpClient();
 
-  set authToken(String? value) {
-    _authToken = value;
+  Future<String?> getAuthToken() async {
+    try {
+      var userData = await ShardPrefHelper.getUser();
+      debugPrint("Token: ${userData.token}");
+      return userData.token;
+    } catch (e) {
+      debugPrint("Error while getting token: ${e.toString()}");
+      return null;
+    }
   }
 
   Future<http.Response> get(String url,
       {Map<String, String> headers = const {}}) async {
+    var authToken = await getAuthToken();
     Map<String, String> headersWithContentTypeAndAuth = {
       ...headers,
-      if (_authToken != null) 'Authorization': 'Bearer $_authToken'
+      if (authToken != null) 'Authorization': 'Bearer $authToken'
     };
 
     return runInterceptors(_httpClient.get(
@@ -37,10 +45,11 @@ class CustomHttpClient {
       {Map<String, String> headers = const <String, String>{},
       Object? body,
       String contentType = "application/json"}) async {
+    var authToken = await getAuthToken();
     Map<String, String> headersWithContentTypeAndAuth = {
       ...headers,
       'Content-Type': contentType,
-      if (_authToken != null) 'Authorization': 'Bearer $_authToken'
+      if (authToken != null) 'Authorization': 'Bearer $authToken'
     };
 
     return runInterceptors(_httpClient.post(
@@ -54,10 +63,11 @@ class CustomHttpClient {
       {Map<String, String> headers = const {},
       Object? body,
       String contentType = "application/json"}) async {
+    var authToken = await getAuthToken();
     Map<String, String> headersWithContentTypeAndAuth = {
       ...headers,
       'Content-Type': contentType,
-      if (_authToken != null) 'Authorization': 'Bearer $_authToken'
+      if (authToken != null) 'Authorization': 'Bearer $authToken'
     };
 
     return runInterceptors(_httpClient.put(
@@ -71,10 +81,11 @@ class CustomHttpClient {
       {Map<String, String> headers = const {},
       Object? body,
       String contentType = "application/json"}) async {
+    var authToken = await getAuthToken();
     Map<String, String> headersWithContentTypeAndAuth = {
       ...headers,
       'Content-Type': contentType,
-      if (_authToken != null) 'Authorization': 'Bearer $_authToken'
+      if (authToken != null) 'Authorization': 'Bearer $authToken'
     };
 
     return runInterceptors(_httpClient.patch(
@@ -88,10 +99,11 @@ class CustomHttpClient {
       {Map<String, String> headers = const {},
       Object? body,
       String contentType = "application/json"}) async {
+    var authToken = await getAuthToken();
     Map<String, String> headersWithContentTypeAndAuth = {
       ...headers,
       'Content-Type': contentType,
-      if (_authToken != null) 'Authorization': 'Bearer $_authToken'
+      if (authToken != null) 'Authorization': 'Bearer $authToken'
     };
 
     return runInterceptors(_httpClient.delete(
@@ -123,7 +135,7 @@ class CustomHttpClient {
 
   Future<http.Response> interceptForLogging(http.Response response) async {
     var request = response.request;
-    debugPrint('>> ${request?.url}');
+    debugPrint('>> {$request?.method}');
     debugPrint('Headers\n ${request?.headers}');
 
     if (request is http.Request) {
