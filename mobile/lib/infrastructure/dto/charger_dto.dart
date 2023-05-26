@@ -15,13 +15,13 @@ class ChargerDto extends Equatable {
 
   factory ChargerDto.fromJson(Map<String, dynamic> json) {
     return ChargerDto(
-      json['id'],
+      json['_id'],
       json['name'],
       json['description'],
       json['address'],
       json['phone'],
-      json['wattage'],
-      json['rating'],
+      (json['wattage'] as double?) ?? -1,
+      json['rating']!.toDouble(),
     );
   }
 
@@ -33,7 +33,7 @@ class ChargerDto extends Equatable {
       address: address,
       phone: phone,
       wattage: wattage,
-      rating: rating!,
+      rating: 0.0,
     );
   }
 

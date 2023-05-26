@@ -9,6 +9,7 @@ import 'package:charge_station_finder/domain/review/review_repository_interface.
 import 'package:charge_station_finder/infrastructure/dto/charger_dto.dart';
 import 'package:charge_station_finder/utils/custom_http_client.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter/material.dart';
 
 import '../data-source/remote/charger_service.dart';
 
@@ -24,8 +25,17 @@ class ChargerRepositoryImpl extends ChargerRepositoryInterface {
   @override
   Future<Either<Failure, void>> addCharger(ChargerForm form) async {
     try {
-      await remoteChargerSource.addCharger(ChargerDto(null, form.name,
-          form.description, form.address, form.phone, form.wattage, null));
+      await remoteChargerSource.addCharger(
+        ChargerDto(
+          null,
+          form.name,
+          form.description,
+          form.address,
+          form.phone,
+          form.wattage,
+          null,
+        ),
+      );
       return right(null);
     } on ServerException catch (e) {
       return left(Failure(e.message));

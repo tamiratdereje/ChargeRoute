@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../application/auth/auth_bloc.dart';
 import '../../../domain/auth/models/signInFormForm.dart';
 import '../core/widgets/appBar.dart';
@@ -11,6 +12,7 @@ import '../create_station/widgets/inputFieldHeader.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({super.key});
+
   @override
   State<SignIn> createState() => _SignInState();
 }
@@ -29,35 +31,26 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthenticationBloc, AuthenticationState>(
-        listener: (_, state) {
-          if (state is Error) {
-            final snackBar = SnackBar(
-              content: Text(state.message!),
-              backgroundColor: Colors.redAccent,
-            );
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          } else if (state is UserAuthenticated) {
-            const snackBar = SnackBar(
-                backgroundColor: Colors.green, content: Text('Success'));
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
-          } else if(state is AdminAuthenticated){
-            const snackBar = SnackBar(
-                backgroundColor: Colors.green, content: Text('Success'));
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          }
-          else if (state is AuthenticationLoading) {
-            const loading = SnackBar(
-                content: Center(
-              child: CircularProgressIndicator(
-                color: Colors.white,
-              ),
-            ));
-            ScaffoldMessenger.of(context).showSnackBar(loading);
-          }
-        },
-        child: Scaffold(
+    return BlocConsumer<AuthenticationBloc, AuthenticationState>(
+      listener: (_, state) {
+        if (state is Error) {
+          final snackBar = SnackBar(
+            content: Text(state.message!),
+            backgroundColor: Colors.redAccent,
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        } else if (state is UserAuthenticated) {
+          const snackBar =
+              SnackBar(backgroundColor: Colors.green, content: Text('Success'));
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        } else if (state is AdminAuthenticated) {
+          const snackBar =
+              SnackBar(backgroundColor: Colors.green, content: Text('Success'));
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+      },
+      builder: (context, state) {
+        return Scaffold(
           appBar: CHSAppBar.build(context, "Sign In", () {}, false),
           body: SingleChildScrollView(
             child: Padding(
@@ -86,11 +79,17 @@ class _SignInState extends State<SignIn> {
                     const SizedBox(
                       height: 120,
                     ),
-                    PrimaryButton(text: "Sign In", onPressed: dispatchLogin)
+                    Center(
+                        child: state is AuthenticationLoading
+                            ? const CircularProgressIndicator()
+                            : PrimaryButton(
+                                text: "Sign In", onPressed: dispatchLogin))
                   ]),
             ),
           ),
-        ));
+        );
+      },
+    );
   }
 
   void dispatchLogin() {

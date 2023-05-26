@@ -62,24 +62,24 @@ exports.updateChargeStation = async (req, res, next) => {
 // Delete chargeStation_
 exports.deleteChargeStation = async (req, res, next) => {
 
-    try {
-      const getChargeStation = await ChargeStation.findById(req.params.id);
-      if (!getChargeStation)
-        return next(new AppError("There is no idea with the specified id", 400));
-  
-      await ChargeStation.findByIdAndDelete(req.params.id);
-  
-      return res.status(200).json({
-        success: true,
-      });
+  try {
+    const getChargeStation = await ChargeStation.findById(req.params.id);
+    if (!getChargeStation)
+      return next(new AppError("There is no idea with the specified id", 400));
 
-    } catch (error) {
-      next(new AppError("server error", 500));
-    }
-  };
+    await ChargeStation.findByIdAndDelete(req.params.id);
+
+    return res.status(200).json({
+      success: true,
+    });
+
+  } catch (error) {
+    next(new AppError("server error", 500));
+  }
+};
 
 
-  
+
 // get chargeStation_
 exports.getChargeStation = async (req, res, next) => {
 
@@ -97,15 +97,15 @@ exports.getChargeStation = async (req, res, next) => {
       }
       console.log(ratingSum)
 
-      var count = ratings.length
-      if (count === 0) {
-        count = 1;
-      }
+    var count = ratings.length
+    if (count === 0) {
+      count = 1;
+    }
 
-      var voted = false;
-      if (chargeStation.user === req.user_id){
-        voted = true
-      }
+    var voted = false;
+    if (chargeStation.user === req.user_id) {
+      voted = true
+    }
 
       var newObect = {
         _id: chargeStation._id,
@@ -124,23 +124,23 @@ exports.getChargeStation = async (req, res, next) => {
         data: newObect,
       });
 
-    } catch (error) {
-      next(error);
-    }
-  };
-  
-  // get chargeStation_
-  exports.getAllChargeStation = async (_, res, next) => {
+  } catch (error) {
+    next(error);
+  }
+};
 
-    try {
-     const chargeStations = await ChargeStation.find();
+// get chargeStation_
+exports.getAllChargeStation = async (_, res, next) => {
 
-     var output = []
-     for (var chargeStation of chargeStations) {
+  try {
+    const chargeStations = await ChargeStation.find();
 
-      const ratings = await Rating.find({chargeStation : chargeStation._id})
+    var output = []
+    for (var chargeStation of chargeStations) {
+
+      const ratings = await Rating.find({ chargeStation: chargeStation._id })
       var ratingSum = 0;
-      for (var i = 0; i< ratings.length; i++){
+      for (var i = 0; i < ratings.length; i++) {
         ratingSum += ratings[i].rating
       }
       console.log(ratingSum)
@@ -151,7 +151,7 @@ exports.getChargeStation = async (req, res, next) => {
       }
 
       var voted = false;
-      if (chargeStation.user === req.user_id){
+      if (chargeStation.user === req.user_id) {
         voted = true
       }
 
@@ -162,144 +162,144 @@ exports.getChargeStation = async (req, res, next) => {
         phone: chargeStation.phone,
         address: chargeStation.address,
         user: chargeStation.user,
-        rating: ratingSum/count,
+        rating: ratingSum / count,
         voted: voted
       }
       console.log(newObect)
       output.push(newObect);
-      
+
 
     }
 
 
-   return res.status(200).json({
+    return res.status(200).json({
       success: true,
       data: output,
     });
-     
-     // Respond
-     return res.status(200).json({
-        success: true,
-        data: chargeStations,
-      });
-      
-    } catch (error) {
-      next(error);
-    }
-  };
-  
-  
-  exports.getMyChargeStations = async (req, res, next) => {
-    try {
-      const chargeStations = await ChargeStation.find({ user: req.user_id });
-       // Respond
 
-      var output = []
-       for (var chargeStation of chargeStations) {
+    // Respond
+    return res.status(200).json({
+      success: true,
+      data: chargeStations,
+    });
 
-        const ratings = await Rating.find({chargeStation : chargeStation._id})
-        var ratingSum = 0;
-        for (var i = 0; i< ratings.length; i++){
-          ratingSum += ratings[i].rating
-        }
-        console.log(ratingSum)
+  } catch (error) {
+    next(error);
+  }
+};
 
-        var count = ratings.length
-        if (count === 0) {
-          count = 1;
-        }
 
-        var voted = false;
-        if (chargeStation.user === req.user_id){
-          voted = true
-        }
+exports.getMyChargeStations = async (req, res, next) => {
+  try {
+    const chargeStations = await ChargeStation.find({ user: req.user_id });
+    // Respond
 
-        var newObect = {
-          _id: chargeStation._id,
-          name: chargeStation.name,
-          description: chargeStation.description,
-          phone: chargeStation.phone,
-          address: chargeStation.address,
-          user: chargeStation.user,
-          rating: ratingSum/count,
-          voted: voted
-        }
-        console.log(newObect)
-        output.push(newObect);
-        
+    var output = []
+    for (var chargeStation of chargeStations) {
 
+      const ratings = await Rating.find({ chargeStation: chargeStation._id })
+      var ratingSum = 0;
+      for (var i = 0; i < ratings.length; i++) {
+        ratingSum += ratings[i].rating
+      }
+      console.log(ratingSum)
+
+      var count = ratings.length
+      if (count === 0) {
+        count = 1;
       }
 
-
-     return res.status(200).json({
-        success: true,
-        data: output,
-      });
-
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  
-  exports.getNearChargeStations = async (req, res, next) => {
-    try {
-      const {address} = req.body
-
-      if (!address){
-        return next(new AppError("There is no address given", 400));
+      var voted = false;
+      if (chargeStation.user === req.user_id) {
+        voted = true
       }
 
-      const chargeStations = await ChargeStation.find({ address: {$regex: address}});
+      var newObect = {
+        _id: chargeStation._id,
+        name: chargeStation.name,
+        description: chargeStation.description,
+        phone: chargeStation.phone,
+        address: chargeStation.address,
+        user: chargeStation.user,
+        rating: ratingSum / count,
+        voted: voted
+      }
+      console.log(newObect)
+      output.push(newObect);
 
-      var output = []
-       for (var chargeStation of chargeStations) {
 
-        const ratings = await Rating.find({chargeStation : chargeStation._id})
-        var ratingSum = 0;
-        for (var i = 0; i< ratings.length; i++){
-          ratingSum += ratings[i].rating
-        }
-        console.log(ratingSum)
+    }
 
-        var count = ratings.length
-        if (count === 0) {
-          count = 1;
-        }
 
-        var voted = false;
-        if (chargeStation.user === req.user_id){
-          voted = true
-        }
+    return res.status(200).json({
+      success: true,
+      data: output,
+    });
 
-        var newObect = {
-          _id: chargeStation._id,
-          name: chargeStation.name,
-          description: chargeStation.description,
-          phone: chargeStation.phone,
-          address: chargeStation.address,
-          user: chargeStation.user,
-          rating: ratingSum/count,
-          voted: voted
-        }
-        console.log(newObect)
-        output.push(newObect);
-        
+  } catch (error) {
+    next(error);
+  }
+};
 
+
+exports.getNearChargeStations = async (req, res, next) => {
+  try {
+    const { address } = req.body
+
+    if (!address) {
+      return next(new AppError("There is no address given", 400));
+    }
+
+    const chargeStations = await ChargeStation.find({ address: { $regex: address } });
+
+    var output = []
+    for (var chargeStation of chargeStations) {
+
+      const ratings = await Rating.find({ chargeStation: chargeStation._id })
+      var ratingSum = 0;
+      for (var i = 0; i < ratings.length; i++) {
+        ratingSum += ratings[i].rating
+      }
+      console.log(ratingSum)
+
+      var count = ratings.length
+      if (count === 0) {
+        count = 1;
       }
 
+      var voted = false;
+      if (chargeStation.user === req.user_id) {
+        voted = true
+      }
 
-     return res.status(200).json({
-        success: true,
-        data: output,
-      });
+      var newObect = {
+        _id: chargeStation._id,
+        name: chargeStation.name,
+        description: chargeStation.description,
+        phone: chargeStation.phone,
+        address: chargeStation.address,
+        user: chargeStation.user,
+        rating: ratingSum / count,
+        voted: voted
+      }
+      console.log(newObect)
+      output.push(newObect);
 
-    } catch (error) {
-      next(error);
+
     }
-  };
 
-  
+
+    return res.status(200).json({
+      success: true,
+      data: output,
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+
 
 
 
@@ -307,7 +307,7 @@ exports.getChargeStation = async (req, res, next) => {
 exports.rateChargeStation = async (req, res, next) => {
 
   req.body.user = req.user_id;
-  
+
   if (!req.body) {
     return next(new AppError("Request body is missing", 400));
   }
@@ -315,7 +315,7 @@ exports.rateChargeStation = async (req, res, next) => {
 
   try {
 
-    const prevRating = await Rating.findOne( {chargeStation : req.body.chargeStation, user : req.body.user});
+    const prevRating = await Rating.findOne({ chargeStation: req.body.chargeStation, user: req.body.user });
 
     if (prevRating) {
       return next(new AppError("You have already rated this one"))
@@ -361,7 +361,7 @@ exports.unRateChargeStation = async (req, res, next) => {
 
     chargeStation.rating
 
-    
+
 
     return res.status(200).json({
       data: rating,
@@ -376,12 +376,12 @@ exports.unRateChargeStation = async (req, res, next) => {
 exports.commentChargeStation = async (req, res, next) => {
 
   const comment = {
-    "commentor" : req.user_id,
-    "description" : req.body.description,
-    "chargeStation" : req.body.chargeStation
+    "commentor": req.user_id,
+    "description": req.body.description,
+    "chargeStation": req.body.chargeStation
   }
 
-  if (!req.body.chargeStation || req.body.description ) {
+  if (!req.body.chargeStation || req.body.description) {
     return next(new AppError("Request body is missing", 400));
   }
 
