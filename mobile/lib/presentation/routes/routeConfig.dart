@@ -1,3 +1,4 @@
+import 'package:charge_station_finder/application/admin/admin_bloc.dart';
 import 'package:charge_station_finder/presentation/pages/admin/admin_add_users.dart';
 import 'package:charge_station_finder/presentation/pages/admin/admin_edit_users.dart';
 import 'package:charge_station_finder/presentation/pages/admin/admin_home_page.dart';
@@ -10,15 +11,16 @@ import 'package:go_router/go_router.dart';
 import '../../application/auth/auth_bloc.dart';
 
 class RouterMain extends StatelessWidget {
-  final AuthBloc authenticationBloc;
+  // final AuthBloc authenticationBloc;
+  final AdminBloc adminBloc;
   late final GoRouter _router;
   String? redirector(state) {
     return null;
   }
 
-  RouterMain({required this.authenticationBloc, Key? key}) : super(key: key) {
+  RouterMain({required this.adminBloc, Key? key}) : super(key: key) {
     _router = GoRouter(
-      // redirect: (context, state) => redirector(state),
+      redirect: (context, state) => redirector(state),
 
       routes: <GoRoute>[
         GoRoute(
