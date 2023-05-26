@@ -25,8 +25,17 @@ class ChargerRepositoryImpl extends ChargerRepositoryInterface {
   @override
   Future<Either<Failure, void>> addCharger(ChargerForm form) async {
     try {
-      await remoteChargerSource.addCharger(ChargerDto(null, form.name,
-          form.description, form.address, form.phone, form.wattage, null));
+      await remoteChargerSource.addCharger(
+        ChargerDto(
+          null,
+          form.name,
+          form.description,
+          form.address,
+          form.phone,
+          form.wattage,
+          null,
+        ),
+      );
       return right(null);
     } on ServerException catch (e) {
       return left(Failure(e.message));

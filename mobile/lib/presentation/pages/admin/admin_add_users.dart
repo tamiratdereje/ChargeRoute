@@ -2,9 +2,11 @@ import 'package:charge_station_finder/presentation/pages/core/widgets/appBar.dar
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../application/admin/admin_bloc.dart';
 import '../../../domain/admin/admin_model.dart';
+import '../../routes/routes.dart';
 import '../core/widgets/formField.dart';
 import '../core/widgets/primaryButton.dart';
 import '../create_station/widgets/inputFieldHeader.dart';
@@ -35,6 +37,8 @@ class _AdminAddUserState extends State<AdminAddUser> {
               backgroundColor: Colors.green,
             ),
           );
+          context.go(AppRoutes.BOTTOMNAVADMINPAGE);
+
         } else if (state is AdminFailureState) {
           
           ScaffoldMessenger.of(context).showSnackBar(
@@ -106,11 +110,7 @@ class _AdminAddUserState extends State<AdminAddUser> {
                 PrimaryButton(
                     text: "Create",
                     onPressed: () {
-                      print(_fullNameController.text);
-                      print(  _emailController.text);
-                      print(  _roleController.text);
-                      print(_passwordController.text);
-                      print("he\n\n\n\n\n\n\n\n\n\n\n\n\re");
+                      
     
                       BlocProvider.of<AdminBloc>(context).add(AdminCreateUserEvent(
                         adminDomain: AdminDomain(
