@@ -1,14 +1,18 @@
+import 'package:charge_station_finder/application/auth/auth_bloc.dart';
 import 'package:charge_station_finder/application/home/home_bloc.dart';
 import 'package:charge_station_finder/presentation/pages/core/widgets/appBar.dart';
 import 'package:charge_station_finder/presentation/pages/home/widgets/charger_tile.dart';
 import 'package:charge_station_finder/presentation/pages/home/widgets/filter_dialog.dart';
 import 'package:charge_station_finder/presentation/pages/home/widgets/nearby_header.dart';
 import 'package:charge_station_finder/presentation/pages/home/widgets/searchField.dart';
+import 'package:charge_station_finder/presentation/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class HomePage extends StatefulWidget {
   static const String route = "/home";
+
   const HomePage({super.key});
 
   @override
@@ -25,10 +29,15 @@ class _HomePageState extends State<HomePage> {
       builder: (context, state) {
         return Scaffold(
           appBar: CHSAppBar.build(context, "Home", () {}, false),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {},
-            child: const Icon(Icons.add),
-          ),
+          floatingActionButton: (context.read<AuthenticationBloc>().state
+                  is AuthenticationStateUserAuthenticated)
+              ? null
+              : FloatingActionButton(
+                  onPressed: () {
+                    context.push(AppRoutes.AddStation);
+                  },
+                  child: const Icon(Icons.add),
+                ),
           body: Column(
             children: [
               SearchField(
@@ -78,11 +87,11 @@ class _HomePageState extends State<HomePage> {
                     return ListView.builder(
                       itemBuilder: (context, index) {
                         return ChargerTile(
-                          name: state.results[index].name,
-                          address: state.results[index].address,
-                          rating: state.results[index].rating,
-                          wattage: state.results[index].wattage,
-                        );
+                            name: state.results[index].name,
+                            address: state.results[index].address,
+                            rating: state.results[index].rating,
+                            wattage: state.results[index].wattage,
+                            id: state.results[index].id);
                       },
                       itemCount: state.results.length,
                       shrinkWrap: true,

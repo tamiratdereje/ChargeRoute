@@ -40,22 +40,19 @@ class RouterMain extends StatelessWidget {
         return null;
       }
       return AppRoutes.Login;
-    } else if (authState is AuthenticationStateUserAuthenticated) {
-      if (userOnlyRoutes.contains(state.location)) {
-        return null;
-      }
-      if (state.location == AppRoutes.Home) {
+    }
+    if (authState is AuthenticationStateUserAuthenticated) {
+      if (state.location == AppRoutes.Home ||
+          state.location == AppRoutes.Login) {
         return AppRoutes.UserAndProviderHomePage;
       }
-      return AppRoutes.UserAndProviderHomePage;
+      return null;
     } else if (authState is AuthenticationStateProviderAuthenticated) {
-      if (providerOnlyRoutes.contains(state.location)) {
-        return null;
-      }
-      if (state.location == AppRoutes.Home) {
+      if (state.location == AppRoutes.Home ||
+          state.location == AppRoutes.Login) {
         return AppRoutes.UserAndProviderHomePage;
       }
-      return AppRoutes.UserAndProviderHomePage;
+      return null;
     }
   }
 
@@ -104,8 +101,10 @@ class RouterMain extends StatelessWidget {
         ),
         GoRoute(
           path: AppRoutes.StationDetails,
+          name: AppRoutes.StationDetails,
           pageBuilder: (context, state) {
-            return const MaterialPage(child: StationDetail());
+            return MaterialPage(
+                child: StationDetail(id: state.queryParameters["id"]!));
           },
         ),
         GoRoute(
