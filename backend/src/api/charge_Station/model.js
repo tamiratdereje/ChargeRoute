@@ -50,7 +50,8 @@ const ChargeStationSchema = new mongoose.Schema({
 ChargeStationSchema.virtual('comments', {
   ref: 'Comment',
   localField: '_id',
-  foreignField: 'chargeStation'
+  foreignField: 'chargeStation',
+  justOne: false
 });
 
 const RatingSchema = new mongoose.Schema({
