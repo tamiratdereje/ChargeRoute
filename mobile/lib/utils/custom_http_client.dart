@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 
 import '../common/constants.dart';
 import '../common/exceptions/ServerException.dart';
+import '../infrastructure/data-source/local/sharedPrefHelper.dart';
 
 class CustomHttpClient {
   static String baseUrl = Constants.baseUrl;
@@ -37,12 +38,18 @@ class CustomHttpClient {
       {Map<String, String> headers = const <String, String>{},
       Object? body,
       String contentType = "application/json"}) async {
+    var userData = await ShardPrefHelper.getUser();
+    debugPrint("Logged in user" + userData.toString());
+    if (userData != null) {
+      _authToken = userData.token;
+    }
+    debugPrint((_authToken != null).toString());
     Map<String, String> headersWithContentTypeAndAuth = {
       ...headers,
       'Content-Type': contentType,
       if (_authToken != null) 'Authorization': 'Bearer $_authToken'
     };
-    debugPrint(baseUrl + url);
+
     return runInterceptors(_httpClient.post(
       (baseUrl + url).asUri,
       headers: headersWithContentTypeAndAuth,
@@ -93,7 +100,7 @@ class CustomHttpClient {
       'Content-Type': contentType,
       if (_authToken != null) 'Authorization': 'Bearer $_authToken'
     };
-    
+
     return runInterceptors(_httpClient.delete(
       (baseUrl + url).asUri,
       headers: headersWithContentTypeAndAuth,

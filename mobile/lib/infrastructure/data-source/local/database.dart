@@ -19,6 +19,7 @@ class CRDatabase {
   }
 
   static Future<void> createTables(Database database) async {
+    await database.execute("PRAGMA foreign_keys = ON");
     await database.execute("""CREATE TABLE chargers(
         id VARCHAR PRIMARY KEY ,
         name VARCHAR,
@@ -27,6 +28,16 @@ class CRDatabase {
         phone VARCHAR,
         wattage DOUBLE,
         rating DOUBLE
+      )
+      """);
+    await database.execute("""
+      CREATE TABLE reviews(
+        id VARCHAR PRIMARY KEY ,
+        chargerId VARCHAR,
+        userId VARCHAR,
+        rating DOUBLE,
+        comment VARCHAR,
+        FOREIGN KEY(chargerId) REFERENCES chargers(id) ON DELETE CASCADE,
       )
       """);
   }
@@ -42,8 +53,14 @@ class CRDatabase {
 
   static Future<List<Charger>> getChargers(String query) async {
     final Database db = await instance;
-    List<Map<String, dynamic>> result = await db.rawQuery(
-        "SELECT * FROM chargers WHERE name LIKE '%$query%' OR address LIKE '%$query%'");
+    // get chargers with their corresponding reviews
+    List<Map<String, dynamic>> result =   await db.rawQuery("""
+      SELECT chargers.id, chargers.name, chargers.address, chargers.description, chargers.phone, chargers.wattage, chargers.rating, reviews.rating as reviewRating, reviews.comment as reviewComment
+      FROM chargers
+      LEFT JOIN reviews ON chargers.id = reviews.chargerId
+      WHERE chargers.address LIKE '%$query%'
+      """);
+      
     return result.map((e) => ChargerDto.fromDb(e).toDomain()).toList();
   }
 
@@ -57,4 +74,6 @@ class CRDatabase {
     final Database db = await instance;
     db.close();
   }
+
+
 }

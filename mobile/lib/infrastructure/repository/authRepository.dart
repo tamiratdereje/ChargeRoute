@@ -2,7 +2,6 @@ import 'package:charge_station_finder/application/core/failure.dart';
 import 'package:charge_station_finder/domain/auth/models/noReturn.dart';
 import 'package:charge_station_finder/domain/auth/models/signInFormForm.dart';
 import 'package:charge_station_finder/domain/auth/models/signUpForm.dart';
-import 'package:charge_station_finder/infrastructure/core/constants.dart';
 import 'package:charge_station_finder/infrastructure/dto/SignInDto.dart';
 import 'package:charge_station_finder/infrastructure/dto/userAuthCredential.dart';
 import 'package:charge_station_finder/domain/contracts/IAuthRepository.dart';
@@ -29,10 +28,13 @@ class AuthenticationRepository extends IAuthenticationRepository {
 
   @override
   Future<Either<Failure, UserData>> getUserAuthCredential() async {
-    try{
+    try {
       var response = await ShardPrefHelper.getUser();
+      if (response == null) {
+        return Future.value(Left(CacheFailure(message: "User not found")));
+      }
       return Future.value(Right(response));
-    }catch(e){
+    } catch (e) {
       debugPrint(e.toString());
       return Future.value(Left(CacheFailure(message: e.toString())));
     }
@@ -42,7 +44,9 @@ class AuthenticationRepository extends IAuthenticationRepository {
   Future<Either<Failure, UserData>> login(
       {required SignInForm signInForm}) async {
     try {
-      var response = await _authenticationService.signIn(SignInDto.fromForm(signInForm));
+      var response =
+          await _authenticationService.signIn(SignInDto.fromForm(signInForm));
+      await ShardPrefHelper.setUser(response);
       return Future.value(Right(response));
     } catch (e) {
       debugPrint(e.toString());
@@ -65,7 +69,8 @@ class AuthenticationRepository extends IAuthenticationRepository {
   Future<Either<Failure, NoReturns>> signUp(
       {required SignUpForm signUpForm}) async {
     try {
-      var response = await _authenticationService.signUp(SignUpDto.fromForm(signUpForm));
+      var response =
+          await _authenticationService.signUp(SignUpDto.fromForm(signUpForm));
       return Future.value(Right(response));
     } catch (e) {
       return Future.value(Left(ServerFailure(message: e.toString())));
