@@ -253,7 +253,9 @@ exports.getNearChargeStations = async (req, res, next) => {
       return next(new AppError("There is no address given", 400));
     }
 
-    const chargeStations = await ChargeStation.find({ address: { $regex: address } });
+    const chargeStations = await ChargeStation.find({ address: { $regex: address } }).populate({
+      path:'comments'
+    });
 
     var output = []
     for (var chargeStation of chargeStations) {
@@ -282,7 +284,8 @@ exports.getNearChargeStations = async (req, res, next) => {
         address: chargeStation.address,
         user: chargeStation.user,
         rating: ratingSum / count,
-        voted: voted
+        voted: voted,
+        comments: chargeStation.comments
       }
       console.log(newObect)
       output.push(newObect);
