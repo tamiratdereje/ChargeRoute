@@ -116,7 +116,8 @@ exports.getChargeStation = async (req, res, next) => {
         address: chargeStation.address,
         user: chargeStation.user,
         rating: ratingSum/count,
-        voted: voted
+        voted: voted,
+        comments: chargeStation.comments
       }
    
       return res.status(200).json({
@@ -382,7 +383,7 @@ exports.commentChargeStation = async (req, res, next) => {
     "chargeStation": req.body.chargeStation
   }
 
-  if (!req.body.chargeStation || req.body.description) {
+  if (!req.body.chargeStation || !req.body.description) {
     return next(new AppError("Request body is missing", 400));
   }
 
@@ -390,7 +391,6 @@ exports.commentChargeStation = async (req, res, next) => {
   try {
     // create comment
     const createComment = await Comment.create(comment);
-
     return res.status(200).json({
       data: createComment,
       success: true,
