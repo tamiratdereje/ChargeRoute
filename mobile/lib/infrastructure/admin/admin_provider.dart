@@ -5,17 +5,26 @@ import 'dart:convert';
 import 'package:charge_station_finder/infrastructure/admin/admin_dto.dart';
 import 'package:http/http.dart' as http;
 
+import '../../common/constants.dart';
+import '../data-source/local/sharedPrefHelper.dart';
+
 
 class AdminProvider {
-  final String baseUrl = "http://localhost:4500/api/v1/user";
-  final String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NjRiMTIzMjY4OTJjZTQ0OGE0YWUyYSIsImlhdCI6MTY4NDk4NDc2NCwiZXhwIjoxNjg3NTc2NzY0fQ.YCguBsZeIf7fACYrz3qcsShFjF7JYZnv60QYrkvyHfY";
+  static String baseUrl = Constants.baseUrl;
+  
+
+  
+  // final String baseUrl = "http://localhost:4500/api/v1/user";
   http.Client client = http.Client();
 
   Future<void> createUser(AdminModel adminModel) async {
+
+    var userData = await ShardPrefHelper.getUser();
+    var authToken = userData!.token;
     print(adminModel.toJson());
     
-    final response = await client.post(Uri.parse(baseUrl),
-    headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8',  "token": token},
+    final response = await client.post(Uri.parse("$baseUrl/user"),
+    headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8',  'Authorization': 'Bearer $authToken'},
     body: jsonEncode(adminModel)
     );
 
@@ -29,10 +38,12 @@ class AdminProvider {
   }
 
   Future<AdminModel> editUser(AdminModel adminModel) async {
+    var userData = await ShardPrefHelper.getUser();
+    var authToken = userData!.token;
 
     String id = adminModel.id!;
-    final response = await client.put(Uri.parse("$baseUrl/update/$id"),
-    headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8',  "token": token},
+    final response = await client.put(Uri.parse("$baseUrl/user/update/$id"),
+    headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8', 'Authorization': 'Bearer $authToken'},
     body: jsonEncode(adminModel)
     );
 
@@ -44,25 +55,28 @@ class AdminProvider {
   }
 
   Future<void> deleteUser(String id) async {
+      var userData = await ShardPrefHelper.getUser();
+      var authToken = userData!.token;
 
-      final response = await client.delete(Uri.parse("$baseUrl/$id"),
-        headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8',  "token": token},
+      final response = await client.delete(Uri.parse("$baseUrl/user/$id"),
+        headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8', 'Authorization': 'Bearer $authToken'},
       );     
 
       if (response.statusCode != 200){
         throw Exception('failed to delete');
       } 
     }
-
  
 
     Future<List<AdminModel>> getUsers() async {
 
       try {
+        var userData = await ShardPrefHelper.getUser();
+        var authToken = userData!.token;
         
         final response = await client
-            .get(Uri.parse("$baseUrl/all"),
-             headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8',  "token": token},
+            .get(Uri.parse("$baseUrl/user/all"),
+             headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8',  'Authorization': 'Bearer $authToken'},
              );
         
       final json =jsonDecode(response.body);
@@ -80,10 +94,12 @@ class AdminProvider {
 
 
     Future<AdminModel> getUser(String id) async {
+        var userData = await ShardPrefHelper.getUser();
+        var authToken = userData!.token;
 
         final response = await client
-            .get(Uri.parse("$baseUrl/$id"),
-             headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8',  "token": token},
+            .get(Uri.parse("$baseUrl/user/$id"),
+             headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8', 'Authorization': 'Bearer $authToken'},
              );
 
         if (response.statusCode == 200) {
