@@ -89,13 +89,16 @@ exports.getChargeStation = async (req, res, next) => {
     });
     var ratingSum = 0;
 
-    const ratings = await Rating.find({ chargeStation: chargeStation._id })
-    var ratingSum = 0;
-
-    for (var i = 0; i < ratings.length; i++) {
-      ratingSum += ratings[i].rating
-    }
-    console.log(ratingSum)
+      const ratings = await Rating.find({chargeStation : chargeStation._id})
+      var ratingSum = 0;
+      var voted = -1;
+      for (var i = 0; i< ratings.length; i++){
+        ratingSum += ratings[i].rating
+        if (ratings[i].user === req.user_id){
+          voted = ratings[i].rating
+        }
+      }
+      console.log(ratingSum)
 
     var count = ratings.length
     if (count === 0) {
@@ -138,11 +141,15 @@ exports.getAllChargeStation = async (_, res, next) => {
 
     var output = []
     for (var chargeStation of chargeStations) {
-
+      var voted = -1;
       const ratings = await Rating.find({ chargeStation: chargeStation._id })
       var ratingSum = 0;
       for (var i = 0; i < ratings.length; i++) {
         ratingSum += ratings[i].rating
+
+        if (ratings[i].user === req.user_id){
+          voted = ratings[i].rating
+        }
       }
       console.log(ratingSum)
 
@@ -151,10 +158,7 @@ exports.getAllChargeStation = async (_, res, next) => {
         count = 1;
       }
 
-      var voted = false;
-      if (chargeStation.user === req.user_id) {
-        voted = true
-      }
+
 
       var newObect = {
         _id: chargeStation._id,
@@ -200,8 +204,12 @@ exports.getMyChargeStations = async (req, res, next) => {
 
       const ratings = await Rating.find({ chargeStation: chargeStation._id })
       var ratingSum = 0;
+      var voted = -1;
       for (var i = 0; i < ratings.length; i++) {
         ratingSum += ratings[i].rating
+        if (ratings[i].user === req.user_id){
+          voted = ratings[i].rating
+        }
       }
       console.log(ratingSum)
 
@@ -210,10 +218,7 @@ exports.getMyChargeStations = async (req, res, next) => {
         count = 1;
       }
 
-      var voted = false;
-      if (chargeStation.user === req.user_id) {
-        voted = true
-      }
+
 
       var newObect = {
         _id: chargeStation._id,
@@ -258,19 +263,18 @@ exports.getNearChargeStations = async (req, res, next) => {
 
       const ratings = await Rating.find({ chargeStation: chargeStation._id })
       var ratingSum = 0;
+      var voted = -1;
       for (var i = 0; i < ratings.length; i++) {
         ratingSum += ratings[i].rating
+        if (ratings[i].user === req.user_id){
+          voted = ratings[i].rating
+        }
       }
       console.log(ratingSum)
 
       var count = ratings.length
       if (count === 0) {
         count = 1;
-      }
-
-      var voted = false;
-      if (chargeStation.user === req.user_id) {
-        voted = true
       }
 
       var newObect = {
