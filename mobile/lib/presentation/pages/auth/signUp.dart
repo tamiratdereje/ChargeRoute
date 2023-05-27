@@ -8,6 +8,7 @@ import '../core/widgets/primaryButton.dart';
 import '../create_station/widgets/inputFieldHeader.dart';
 
 class SignUp extends StatefulWidget {
+  static const String route = "/signUp";
   const SignUp({super.key});
 
   @override

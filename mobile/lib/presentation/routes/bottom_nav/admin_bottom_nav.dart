@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BottomNavAdminPage extends StatefulWidget {
+   static const String route = "/admin_bottom_nav";
+
   List<Widget> pages = [
     const AdminHomePage(),
     const AdminAddUser(),
