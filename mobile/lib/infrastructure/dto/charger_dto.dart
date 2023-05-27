@@ -47,16 +47,18 @@ class ChargerDto extends Equatable {
     );
   }
 
-  factory ChargerDto.fromDb(Map<String,dynamic> queryResult){
+  factory ChargerDto.fromDb(Map<String, dynamic> queryResult) {
     return ChargerDto(
-      queryResult['id'],
-      queryResult['name'],
-      queryResult['description'],
-      queryResult['address'],
-      queryResult['phone'],
-      queryResult['wattage'],
-      queryResult['rating'],
-    );
+        queryResult['id'],
+        queryResult['name'],
+        queryResult['description'],
+        queryResult['address'],
+        queryResult['phone'],
+        queryResult['wattage'],
+        queryResult['rating'],
+        queryResult['voted'],
+        queryResult['user'],
+        queryResult['reviews'].map((e) => e.fromDb()).toList(growable: true));
   }
 
   Charger toDomain() {

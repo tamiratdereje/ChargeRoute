@@ -34,7 +34,7 @@ class RouterMain extends StatelessWidget {
     ];
 
     const providerOnlyRoutes = [AppRoutes.AddStation, ...userOnlyRoutes];
-
+    debugPrint(authState.toString());
     if (authState is AuthenticationStateUnauthenticated) {
       if (unauthenticatedRoutes.contains(state.location)) {
         return null;
@@ -115,6 +115,7 @@ class RouterMain extends StatelessWidget {
             return MaterialPage(child: BottomNavPage());
           },
         ),
+        
       ],
     );
   }

@@ -1,6 +1,9 @@
 import 'package:charge_station_finder/domain/charger/charger.dart';
 import 'package:charge_station_finder/infrastructure/dto/charger_dto.dart';
+import 'package:flutter/widgets.dart';
 import 'package:sqflite/sqflite.dart';
+
+import '../../dto/review_dto.dart';
 
 class CRDatabase {
   static Future<Database> get instance async {
@@ -11,7 +14,7 @@ class CRDatabase {
   static Future<Database> db() async {
     return openDatabase(
       'ChargeRoute.db',
-      version: 1,
+      version: 3,
       onCreate: (Database database, int version) async {
         await createTables(database);
       },
@@ -27,8 +30,8 @@ class CRDatabase {
         description VARCHAR,
         phone VARCHAR,
         wattage DOUBLE,
-        rating DOUBLE
-      )
+        rating DOUBLE,
+        voted INTEGER, )
       """);
     await database.execute("""
       CREATE TABLE reviews(
@@ -37,7 +40,7 @@ class CRDatabase {
         userId VARCHAR,
         rating DOUBLE,
         comment VARCHAR,
-        FOREIGN KEY(chargerId) REFERENCES chargers(id) ON DELETE CASCADE,
+        FOREIGN KEY(chargerId) REFERENCES chargers(id) ON DELETE CASCADE
       )
       """);
   }
@@ -54,14 +57,28 @@ class CRDatabase {
   static Future<List<Charger>> getChargers(String query) async {
     final Database db = await instance;
     // get chargers with their corresponding reviews
-    List<Map<String, dynamic>> result =   await db.rawQuery("""
-      SELECT chargers.id, chargers.name, chargers.address, chargers.description, chargers.phone, chargers.wattage, chargers.rating, reviews.rating as reviewRating, reviews.comment as reviewComment
-      FROM chargers
-      LEFT JOIN reviews ON chargers.id = reviews.chargerId
-      WHERE chargers.address LIKE '%$query%'
-      """);
-      
-    return result.map((e) => ChargerDto.fromDb(e).toDomain()).toList();
+    List<Map<String, dynamic>> chargerMaps = await db
+        .query('chargers', where: 'address LIKE ?', whereArgs: ['%$query%']);
+    debugPrint(' Charger Maps :$chargerMaps');
+
+
+    
+
+    // get reviews for each charger map
+    for (var chargerMap in chargerMaps) {
+      final List<Map<String, dynamic>> reviewMaps = await db.query('reviews',
+          where: 'chargerId = ?', whereArgs: [chargerMap['id']]);
+
+      debugPrint(' Review Maps :$reviewMaps');
+      // set reviews for each charger map
+    }
+    // convert charger maps to charger objects
+    if (chargerMaps.isNotEmpty) {
+      return chargerMaps
+          .map((chargerMap) => ChargerDto.fromDb(chargerMap).toDomain())
+          .toList(growable: false);
+    }
+    return <Charger>[];
   }
 
   static Future<void> deleteChargers() async {
@@ -69,11 +86,17 @@ class CRDatabase {
     await db.delete('chargers');
   }
 
+  static Future<void> insertReviews(List<Map<String, dynamic>> reviews) async {
+    final Database db = await instance;
+    reviews.forEach((review) async {
+      await db.insert('reviews', review,
+          conflictAlgorithm: ConflictAlgorithm.replace);
+    });
+  }
+
   // close the database
   static Future<void> close() async {
     final Database db = await instance;
     db.close();
   }
-
-
 }

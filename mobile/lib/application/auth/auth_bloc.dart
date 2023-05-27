@@ -63,7 +63,19 @@ class AuthenticationBloc
       Emitter<AuthenticationState> emit) async {
     final failureOrAuthCredential =
         await authRepository.getUserAuthCredential();
-    emit(_eitherLoginOrError(failureOrAuthCredential));
+    emit(_eitherAuthenticatedOrUnAuthenticated(failureOrAuthCredential));
+  }
+
+  AuthenticationState _eitherAuthenticatedOrUnAuthenticated(
+      Either<Failure, UserData> failureOrAuthCredential) {
+    return failureOrAuthCredential.fold(
+        (failure) => AuthenticationStateUnauthenticated(),
+        (authCredential) => authCredential.user.role == 'admin'
+            ? AuthenticationStateAdminAuthenticated(userData: authCredential)
+            : authCredential.user.role == 'user'
+                ? AuthenticationStateUserAuthenticated(userData: authCredential)
+                : AuthenticationStateProviderAuthenticated(
+                    userData: authCredential));
   }
 
   AuthenticationState _eitherLoginOrError(
