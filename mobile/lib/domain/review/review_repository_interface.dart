@@ -8,5 +8,5 @@ abstract class ReviewRepositoryInterface {
   Future<Either<Failure, void>> editReview(
       String content, String reviewId, String chargerId);
 
-  Future<Either<Failure, void>> deleteReview(String chargerId, String reviewId);
+  Future<Either<Failure, void>> deleteReview(String reviewId);
 }

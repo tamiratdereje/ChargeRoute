@@ -35,23 +35,33 @@ class ChargerDetailBloc extends Bloc<ChargerDetailEvent, ChargerDetailState> {
 
     on<ChargerDetailEventDeleteReview>((event, emit) async {
       emit(ChargerDetailStateLoading());
-      chargerDetail = chargerDetail!.copyWith(
-          reviews: chargerDetail!.reviews
-              .where((element) => element.id != event.reviewId)
-              .toList());
-      emit(ChargerDetailStateReviewDeleted(chargerDetail!));
+      var res = await reviewRepository.deleteReview(event.reviewId);
+
+      res.fold((l) => emit(ChargerDetailStateError(l.message)), (r) {
+        chargerDetail = chargerDetail!.copyWith(
+            reviews: chargerDetail!.reviews
+                .where((element) => element.id != event.reviewId)
+                .toList());
+        emit(ChargerDetailStateReviewDeleted(chargerDetail!));
+      });
     });
 
     on<ChargerDetailEventUpdateReview>((event, emit) async {
       emit(ChargerDetailStateLoading());
-      chargerDetail = chargerDetail!.copyWith(
-          reviews: chargerDetail!.reviews.map((element) {
-        if (element.id != event.reviewId)
-          return element;
-        else
-          return element.copyWith(content: event.content);
-      }).toList());
-      emit(ChargerDetailStateReviewUpdated(chargerDetail!));
+      var res = await reviewRepository.editReview(
+          event.content, event.reviewId, chargerDetail!.id);
+
+      res.fold((l) => emit(ChargerDetailStateError(l.message)), (r) {
+        chargerDetail = chargerDetail!.copyWith(
+            reviews: chargerDetail!.reviews.map((element) {
+          if (element.id != event.reviewId) {
+            return element;
+          } else {
+            return element.copyWith(content: event.content);
+          }
+        }).toList());
+        emit(ChargerDetailStateReviewUpdated(chargerDetail!));
+      });
     });
 
     on<ChargerDetailEventLoad>((event, emit) async {

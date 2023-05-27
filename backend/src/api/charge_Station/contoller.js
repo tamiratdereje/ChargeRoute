@@ -74,6 +74,7 @@ exports.deleteChargeStation = async (req, res, next) => {
     });
 
   } catch (error) {
+    console.log(error);
     next(new AppError("server error", 500));
   }
 };

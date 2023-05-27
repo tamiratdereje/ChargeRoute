@@ -35,10 +35,9 @@ class ReviewRepositoryImpl extends ReviewRepositoryInterface {
   }
 
   @override
-  Future<Either<Failure, void>> deleteReview(
-      String chargerId, String reviewId) async {
+  Future<Either<Failure, void>> deleteReview(String reviewId) async {
     try {
-      await remoteReviewSource.deleteReview(chargerId, reviewId);
+      await remoteReviewSource.deleteReview(reviewId);
       return right(null);
     } on ServerException catch (e) {
       return left(Failure(e.message));

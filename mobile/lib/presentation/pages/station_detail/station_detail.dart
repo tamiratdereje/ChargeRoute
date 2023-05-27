@@ -250,29 +250,35 @@ class _ReviewCardState extends State<ReviewCard> {
                       ),
                     ],
                   ),
-                  PopupMenuButton(
-                    itemBuilder: (context) {
-                      return [
-                        if (widget.currentEditReviewId == null)
+                  if ((context.read<AuthenticationBloc>().state
+                              as Authenticated)
+                          .userData!
+                          .user
+                          .id ==
+                      widget.review.userId)
+                    PopupMenuButton(
+                      itemBuilder: (context) {
+                        return [
+                          if (widget.currentEditReviewId == null)
+                            const PopupMenuItem(
+                              value: 1,
+                              child: Text("Edit"),
+                            ),
                           const PopupMenuItem(
-                            value: 1,
-                            child: Text("Edit"),
+                            value: 2,
+                            child: Text("Delete"),
                           ),
-                        const PopupMenuItem(
-                          value: 2,
-                          child: Text("Delete"),
-                        ),
-                      ];
-                    },
-                    onSelected: (value) {
-                      if (value == 1) {
-                        editReviewController.text = widget.review.content;
-                        widget.setEditReviewId(widget.review.id);
-                      } else if (value == 2) {
-                        widget.onDeleteReview();
-                      }
-                    },
-                  )
+                        ];
+                      },
+                      onSelected: (value) {
+                        if (value == 1) {
+                          editReviewController.text = widget.review.content;
+                          widget.setEditReviewId(widget.review.id);
+                        } else if (value == 2) {
+                          widget.onDeleteReview();
+                        }
+                      },
+                    )
                 ],
               ),
               const SizedBox(height: 8),
