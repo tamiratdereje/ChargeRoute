@@ -17,7 +17,8 @@ class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   final IAuthenticationRepository authRepository;
 
-  AuthenticationBloc({required this.authRepository}) : super(Empty()) {
+  AuthenticationBloc({required this.authRepository})
+      : super(AuthenticationStateInitial()) {
     on<SignUpEvent>(_onSignUp);
     on<LoginEvent>(_onLogin);
     on<LogoutEvent>(_onLogout);
@@ -25,7 +26,7 @@ class AuthenticationBloc
     on<GetUserAuthCredentialEvent>(_onGetUser);
   }
 
-  AuthenticationState get initialState => Empty();
+  AuthenticationState get initialState => AuthenticationStateInitial();
 
   void _onLogin(LoginEvent event, Emitter<AuthenticationState> emit) async {
     emit(AuthenticationLoading());
@@ -68,27 +69,31 @@ class AuthenticationBloc
   AuthenticationState _eitherLoginOrError(
       Either<Failure, UserData> failureOrAuthCredential) {
     return failureOrAuthCredential.fold(
-        (failure) => Error(message: _mapFailureToMessage(failure)),
+        (failure) =>
+            AuthenticationStateError(message: _mapFailureToMessage(failure)),
         (authCredential) => authCredential.user.role == 'admin'
-            ? AdminAuthenticated(userData: authCredential)
+            ? AuthenticationStateAdminAuthenticated(userData: authCredential)
             : authCredential.user.role == 'user'
-                ? UserAuthenticated(userData: authCredential)
-                : ProviderAuthenticated(userData: authCredential));
+                ? AuthenticationStateUserAuthenticated(userData: authCredential)
+                : AuthenticationStateProviderAuthenticated(
+                    userData: authCredential));
   }
 
   AuthenticationState _eitherLogoutOrError(
       Either<Failure, NoReturns> failureOrNoReturn) {
     return failureOrNoReturn.fold(
-      (failure) => Error(message: _mapFailureToMessage(failure)),
-      (_) => Unauthenticated(),
+      (failure) =>
+          AuthenticationStateError(message: _mapFailureToMessage(failure)),
+      (_) => AuthenticationStateUnauthenticated(),
     );
   }
 
   AuthenticationState _eitherNoReturnsOrError(
       Either<Failure, NoReturns> failureOrNoReturns) {
     return failureOrNoReturns.fold(
-      (failure) => Error(message: _mapFailureToMessage(failure)),
-      (noReturns) => LoadedNoReturns(noReturns: noReturns),
+      (failure) =>
+          AuthenticationStateError(message: _mapFailureToMessage(failure)),
+      (noReturns) => AuthenticationStateLoadedNoReturns(noReturns: noReturns),
     );
   }
 

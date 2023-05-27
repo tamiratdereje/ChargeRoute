@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import '../common/constants.dart';
 import '../common/exceptions/ServerException.dart';
 import '../infrastructure/data-source/local/sharedPrefHelper.dart';
+import '../infrastructure/data-source/local/sharedPrefHelper.dart';
 
 class CustomHttpClient {
   static String baseUrl = Constants.baseUrl;
@@ -16,11 +17,12 @@ class CustomHttpClient {
 
   CustomHttpClient();
 
+  
   Future<String?> getAuthToken() async {
     try {
       var userData = await ShardPrefHelper.getUser();
-      debugPrint("Token: ${userData.token}");
-      return userData.token;
+      debugPrint("Token: ${userData!.token}");
+      return userData!.token;
     } catch (e) {
       debugPrint("Error while getting token: ${e.toString()}");
       return null;

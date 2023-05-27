@@ -27,14 +27,18 @@ class _StationDetailState extends State<StationDetail> {
     reviews: [],
     hasUserRated: false,
     user: "",
+    userVote: -1,
   );
+
+  String id = "6464b5757c6df924fab36901";
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => ChargerDetailBloc(
         chargerRepository: context.read(),
-      )..add(ChargerDetailEventLoad("6464b5757c6df924fab36901")),
+        reviewRepository: context.read(),
+      )..add(ChargerDetailEventLoad(id)),
       child: BlocConsumer<ChargerDetailBloc, ChargerDetailState>(
         listener: (context, state) {
           isLoaded |= state is ChargerDetailStateLoaded;
@@ -51,7 +55,7 @@ class _StationDetailState extends State<StationDetail> {
               actions: (isLoaded &&
                       detail.user ==
                           (context.read<AuthenticationBloc>().state
-                                  as Authenticated)
+                                  as AuthenticationStateAuthenticated)
                               .userData!
                               .user
                               .id)
@@ -150,7 +154,7 @@ class _StationDetailState extends State<StationDetail> {
                           ReviewHeader(
                             onPost: (content) {
                               context.read<ChargerDetailBloc>().add(
-                                  ChargerDetailEventPostReview("1", content));
+                                  ChargerDetailEventPostReview(id, content));
                             },
                           ),
                           const SizedBox(height: 16),
@@ -247,29 +251,35 @@ class _ReviewCardState extends State<ReviewCard> {
                       ),
                     ],
                   ),
-                  PopupMenuButton(
-                    itemBuilder: (context) {
-                      return [
-                        if (widget.currentEditReviewId == null)
+                  if ((context.read<AuthenticationBloc>().state
+                              as AuthenticationStateAuthenticated)
+                          .userData!
+                          .user
+                          .id ==
+                      widget.review.userId)
+                    PopupMenuButton(
+                      itemBuilder: (context) {
+                        return [
+                          if (widget.currentEditReviewId == null)
+                            const PopupMenuItem(
+                              value: 1,
+                              child: Text("Edit"),
+                            ),
                           const PopupMenuItem(
-                            value: 1,
-                            child: Text("Edit"),
+                            value: 2,
+                            child: Text("Delete"),
                           ),
-                        const PopupMenuItem(
-                          value: 2,
-                          child: Text("Delete"),
-                        ),
-                      ];
-                    },
-                    onSelected: (value) {
-                      if (value == 1) {
-                        editReviewController.text = widget.review.content;
-                        widget.setEditReviewId(widget.review.id);
-                      } else if (value == 2) {
-                        widget.onDeleteReview();
-                      }
-                    },
-                  )
+                        ];
+                      },
+                      onSelected: (value) {
+                        if (value == 1) {
+                          editReviewController.text = widget.review.content;
+                          widget.setEditReviewId(widget.review.id);
+                        } else if (value == 2) {
+                          widget.onDeleteReview();
+                        }
+                      },
+                    )
                 ],
               ),
               const SizedBox(height: 8),

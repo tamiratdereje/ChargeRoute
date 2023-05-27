@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../application/auth/auth_bloc.dart';
 import '../../../domain/auth/models/signUpForm.dart';
 import '../core/widgets/appBar.dart';
@@ -32,13 +33,13 @@ class _SignUpState extends State<SignUp> {
   Widget build(BuildContext context) {
     return BlocListener<AuthenticationBloc, AuthenticationState>(
         listener: (_, state) {
-          if (state is Error) {
+          if (state is AuthenticationStateError) {
             final snackBar = SnackBar(
               content: Text(state.message!),
               backgroundColor: Colors.redAccent,
             );
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          } else if (state is LoadedNoReturns) {
+          } else if (state is AuthenticationStateLoadedNoReturns) {
             const snackBar = SnackBar(
                 backgroundColor: Colors.green, content: Text('Success'));
             ScaffoldMessenger.of(context).showSnackBar(snackBar);

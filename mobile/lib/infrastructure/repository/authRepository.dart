@@ -8,7 +8,6 @@ import 'package:charge_station_finder/infrastructure/dto/userAuthCredential.dart
 import 'package:charge_station_finder/utils/custom_http_client.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/widgets.dart';
-
 import '../data-source/local/sharedPrefHelper.dart';
 import '../data-source/remote/authService.dart';
 import '../dto/SignUpDto.dart';
@@ -31,6 +30,9 @@ class AuthenticationRepository extends IAuthenticationRepository {
   Future<Either<Failure, UserData>> getUserAuthCredential() async {
     try {
       var response = await ShardPrefHelper.getUser();
+      if (response == null) {
+        return Future.value(Left(CacheFailure(message: "User not found")));
+      }
       return Future.value(Right(response));
     } catch (e) {
       debugPrint(e.toString());

@@ -74,6 +74,7 @@ exports.deleteChargeStation = async (req, res, next) => {
     });
 
   } catch (error) {
+    console.log(error);
     next(new AppError("server error", 500));
   }
 };
@@ -83,11 +84,11 @@ exports.deleteChargeStation = async (req, res, next) => {
 // get chargeStation_
 exports.getChargeStation = async (req, res, next) => {
 
-    try {
-      const chargeStation = await ChargeStation.findById(req.params.id).populate({
-        path:'comments'
-      });
-      var ratingSum = 0;
+  try {
+    const chargeStation = await ChargeStation.findById(req.params.id).populate({
+      path: 'comments'
+    });
+    var ratingSum = 0;
 
       const ratings = await Rating.find({chargeStation : chargeStation._id})
       var ratingSum = 0;
@@ -105,25 +106,28 @@ exports.getChargeStation = async (req, res, next) => {
       count = 1;
     }
 
-    
-    
+    var voted = false;
+    if (chargeStation.user === req.user_id) {
+      voted = true
+    }
+    console.log(chargeStation);
+    var newObect = {
+      _id: chargeStation._id,
+      name: chargeStation.name,
+      description: chargeStation.description,
+      phone: chargeStation.phone,
+      address: chargeStation.address,
+      user: chargeStation.user,
+      rating: ratingSum / count,
+      voted: voted,
+      comments: chargeStation.comments,
+      wattage: chargeStation.wattage,
+    }
 
-      var newObect = {
-        _id: chargeStation._id,
-        name: chargeStation.name,
-        description: chargeStation.description,
-        phone: chargeStation.phone,
-        address: chargeStation.address,
-        user: chargeStation.user,
-        rating: ratingSum/count,
-        voted: voted,
-        comments: chargeStation.comments
-      }
-   
-      return res.status(200).json({
-        success: true,
-        data: newObect,
-      });
+    return res.status(200).json({
+      success: true,
+      data: newObect,
+    });
 
   } catch (error) {
     next(error);
@@ -155,7 +159,7 @@ exports.getAllChargeStation = async (_, res, next) => {
         count = 1;
       }
 
-  
+
 
       var newObect = {
         _id: chargeStation._id,
@@ -215,7 +219,7 @@ exports.getMyChargeStations = async (req, res, next) => {
         count = 1;
       }
 
-    
+
 
       var newObect = {
         _id: chargeStation._id,
@@ -274,7 +278,7 @@ exports.getNearChargeStations = async (req, res, next) => {
       var count = ratings.length
       if (count === 0) {
         count = 1;
-      } 
+      }
 
       var newObect = {
         _id: chargeStation._id,
@@ -406,54 +410,54 @@ exports.commentChargeStation = async (req, res, next) => {
 
 // delete comment 
 exports.deleteComment = async (req, res, next) => {
-  
-    const commentId = req.body.commentId;
-  
-    if (!commentId) {
-      return next(new AppError("Request body is missing", 400));
-    }
 
-    try { 
-      // delete comment
-      const comment = await Comment.findByIdAndDelete(commentId);
-  
-      return res.status(200).json({
-        data: comment,
-        success: true,
-      });
+  const commentId = req.body.commentId;
 
-    }
-    catch (error) {
-      next(new AppError("Server Error", 500));
-    }
-  };
-
-  // update comment
-  exports.updateComment = async (req, res, next) => {
-    const commentId = req.body.commentId;
-    const description = req.body.description;
-
-    if (!commentId || !description) {
-      return next(new AppError("Request body is missing", 400));
-    }
-
-    try {
-      // update comment
-      const comment = await Comment.findByIdAndUpdate(
-        commentId,
-        req.body,
-        {
-          runValidators: true,
-          new: true,
-        });
-  
-      return res.status(200).json({
-        data: comment,
-        success: true,
-      });
-
-    } catch (error) {
-      next(new AppError("Server Error", 500));
-    }
-    
+  if (!commentId) {
+    return next(new AppError("Request body is missing", 400));
   }
+
+  try {
+    // delete comment
+    const comment = await Comment.findByIdAndDelete(commentId);
+
+    return res.status(200).json({
+      data: comment,
+      success: true,
+    });
+
+  }
+  catch (error) {
+    next(new AppError("Server Error", 500));
+  }
+};
+
+// update comment
+exports.updateComment = async (req, res, next) => {
+  const commentId = req.body.commentId;
+  const description = req.body.description;
+
+  if (!commentId || !description) {
+    return next(new AppError("Request body is missing", 400));
+  }
+
+  try {
+    // update comment
+    const comment = await Comment.findByIdAndUpdate(
+      commentId,
+      req.body,
+      {
+        runValidators: true,
+        new: true,
+      });
+
+    return res.status(200).json({
+      data: comment,
+      success: true,
+    });
+
+  } catch (error) {
+    next(new AppError("Server Error", 500));
+  }
+
+}

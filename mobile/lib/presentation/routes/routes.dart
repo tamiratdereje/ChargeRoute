@@ -1,17 +1,14 @@
-class AppRoutes{
-
-    static const HOME = '/';
-    static const LOGIN = '/login';
-    static const SIGNUP = '/signup';
-    static const PROFILE = '/profile';
-    static const EDIT_PROFILE = '/edit-profile';
-    static const ADD_STATION = '/add-station'; 
-    static const STATION_DETAILS = '/station-details';
-    static const STATION_LIST = '/station-list';
-    static const ADMINHOMEPAGE = '/admin-homepage';
-    static const ADMINEDITUSERS = '/admin-edit-users';
-    static const ADMINADDUSERS = '/admin-add-users';
-    static const ADMINDELETEUSER = '/admin-delete-user';
-    static const BOTTOMNAVADMINPAGE = '/admin-main-page';
-    
+class AppRoutes {
+  static const Login = '/login';
+  static const SignUp = '/signup';
+  static const Profile = '/profile';
+  static const EditProfile = '/edit-profile';
+  static const AddStation = '/add-station';
+  static const StationDetails = '/station-details';
+  static const AdminEditUsers = '/admin-edit-users';
+  static const AdminAddUsers = '/admin-add-users';
+  static const AdminDeleteUsers = '/admin-delete-user';
+  static const AdminHomePage = '/admin-main-page';
+  static const UserAndProviderHomePage = '/user-and-provider-home-page';
+  static const Home = '/';
 }

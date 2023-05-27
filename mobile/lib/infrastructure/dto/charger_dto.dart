@@ -1,4 +1,5 @@
 import 'package:charge_station_finder/domain/charger/charger.dart';
+import 'package:charge_station_finder/infrastructure/dto/review_dto.dart';
 import 'package:equatable/equatable.dart';
 
 class ChargerDto extends Equatable {
@@ -8,12 +9,26 @@ class ChargerDto extends Equatable {
   final String address;
   final String phone;
   final double wattage;
-  final bool hasUserRated;
+  final int userVote;
+  late final bool hasUserRated;
   final double? rating;
   final String? user;
+  final List<ReviewDto> reviews;
 
-  const ChargerDto(this.id, this.name, this.description, this.address,
-      this.phone, this.wattage, this.rating, this.hasUserRated, this.user);
+  ChargerDto(
+    this.id,
+    this.name,
+    this.description,
+    this.address,
+    this.phone,
+    this.wattage,
+    this.rating,
+    this.userVote,
+    this.user,
+    this.reviews,
+  ) {
+    hasUserRated = userVote != -1;
+  }
 
   factory ChargerDto.fromJson(Map<String, dynamic> json) {
     return ChargerDto(
@@ -22,10 +37,25 @@ class ChargerDto extends Equatable {
       json['description'],
       json['address'],
       json['phone'],
-      (json['wattage'] as double?) ?? -1,
+      (json['wattage'] as double?) ?? -1000,
       json['rating']!.toDouble(),
       json['voted'],
       json['user'],
+      ((json['comments'] ?? []) as List)
+          .map((e) => ReviewDto.fromJson(e))
+          .toList(growable: false),
+    );
+  }
+
+  factory ChargerDto.fromDb(Map<String,dynamic> queryResult){
+    return ChargerDto(
+      queryResult['id'],
+      queryResult['name'],
+      queryResult['description'],
+      queryResult['address'],
+      queryResult['phone'],
+      queryResult['wattage'],
+      queryResult['rating'],
     );
   }
 
@@ -36,8 +66,12 @@ class ChargerDto extends Equatable {
       description: description,
       address: address,
       phone: phone,
-      wattage: wattage,
+      wattage: wattage ?? -1,
       rating: 0.0,
+      hasUserRated: hasUserRated,
+      authorId: user!,
+      reviews: reviews.map((e) => e.toDomain()).toList(),
+      userVote: userVote,
     );
   }
 
@@ -51,8 +85,8 @@ class ChargerDto extends Equatable {
       'description': description,
       'address': address,
       'phone': phone,
-      'wattage': wattage,
-      'rating': rating,
+      'wattage': wattage ?? -1,
+      'rating': rating ?? 0,
     };
   }
 }

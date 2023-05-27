@@ -5,42 +5,44 @@ abstract class AuthenticationState extends Equatable {
   List<Object?> get props => [];
 }
 
-class Empty extends AuthenticationState {}
+class AuthenticationStateInitial extends AuthenticationState {}
 
-class Loading extends AuthenticationState {}
-
-class Authenticated extends AuthenticationState {
+class AuthenticationStateAuthenticated extends AuthenticationState {
   final UserData? userData;
-  Authenticated({ this.userData});
+
+  AuthenticationStateAuthenticated({this.userData});
 }
 
 class AuthenticationLoading extends AuthenticationState {}
 
-class UserAuthenticated extends Authenticated {
-  UserAuthenticated({ UserData? userData}) : super(userData: userData);
+class AuthenticationStateUnauthenticated extends AuthenticationState {}
+
+class AuthenticationStateUserAuthenticated
+    extends AuthenticationStateAuthenticated {
+  AuthenticationStateUserAuthenticated({UserData? userData})
+      : super(userData: userData);
 }
 
-class Unauthenticated extends AuthenticationState {}
-
-class AdminAuthenticated extends Authenticated {
-  AdminAuthenticated({ UserData? userData}) : super(userData: userData);
+class AuthenticationStateAdminAuthenticated
+    extends AuthenticationStateAuthenticated {
+  AuthenticationStateAdminAuthenticated({UserData? userData})
+      : super(userData: userData);
 }
 
-class ProviderAuthenticated extends Authenticated{
-  ProviderAuthenticated({ UserData? userData}) : super(userData: userData);
+class AuthenticationStateProviderAuthenticated
+    extends AuthenticationStateAuthenticated {
+  AuthenticationStateProviderAuthenticated({UserData? userData})
+      : super(userData: userData);
 }
 
-class Loaded extends AuthenticationState {
-  final UserAuthCredential? userAuthCredential;
-  Loaded({ this.userAuthCredential});
-}
-
-class LoadedNoReturns extends AuthenticationState {
+class AuthenticationStateLoadedNoReturns extends AuthenticationState {
   final NoReturns noReturns;
-  LoadedNoReturns({required this.noReturns});
+
+  AuthenticationStateLoadedNoReturns({required this.noReturns});
 }
 
-class Error extends AuthenticationState {
+class AuthenticationStateError extends AuthenticationState {
   final String? message;
-  Error({required this.message});
+
+  AuthenticationStateError({required this.message});
 }
