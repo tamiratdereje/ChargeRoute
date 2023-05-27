@@ -29,12 +29,15 @@ class _StationDetailState extends State<StationDetail> {
     user: "",
   );
 
+  String id = "6464b5757c6df924fab36901";
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => ChargerDetailBloc(
         chargerRepository: context.read(),
-      )..add(ChargerDetailEventLoad("6464b5757c6df924fab36901")),
+        reviewRepository: context.read(),
+      )..add(ChargerDetailEventLoad(id)),
       child: BlocConsumer<ChargerDetailBloc, ChargerDetailState>(
         listener: (context, state) {
           isLoaded |= state is ChargerDetailStateLoaded;
@@ -150,7 +153,7 @@ class _StationDetailState extends State<StationDetail> {
                           ReviewHeader(
                             onPost: (content) {
                               context.read<ChargerDetailBloc>().add(
-                                  ChargerDetailEventPostReview("1", content));
+                                  ChargerDetailEventPostReview(id, content));
                             },
                           ),
                           const SizedBox(height: 16),

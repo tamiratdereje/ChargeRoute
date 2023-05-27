@@ -3,6 +3,8 @@ import 'package:charge_station_finder/application/auth/auth_bloc.dart';
 import 'package:charge_station_finder/application/create_station/create_station_bloc.dart';
 import 'package:charge_station_finder/application/home/home_bloc.dart';
 import 'package:charge_station_finder/domain/charger/charger_repository_interface.dart';
+import 'package:charge_station_finder/domain/review/review_repository_interface.dart';
+import 'package:charge_station_finder/presentation/pages/auth/signIn.dart';
 import 'package:charge_station_finder/presentation/pages/profile/profile.dart';
 import 'package:charge_station_finder/presentation/pages/station_detail/station_detail.dart';
 import 'package:charge_station_finder/utils/custom_http_client.dart';
@@ -35,7 +37,7 @@ class MyApp extends StatelessWidget {
 
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider<ReviewRepositoryImpl>(
+        RepositoryProvider<ReviewRepositoryInterface>(
             create: (context) => reviewRepository),
         RepositoryProvider<ChargerRepositoryInterface>(
             create: (context) => chargerRepository),
@@ -77,7 +79,7 @@ class MyApp extends StatelessWidget {
                   platform: TargetPlatform.android,
                   useMaterial3: true,
                 ),
-                home: const HomePage(),
+                home: const StationDetail(),
               ))),
     );
   }
