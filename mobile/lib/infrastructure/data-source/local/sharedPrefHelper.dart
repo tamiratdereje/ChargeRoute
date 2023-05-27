@@ -33,16 +33,4 @@ class ShardPrefHelper {
     final SharedPreferences prefs = await _instance;
     return prefs.clear();
   }
-  // has opened before
-  static Future<bool> hasOpend() async { 
-    final SharedPreferences prefs = await _instance;
-    return prefs.getBool(Constants.HasOpened) ?? false;
-  }
-
-  // set has opened before
-  static Future<bool> setHasOpend() async {
-    final SharedPreferences prefs = await _instance;
-    return prefs.setBool(Constants.HasOpened, true);
-  }
-  
 }
