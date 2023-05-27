@@ -1,6 +1,5 @@
 import 'package:charge_station_finder/presentation/pages/core/widgets/appBar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -27,104 +26,98 @@ class _AdminAddUserState extends State<AdminAddUser> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<AdminBloc, AdminState>(
-
       listener: (context, state) {
-        
         if (state is AdminSuccessState) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text("User Added Successfully"),
               backgroundColor: Colors.green,
             ),
           );
-          context.go(AppRoutes.BOTTOMNAVADMINPAGE);
-
+          context.go(AppRoutes.AdminHomePage);
         } else if (state is AdminFailureState) {
-          
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text("${state.error}User Added Failed"),
               backgroundColor: Colors.red,
             ),
-          );}
-
+          );
+        }
       },
       child: Scaffold(
-          appBar: CHSAppBar.build(context, "Add Users", () {}, true),
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child:
-                  Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                const InputFieldHeader(
-                  text: "Full Name",
-                ),
-                CSFFormField(
-                    controller: _fullNameController,
-                    obscureText: false,
-                    hintText: "Yeab Solomon",
-                    onChanged: (value) {
-                      setState(() {
-                        _fullNameController.text = value;
-                      });
-                    }),
-                const InputFieldHeader(
-                  text: "Email",
-                ),
-                CSFFormField(
-                    controller: _emailController,
-                    obscureText: false,
-                    hintText: "yeab@gmail.com",
-                    onChanged: (value) {
-                      setState(() {
-                        _emailController.text = value;
-                      });
-                    }),
-                const InputFieldHeader(
-                  text: "Role",
-                ),
-                CSFFormField(
-                    controller: _roleController,
-                    obscureText: false,
-                    hintText: "User or Provider",
-                    onChanged: (value) {
-                      setState(() {
-                        _roleController.text = value;
-                      });
-                    }),
-                const InputFieldHeader(
-                  text: "Password",
-                ),
-                CSFFormField(
-                    controller: _passwordController,
-                    obscureText: false,
-                    hintText: "yeab1234",
-                    onChanged: (value) {
-                      setState(() {
-                        _passwordController.text = value;
-                      });
-                    }),
-                const SizedBox(
-                  height: 40,
-                ),
-                PrimaryButton(
-                    text: "Create",
-                    onPressed: () {
-                      
-    
-                      BlocProvider.of<AdminBloc>(context).add(AdminCreateUserEvent(
-                        adminDomain: AdminDomain(
-                            email: _emailController.text,
-                            name: _fullNameController.text,
-                            role: _roleController.text,
-                            password: _passwordController.text),
-                      ));
-                    })
-                    
-              ]),
-            ),
+        appBar: CHSAppBar.build(context, "Add Users", () {}, true),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              const InputFieldHeader(
+                text: "Full Name",
+              ),
+              CSFFormField(
+                  controller: _fullNameController,
+                  obscureText: false,
+                  hintText: "Yeab Solomon",
+                  onChanged: (value) {
+                    setState(() {
+                      _fullNameController.text = value;
+                    });
+                  }),
+              const InputFieldHeader(
+                text: "Email",
+              ),
+              CSFFormField(
+                  controller: _emailController,
+                  obscureText: false,
+                  hintText: "yeab@gmail.com",
+                  onChanged: (value) {
+                    setState(() {
+                      _emailController.text = value;
+                    });
+                  }),
+              const InputFieldHeader(
+                text: "Role",
+              ),
+              CSFFormField(
+                  controller: _roleController,
+                  obscureText: false,
+                  hintText: "User or Provider",
+                  onChanged: (value) {
+                    setState(() {
+                      _roleController.text = value;
+                    });
+                  }),
+              const InputFieldHeader(
+                text: "Password",
+              ),
+              CSFFormField(
+                  controller: _passwordController,
+                  obscureText: false,
+                  hintText: "yeab1234",
+                  onChanged: (value) {
+                    setState(() {
+                      _passwordController.text = value;
+                    });
+                  }),
+              const SizedBox(
+                height: 40,
+              ),
+              PrimaryButton(
+                  text: "Create",
+                  onPressed: () {
+                    BlocProvider.of<AdminBloc>(context)
+                        .add(AdminCreateUserEvent(
+                      adminDomain: AdminDomain(
+                          email: _emailController.text,
+                          name: _fullNameController.text,
+                          role: _roleController.text,
+                          password: _passwordController.text),
+                    ));
+                  })
+            ]),
           ),
         ),
+      ),
     );
   }
 }

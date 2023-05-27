@@ -26,7 +26,7 @@ class ChargerRepositoryImpl extends ChargerRepositoryInterface {
     try {
       await remoteChargerSource.addCharger(
         ChargerDto(null, form.name, form.description, form.address, form.phone,
-            form.wattage, null, false, null, const []),
+            form.wattage, null, -1, null, const []),
       );
       return right(null);
     } on ServerException catch (e) {
@@ -63,7 +63,7 @@ class ChargerRepositoryImpl extends ChargerRepositoryInterface {
           form.phone,
           form.wattage,
           null,
-          false,
+          -1,
           null, const []));
       return right(null);
     } on ServerException catch (e) {
@@ -89,6 +89,7 @@ class ChargerRepositoryImpl extends ChargerRepositoryInterface {
           wattage: value.wattage,
           reviews: value.reviews.map((e) => e.toDomain()).toList(),
           hasUserRated: value.hasUserRated,
+          userVote: value.userVote,
           user: value.user!,
         ));
       });

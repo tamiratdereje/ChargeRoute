@@ -27,6 +27,7 @@ class _StationDetailState extends State<StationDetail> {
     reviews: [],
     hasUserRated: false,
     user: "",
+    userVote: -1,
   );
 
   String id = "6464b5757c6df924fab36901";
@@ -54,7 +55,7 @@ class _StationDetailState extends State<StationDetail> {
               actions: (isLoaded &&
                       detail.user ==
                           (context.read<AuthenticationBloc>().state
-                                  as Authenticated)
+                                  as AuthenticationStateAuthenticated)
                               .userData!
                               .user
                               .id)
@@ -251,7 +252,7 @@ class _ReviewCardState extends State<ReviewCard> {
                     ],
                   ),
                   if ((context.read<AuthenticationBloc>().state
-                              as Authenticated)
+                              as AuthenticationStateAuthenticated)
                           .userData!
                           .user
                           .id ==

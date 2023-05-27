@@ -33,17 +33,17 @@ class _SignInState extends State<SignIn> {
   Widget build(BuildContext context) {
     return BlocConsumer<AuthenticationBloc, AuthenticationState>(
       listener: (_, state) {
-        if (state is Error) {
+        if (state is AuthenticationStateError) {
           final snackBar = SnackBar(
             content: Text(state.message!),
             backgroundColor: Colors.redAccent,
           );
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        } else if (state is UserAuthenticated) {
+        } else if (state is AuthenticationStateUserAuthenticated) {
           const snackBar =
               SnackBar(backgroundColor: Colors.green, content: Text('Success'));
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        } else if (state is AdminAuthenticated) {
+        } else if (state is AuthenticationStateAdminAuthenticated) {
           const snackBar =
               SnackBar(backgroundColor: Colors.green, content: Text('Success'));
           ScaffoldMessenger.of(context).showSnackBar(snackBar);

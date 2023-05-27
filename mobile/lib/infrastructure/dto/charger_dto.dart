@@ -9,22 +9,26 @@ class ChargerDto extends Equatable {
   final String address;
   final String phone;
   final double wattage;
-  final bool hasUserRated;
+  final int userVote;
+  late final bool hasUserRated;
   final double? rating;
   final String? user;
   final List<ReviewDto> reviews;
 
-  const ChargerDto(
-      this.id,
-      this.name,
-      this.description,
-      this.address,
-      this.phone,
-      this.wattage,
-      this.rating,
-      this.hasUserRated,
-      this.user,
-      this.reviews);
+  ChargerDto(
+    this.id,
+    this.name,
+    this.description,
+    this.address,
+    this.phone,
+    this.wattage,
+    this.rating,
+    this.userVote,
+    this.user,
+    this.reviews,
+  ) {
+    hasUserRated = userVote != -1;
+  }
 
   factory ChargerDto.fromJson(Map<String, dynamic> json) {
     return ChargerDto(
@@ -55,6 +59,7 @@ class ChargerDto extends Equatable {
       hasUserRated: hasUserRated,
       authorId: user!,
       reviews: reviews.map((e) => e.toDomain()).toList(),
+      userVote: userVote,
     );
   }
 

@@ -11,6 +11,7 @@ class Charger {
   final List<Review> reviews;
   final String authorId;
   final bool hasUserRated;
+  final int userVote;
 
   const Charger(
       {required this.id,
@@ -22,5 +23,6 @@ class Charger {
       required this.phone,
       required this.reviews,
       required this.authorId,
-      required this.hasUserRated});
+      required this.hasUserRated,
+      required this.userVote});
 }
