@@ -55,7 +55,10 @@ class ChargerDto extends Equatable {
       queryResult['address'],
       queryResult['phone'],
       queryResult['wattage'],
-      queryResult['rating'],
+      queryResult['rating'] ?? 0,
+      queryResult['voted'] ?? -1,
+      queryResult['user'] ?? '',
+      queryResult['comments'] ?? [],
     );
   }
 
