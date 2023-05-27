@@ -1,6 +1,7 @@
 import 'package:charge_station_finder/domain/charger/charger.dart';
 import 'package:charge_station_finder/infrastructure/dto/review_dto.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 
 class ChargerDto extends Equatable {
   final String? id;
@@ -48,17 +49,19 @@ class ChargerDto extends Equatable {
   }
 
   factory ChargerDto.fromDb(Map<String, dynamic> queryResult) {
+    debugPrint(queryResult.toString());
     return ChargerDto(
-        queryResult['id'],
-        queryResult['name'],
-        queryResult['description'],
-        queryResult['address'],
-        queryResult['phone'],
-        queryResult['wattage'],
-        queryResult['rating'],
-        queryResult['voted'],
-        queryResult['user'],
-        queryResult['reviews'].map((e) => e.fromDb()).toList(growable: true));
+      queryResult['id'],
+      queryResult['name'],
+      queryResult['description'],
+      queryResult['address'],
+      queryResult['phone'],
+      queryResult['wattage'],
+      queryResult['rating'],
+      queryResult['userVote'],
+      queryResult['authorId'],
+      [],
+    );
   }
 
   Charger toDomain() {

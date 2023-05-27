@@ -11,6 +11,7 @@ class CRDatabase {
   }
 
   static Database? _dbInstance;
+
   static Future<Database> db() async {
     return openDatabase(
       'ChargeRoute.db',
@@ -18,31 +19,61 @@ class CRDatabase {
       onCreate: (Database database, int version) async {
         await createTables(database);
       },
+      onUpgrade: (Database database, int oldVersion, int newVersion) async {
+        debugPrint("Upgrading database");
+        await database.execute("DROP TABLE IF EXISTS chargers");
+        await database.execute("DROP TABLE IF EXISTS reviews");
+        await createTables(database);
+      },
+      onDowngrade: (Database database, int oldVersion, int newVersion) async {
+        debugPrint("Downgrading database");
+        await database.execute("DROP TABLE IF EXISTS chargers");
+        await database.execute("DROP TABLE IF EXISTS reviews");
+        await createTables(database);
+      },
     );
   }
 
   static Future<void> createTables(Database database) async {
     await database.execute("PRAGMA foreign_keys = ON");
-    await database.execute("""CREATE TABLE chargers(
-        id VARCHAR PRIMARY KEY ,
+    try {
+      await database.execute("""
+      CREATE TABLE chargers(
+        id VARCHAR PRIMARY KEY,
         name VARCHAR,
         address VARCHAR,
+        rating DOUBLE,
+        wattage INTEGER,
         description VARCHAR,
         phone VARCHAR,
-        wattage DOUBLE,
-        rating DOUBLE,
-        voted INTEGER, )
+        authorId VARCHAR,
+        hasUserRated INTEGER,
+        userVote INTEGER
+      )
       """);
-    await database.execute("""
+      await database.execute("""
       CREATE TABLE reviews(
-        id VARCHAR PRIMARY KEY ,
+        id VARCHAR PRIMARY KEY,
         chargerId VARCHAR,
         userId VARCHAR,
-        rating DOUBLE,
         comment VARCHAR,
         FOREIGN KEY(chargerId) REFERENCES chargers(id) ON DELETE CASCADE
       )
       """);
+    } catch (e) {
+      debugPrint("Error creating tables: $e");
+    }
+    debugPrint("Tables created");
+    List<Map<String, dynamic>> tables = await database.rawQuery(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'android%' AND name NOT LIKE 'sqlite%'");
+    tables.forEach((table) async {
+      List<Map<String, dynamic>> columns =
+          await database.rawQuery("PRAGMA table_info('${table['name']}')");
+      debugPrint("Table: ${table['name']}");
+      for (var column in columns) {
+        debugPrint("Column: ${column['name']} - ${column['type']}");
+      }
+    });
   }
 
   static Future<void> insertChargers(
@@ -56,29 +87,28 @@ class CRDatabase {
 
   static Future<List<Charger>> getChargers(String query) async {
     final Database db = await instance;
+
     // get chargers with their corresponding reviews
-    List<Map<String, dynamic>> chargerMaps = await db
-        .query('chargers', where: 'address LIKE ?', whereArgs: ['%$query%']);
-    debugPrint(' Charger Maps :$chargerMaps');
+    List<Map<String, dynamic>> result = await db.rawQuery("""
+      SELECT chargers.id, 
+      chargers.name,
+      chargers.address,
+      chargers.rating,
+      chargers.wattage,
+      chargers.description,
+      chargers.phone, 
+      chargers.authorId,
+      chargers.hasUserRated,
+      chargers.userVote,
+      reviews.id as reviewId,
+      reviews.userId as reviewAuthorId,
+      reviews.comment as reviewComment
+      FROM chargers
+      INNER JOIN reviews ON chargers.id = reviews.chargerId
+      WHERE chargers.address LIKE '%$query%'
+      """);
 
-
-    
-
-    // get reviews for each charger map
-    for (var chargerMap in chargerMaps) {
-      final List<Map<String, dynamic>> reviewMaps = await db.query('reviews',
-          where: 'chargerId = ?', whereArgs: [chargerMap['id']]);
-
-      debugPrint(' Review Maps :$reviewMaps');
-      // set reviews for each charger map
-    }
-    // convert charger maps to charger objects
-    if (chargerMaps.isNotEmpty) {
-      return chargerMaps
-          .map((chargerMap) => ChargerDto.fromDb(chargerMap).toDomain())
-          .toList(growable: false);
-    }
-    return <Charger>[];
+    return result.map((e) => ChargerDto.fromDb(e).toDomain()).toList();
   }
 
   static Future<void> deleteChargers() async {

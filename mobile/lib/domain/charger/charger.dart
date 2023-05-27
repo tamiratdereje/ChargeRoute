@@ -25,4 +25,8 @@ class Charger {
       required this.authorId,
       required this.hasUserRated,
       required this.userVote});
+
+  String toString() {
+    return 'Charger(id: $id, name: $name, address: $address, rating: $rating, wattage: $wattage, description: $description, phone: $phone, reviews: $reviews, authorId: $authorId, hasUserRated: $hasUserRated, userVote: $userVote)';
+  }
 }

@@ -1,17 +1,19 @@
 import 'package:charge_station_finder/application/admin/admin_bloc.dart';
 import 'package:charge_station_finder/presentation/pages/admin/admin_add_users.dart';
 import 'package:charge_station_finder/presentation/pages/admin/admin_home_page.dart';
+import 'package:charge_station_finder/presentation/pages/home/home.dart';
 import 'package:charge_station_finder/presentation/pages/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class BottomNavAdminPage extends StatefulWidget {
-   static const String route = "/admin_bottom_nav";
+import '../../pages/create_station/createStation.dart';
+
+class BottomNavUserPage extends StatefulWidget {
+   static const String route = "/user_bottom_nav";
 
   List<Widget> pages = [
-    const AdminHomePage(),
-    const AdminAddUser(),
-    const ProfilePage(),
+    const HomePage(),
+    const ProfilePage()
   ];
   int index = 0;
 
@@ -19,18 +21,20 @@ class BottomNavAdminPage extends StatefulWidget {
     this.index = index;
   }
 
-  BottomNavAdminPage({super.key});
+  BottomNavUserPage({super.key});
 
   @override
-  State<BottomNavAdminPage> createState() => _BottomNavAdminPageState();
+  State<BottomNavUserPage> createState() => _BottomNavUserPageState();
 }
 
-class _BottomNavAdminPageState extends State<BottomNavAdminPage> {
+class _BottomNavUserPageState extends State<BottomNavUserPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       body: widget.pages[widget.index],
       bottomNavigationBar: BottomNavigationBar(
+        
         currentIndex: widget.index,
         selectedItemColor: Colors.black,
         showSelectedLabels: true,
@@ -38,27 +42,28 @@ class _BottomNavAdminPageState extends State<BottomNavAdminPage> {
         selectedIconTheme: const IconThemeData(color: Colors.black),
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
+
         onTap: (int i) {
-          if (i == 0) {
-            BlocProvider.of<AdminBloc>(context).add(AdminGetUsersEvent());
-          } else if (i == 2) {
-            // BlocProvider.of<ProfileBLoc>(context).add(AdminGetUsersEvent());
-          }
 
           setState(() {
             widget.index = i;
           });
+          
         },
+
+  
         items: const <BottomNavigationBarItem>[
+          
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'All Users',
+            label: 'Home',
           ),
+                   
           BottomNavigationBarItem(
-              icon: Icon(Icons.add_box_rounded), label: 'Add Users'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline), label: 'Profile'),
+                        icon: Icon(Icons.person_outline), label: 'Profile'),
+          
         ],
+
       ),
     );
   }
