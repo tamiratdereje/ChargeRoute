@@ -67,12 +67,13 @@ class RouterMain extends StatelessWidget {
       }
       return null;
     }
+    return null;
   }
 
   RouterMain({required this.authBloc, Key? key}) : super(key: key) {
     _router = GoRouter(
       redirect: (context, state) => redirector(state),
-      initialLocation: AppRoutes.Login,
+      initialLocation: AppRoutes.Home,
       routes: <GoRoute>[
         GoRoute(
           path: AppRoutes.AdminHomePage,

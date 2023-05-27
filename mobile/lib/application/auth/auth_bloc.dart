@@ -40,9 +40,12 @@ class AuthenticationBloc
 
   void _onDeleteAccount(
       DeleteAccountEvent event, Emitter<AuthenticationState> emit) async {
-    emit(AuthenticationLoading());
+    emit(DeletingAccount());
     final failureOrNoReturns = await authRepository.deleteAccount();
-    emit(_eitherNoReturnsOrError(failureOrNoReturns));
+    failureOrNoReturns.fold((l) => emit(DeleteAccountFailed()), (r) {
+      emit(DeleteAccountSucceed());
+      emit(AuthenticationStateUnauthenticated());
+    });
   }
 
   void _onSignUp(SignUpEvent event, Emitter<AuthenticationState> emit) async {
@@ -56,14 +59,29 @@ class AuthenticationBloc
   void _onLogout(LogoutEvent event, Emitter<AuthenticationState> emit) async {
     emit(AuthenticationLoading());
     final failureOrNoReturns = await authRepository.logout();
-    emit(_eitherLogoutOrError(failureOrNoReturns));
+    failureOrNoReturns.fold((l) => emit(LogoutFailed()), (r) {
+      emit(LogoutSucceed());
+      emit(AuthenticationStateUnauthenticated());
+    });
   }
 
   void _onGetUser(GetUserAuthCredentialEvent event,
       Emitter<AuthenticationState> emit) async {
     final failureOrAuthCredential =
         await authRepository.getUserAuthCredential();
-    emit(_eitherLoginOrError(failureOrAuthCredential));
+    emit(_eitherAuthenticatedOrUnAuthenticated(failureOrAuthCredential));
+  }
+
+  AuthenticationState _eitherAuthenticatedOrUnAuthenticated(
+      Either<Failure, UserData> failureOrAuthCredential) {
+    return failureOrAuthCredential.fold(
+        (failure) => AuthenticationStateUnauthenticated(),
+        (authCredential) => authCredential.user.role == 'admin'
+            ? AuthenticationStateAdminAuthenticated(userData: authCredential)
+            : authCredential.user.role == 'user'
+                ? AuthenticationStateUserAuthenticated(userData: authCredential)
+                : AuthenticationStateProviderAuthenticated(
+                    userData: authCredential));
   }
 
   AuthenticationState _eitherLoginOrError(

@@ -41,6 +41,18 @@ class AuthenticationStateLoadedNoReturns extends AuthenticationState {
   AuthenticationStateLoadedNoReturns({required this.noReturns});
 }
 
+// logout
+class LogoutSucceed extends AuthenticationState {}
+class LoggingOut extends AuthenticationState {}
+class LogoutFailed extends AuthenticationState {}
+
+// delete account
+class DeleteAccountSucceed extends AuthenticationState {}
+class DeletingAccount extends AuthenticationState {}
+class DeleteAccountFailed extends AuthenticationState {}
+
+
+
 class AuthenticationStateError extends AuthenticationState {
   final String? message;
 

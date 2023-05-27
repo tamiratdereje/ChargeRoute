@@ -10,9 +10,10 @@ import 'package:charge_station_finder/infrastructure/data-source/local/database.
 import 'package:charge_station_finder/infrastructure/dto/charger_dto.dart';
 import 'package:charge_station_finder/utils/custom_http_client.dart';
 import 'package:dartz/dartz.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 
 import '../data-source/remote/charger_service.dart';
+import '../dto/review_dto.dart';
 
 class ChargerRepositoryImpl extends ChargerRepositoryInterface {
   late final RemoteChargerSource remoteChargerSource;
@@ -108,11 +109,18 @@ class ChargerRepositoryImpl extends ChargerRepositoryInterface {
   Future<Either<Failure, List<Charger>>> fetchChargers(String address) async {
     try {
       var res = await remoteChargerSource.getChargersByAddress(address);
+      List<List<ReviewDto>> reviews = [];
+      for (var element in res) {
+        reviews.add(element.reviews);
+      }
+      var reviewsFlatened = reviews.expand((element) => element);
       await CRDatabase.deleteChargers();
-      debugPrint("Deleting chargers");
       await CRDatabase.insertChargers(res.map((e) => e.toJson()).toList());
-      var local_result = await CRDatabase.getChargers(address);
-      return right(local_result);
+      await CRDatabase.insertReviews(
+          reviewsFlatened.map((e) => e.toEntity()).toList());
+      var localResult = await CRDatabase.getChargers(address);
+      debugPrint(localResult.toString());
+      return right(localResult);
     } on ServerException catch (e) {
       return left(Failure(e.message));
     } on ApiException catch (e) {
@@ -129,6 +137,9 @@ class ChargerRepositoryImpl extends ChargerRepositoryInterface {
     try {
       var res = await CRDatabase.getChargers(address);
       debugPrint(res.toString());
+      if (res.isEmpty) {
+        return right([]);
+      }
       return right(res);
     } on ServerException catch (e) {
       return left(Failure(e.message));

@@ -1,7 +1,9 @@
 import 'package:charge_station_finder/domain/charger/charger.dart';
 import 'package:charge_station_finder/infrastructure/dto/charger_dto.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:sqflite/sqflite.dart';
+
+import '../../dto/review_dto.dart';
 
 class CRDatabase {
   static Future<Database> get instance async {
@@ -13,7 +15,7 @@ class CRDatabase {
   static Future<Database> db() async {
     return openDatabase(
       'ChargeRoute.db',
-      version: 1,
+      version: 4,
       onCreate: (Database database, int version) async {
         await createTables(database);
       },
@@ -54,7 +56,7 @@ class CRDatabase {
         id VARCHAR PRIMARY KEY,
         chargerId VARCHAR,
         userId VARCHAR,
-        comment VARCHAR,
+        description VARCHAR,
         FOREIGN KEY(chargerId) REFERENCES chargers(id) ON DELETE CASCADE
       )
       """);
@@ -80,6 +82,9 @@ class CRDatabase {
     chargers.forEach((charger) async {
       await db.insert('chargers', charger,
           conflictAlgorithm: ConflictAlgorithm.replace);
+      var result = await db.query('chargers');
+      debugPrint("Chargers: $result");
+      debugPrint("Charger inserted");
     });
   }
 
@@ -87,26 +92,26 @@ class CRDatabase {
     final Database db = await instance;
 
     // get chargers with their corresponding reviews
-    List<Map<String, dynamic>> result = await db.rawQuery("""
-      SELECT chargers.id, 
-      chargers.name,
-      chargers.address,
-      chargers.rating,
-      chargers.wattage,
-      chargers.description,
-      chargers.phone, 
-      chargers.authorId,
-      chargers.hasUserRated,
-      chargers.userVote,
-      reviews.id as reviewId,
-      reviews.userId as reviewAuthorId,
-      reviews.comment as reviewComment
-      FROM chargers
-      INNER JOIN reviews ON chargers.id = reviews.chargerId
-      WHERE chargers.address LIKE '%$query%'
-      """);
+    List<Map<String, dynamic>> result = await db.query('chargers',
+        where: " address LIKE '%$query%'", orderBy: "rating DESC");
 
-    return result.map((e) => ChargerDto.fromDb(e).toDomain()).toList();
+    List<List<Map<String, dynamic>>> reviewsResult = [];
+    for (var charger in result) {
+      List<Map<String, dynamic>> reviews = await db.query(
+        'reviews',
+        where: " chargerId = '${charger['id']}'",
+        orderBy: "id DESC",
+      );
+      reviewsResult.add(reviews);
+    }
+
+    var response = List.generate(result.length, (index) {
+      return ChargerDto.fromDb(result[index], reviewsResult[index]).toDomain();
+    });
+    // for each charger, get its reviews
+
+    debugPrint("Chargers: $response");
+    return response;
   }
 
   static Future<void> deleteChargers() async {
@@ -114,7 +119,20 @@ class CRDatabase {
     await db.delete('chargers');
   }
 
-// close the database
+  static Future<void> insertReviews(List<Map<String, dynamic>> reviews) async {
+    final Database db = await instance;
+    // ignore: avoid_function_literals_in_foreach_calls
+    reviews.forEach((review) async {
+      await db.insert('reviews', review,
+          conflictAlgorithm: ConflictAlgorithm.replace);
+
+      var result = await db.query('reviews');
+      debugPrint("Reviews: $result");
+      debugPrint("Review inserted");
+    });
+  }
+
+  // close the database
   static Future<void> close() async {
     final Database db = await instance;
     db.close();
