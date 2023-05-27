@@ -15,15 +15,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(HomeStateLoading());
       var local_result =
           await chargerRepository.getChargersByAddress(event.query);
-      local_result.fold((failure) {
-        null;
-      }, (chargers) {
+      local_result.fold((failure) {}, (chargers) {
         debugPrint(chargers.toString());
-        emit(HomeStateSuccess(chargers));
+        if (chargers.isNotEmpty) emit(HomeStateSuccess(chargers));
       });
+
       var remote_result = await chargerRepository.fetchChargers(event.query);
       remote_result.fold(
-          (l) => HomeStateError(l.message), (r) => emit(HomeStateSuccess(r)));
+        (l) => HomeStateError(l.message),
+        (r) {
+          debugPrint("Remote: $r");
+          emit(HomeStateSuccess(r));
+        },
+      );
     });
   }
 }
