@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:charge_station_finder/domain/charger/charger.dart';
 import 'package:charge_station_finder/infrastructure/dto/review_dto.dart';
 import 'package:equatable/equatable.dart';
@@ -14,7 +16,7 @@ class ChargerDto extends Equatable {
   late final bool hasUserRated;
   final double? rating;
   final String? user;
-  final List<ReviewDto> reviews;
+  List<ReviewDto> reviews;
 
   ChargerDto(
     this.id,
@@ -48,7 +50,7 @@ class ChargerDto extends Equatable {
     );
   }
 
-  factory ChargerDto.fromDb(Map<String, dynamic> queryResult) {
+  factory ChargerDto.fromDb(Map<String, dynamic> queryResult, List<Map<String, dynamic>> reviews) {
     debugPrint(queryResult.toString());
     return ChargerDto(
       queryResult['id'],
@@ -56,11 +58,11 @@ class ChargerDto extends Equatable {
       queryResult['description'],
       queryResult['address'],
       queryResult['phone'],
-      queryResult['wattage'],
+      (queryResult['wattage'] ?? -1000).toDouble(),
       queryResult['rating'],
-      queryResult['userVote'],
-      queryResult['authorId'],
-      [],
+      queryResult['userVote'] ?? -1,
+      queryResult['authorId'] ?? '',
+      reviews.map((e) => ReviewDto.fromEntity(e)).toList(),
     );
   }
 

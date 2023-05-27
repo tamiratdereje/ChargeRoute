@@ -40,9 +40,12 @@ class AuthenticationBloc
 
   void _onDeleteAccount(
       DeleteAccountEvent event, Emitter<AuthenticationState> emit) async {
-    emit(AuthenticationLoading());
+    emit(DeletingAccount());
     final failureOrNoReturns = await authRepository.deleteAccount();
-    emit(_eitherNoReturnsOrError(failureOrNoReturns));
+    failureOrNoReturns.fold((l) => emit(DeleteAccountFailed()), (r) {
+      emit(DeleteAccountSucceed());
+      emit(AuthenticationStateUnauthenticated());
+    });
   }
 
   void _onSignUp(SignUpEvent event, Emitter<AuthenticationState> emit) async {
@@ -56,7 +59,10 @@ class AuthenticationBloc
   void _onLogout(LogoutEvent event, Emitter<AuthenticationState> emit) async {
     emit(AuthenticationLoading());
     final failureOrNoReturns = await authRepository.logout();
-    emit(_eitherLogoutOrError(failureOrNoReturns));
+    failureOrNoReturns.fold((l) => emit(LogoutFailed()), (r) {
+      emit(LogoutSucceed());
+      emit(AuthenticationStateUnauthenticated());
+    });
   }
 
   void _onGetUser(GetUserAuthCredentialEvent event,

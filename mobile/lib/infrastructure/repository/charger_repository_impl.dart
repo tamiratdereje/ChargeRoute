@@ -119,6 +119,7 @@ class ChargerRepositoryImpl extends ChargerRepositoryInterface {
       await CRDatabase.insertReviews(
           reviewsFlatened.map((e) => e.toEntity()).toList());
       var localResult = await CRDatabase.getChargers(address);
+      debugPrint(localResult.toString());
       return right(localResult);
     } on ServerException catch (e) {
       return left(Failure(e.message));
@@ -136,6 +137,9 @@ class ChargerRepositoryImpl extends ChargerRepositoryInterface {
     try {
       var res = await CRDatabase.getChargers(address);
       debugPrint(res.toString());
+      if (res.isEmpty) {
+        return right([]);
+      }
       return right(res);
     } on ServerException catch (e) {
       return left(Failure(e.message));

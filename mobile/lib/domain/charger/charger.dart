@@ -8,12 +8,12 @@ class Charger {
   final double wattage;
   final String description;
   final String phone;
-  final List<Review> reviews;
+  late final List<Review> reviews;
   final String authorId;
   final bool hasUserRated;
   final int userVote;
 
-  const Charger(
+  Charger(
       {required this.id,
       required this.name,
       required this.address,

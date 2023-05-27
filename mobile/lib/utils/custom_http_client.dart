@@ -4,7 +4,6 @@ import 'package:charge_station_finder/common/exceptions/ApiException.dart';
 import 'package:charge_station_finder/utils/extensions.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
-
 import '../common/constants.dart';
 import '../common/exceptions/ServerException.dart';
 import '../infrastructure/data-source/local/sharedPrefHelper.dart';

@@ -13,17 +13,23 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc({required this.chargerRepository}) : super(HomeStateInitial()) {
     on<HomeEventSearchSubmit>((event, emit) async {
       emit(HomeStateLoading());
-      var local_result =
+      var localResult =
           await chargerRepository.getChargersByAddress(event.query);
-      local_result.fold((failure) {
-        null;
+      localResult.fold((failure) {
+        emit(HomeStateError(failure.message));
       }, (chargers) {
-        debugPrint(chargers.toString());
-        emit(HomeStateSuccess(chargers));
+        if (chargers.isEmpty) {
+          emit(HomeStateLoading());
+        } else {
+          debugPrint('Home Bloc : chargers => ' + chargers.toString());
+          emit(HomeStateSuccess(chargers));
+        }
       });
-      var remote_result = await chargerRepository.fetchChargers(event.query);
-      remote_result.fold(
-          (l) => HomeStateError(l.message), (r) => emit(HomeStateSuccess(r)));
+      var remoteResult = await chargerRepository.fetchChargers(event.query);
+      remoteResult.fold((l) => HomeStateError(l.message), (r) {
+        debugPrint(r.toString());
+        emit(HomeStateSuccess(r));
+      });
     });
   }
 }

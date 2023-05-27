@@ -23,7 +23,7 @@ class ReviewDto {
   factory ReviewDto.fromEntity(Map<String, dynamic> queryResult) {
     return ReviewDto(
         id: queryResult['id'],
-        content: queryResult['comment'],
+        content: queryResult['description'],
         userId: queryResult['userId'],
         chargerId: queryResult['chargerId']);
   }
