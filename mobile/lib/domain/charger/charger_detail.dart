@@ -8,6 +8,9 @@ class ChargerDetail {
   final String address;
   final double rating;
   final double wattage;
+  final bool hasUserRated;
+  final String user;
+  final int userVote;
 
   final List<Review> reviews;
 
@@ -20,6 +23,9 @@ class ChargerDetail {
     required this.rating,
     required this.wattage,
     required this.reviews,
+    required this.hasUserRated,
+    required this.user,
+    required this.userVote,
   });
 
   ChargerDetail copyWith({
@@ -31,6 +37,9 @@ class ChargerDetail {
     double? rating,
     double? wattage,
     List<Review>? reviews,
+    bool? hasUserRated,
+    int? userVote,
+    String? user,
   }) {
     return ChargerDetail(
       id: id ?? this.id,
@@ -41,6 +50,9 @@ class ChargerDetail {
       rating: rating ?? this.rating,
       wattage: wattage ?? this.wattage,
       reviews: reviews ?? this.reviews,
+      hasUserRated: hasUserRated ?? this.hasUserRated,
+      userVote: userVote ?? this.userVote,
+      user: user ?? this.user,
     );
   }
 }

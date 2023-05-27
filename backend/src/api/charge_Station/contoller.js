@@ -74,6 +74,7 @@ exports.deleteChargeStation = async (req, res, next) => {
     });
 
   } catch (error) {
+    console.log(error);
     next(new AppError("server error", 500));
   }
 };
@@ -83,17 +84,20 @@ exports.deleteChargeStation = async (req, res, next) => {
 // get chargeStation_
 exports.getChargeStation = async (req, res, next) => {
 
-    try {
-      const chargeStation = await ChargeStation.findById(req.params.id).populate({
-        path:'comments'
-      });
-      var ratingSum = 0;
+  try {
+    const chargeStation = await ChargeStation.findById(req.params.id).populate({
+      path: 'comments'
+    });
+    var ratingSum = 0;
 
       const ratings = await Rating.find({chargeStation : chargeStation._id})
       var ratingSum = 0;
-
+      var voted = -1;
       for (var i = 0; i< ratings.length; i++){
         ratingSum += ratings[i].rating
+        if (ratings[i].user === req.user_id){
+          voted = ratings[i].rating
+        }
       }
       console.log(ratingSum)
 
@@ -106,22 +110,24 @@ exports.getChargeStation = async (req, res, next) => {
     if (chargeStation.user === req.user_id) {
       voted = true
     }
+    console.log(chargeStation);
+    var newObect = {
+      _id: chargeStation._id,
+      name: chargeStation.name,
+      description: chargeStation.description,
+      phone: chargeStation.phone,
+      address: chargeStation.address,
+      user: chargeStation.user,
+      rating: ratingSum / count,
+      voted: voted,
+      comments: chargeStation.comments,
+      wattage: chargeStation.wattage,
+    }
 
-      var newObect = {
-        _id: chargeStation._id,
-        name: chargeStation.name,
-        description: chargeStation.description,
-        phone: chargeStation.phone,
-        address: chargeStation.address,
-        user: chargeStation.user,
-        rating: ratingSum/count,
-        voted: voted
-      }
-   
-      return res.status(200).json({
-        success: true,
-        data: newObect,
-      });
+    return res.status(200).json({
+      success: true,
+      data: newObect,
+    });
 
   } catch (error) {
     next(error);
@@ -136,11 +142,15 @@ exports.getAllChargeStation = async (_, res, next) => {
 
     var output = []
     for (var chargeStation of chargeStations) {
-
+      var voted = -1;
       const ratings = await Rating.find({ chargeStation: chargeStation._id })
       var ratingSum = 0;
       for (var i = 0; i < ratings.length; i++) {
         ratingSum += ratings[i].rating
+
+        if (ratings[i].user === req.user_id){
+          voted = ratings[i].rating
+        }
       }
       console.log(ratingSum)
 
@@ -149,10 +159,7 @@ exports.getAllChargeStation = async (_, res, next) => {
         count = 1;
       }
 
-      var voted = false;
-      if (chargeStation.user === req.user_id) {
-        voted = true
-      }
+
 
       var newObect = {
         _id: chargeStation._id,
@@ -198,8 +205,12 @@ exports.getMyChargeStations = async (req, res, next) => {
 
       const ratings = await Rating.find({ chargeStation: chargeStation._id })
       var ratingSum = 0;
+      var voted = -1;
       for (var i = 0; i < ratings.length; i++) {
         ratingSum += ratings[i].rating
+        if (ratings[i].user === req.user_id){
+          voted = ratings[i].rating
+        }
       }
       console.log(ratingSum)
 
@@ -208,10 +219,7 @@ exports.getMyChargeStations = async (req, res, next) => {
         count = 1;
       }
 
-      var voted = false;
-      if (chargeStation.user === req.user_id) {
-        voted = true
-      }
+
 
       var newObect = {
         _id: chargeStation._id,
@@ -256,19 +264,18 @@ exports.getNearChargeStations = async (req, res, next) => {
 
       const ratings = await Rating.find({ chargeStation: chargeStation._id })
       var ratingSum = 0;
+      var voted = -1;
       for (var i = 0; i < ratings.length; i++) {
         ratingSum += ratings[i].rating
+        if (ratings[i].user === req.user_id){
+          voted = ratings[i].rating
+        }
       }
       console.log(ratingSum)
 
       var count = ratings.length
       if (count === 0) {
         count = 1;
-      }
-
-      var voted = false;
-      if (chargeStation.user === req.user_id) {
-        voted = true
       }
 
       var newObect = {
@@ -380,7 +387,7 @@ exports.commentChargeStation = async (req, res, next) => {
     "chargeStation": req.body.chargeStation
   }
 
-  if (!req.body.chargeStation || req.body.description) {
+  if (!req.body.chargeStation || !req.body.description) {
     return next(new AppError("Request body is missing", 400));
   }
 
@@ -388,7 +395,6 @@ exports.commentChargeStation = async (req, res, next) => {
   try {
     // create comment
     const createComment = await Comment.create(comment);
-
     return res.status(200).json({
       data: createComment,
       success: true,
@@ -401,54 +407,54 @@ exports.commentChargeStation = async (req, res, next) => {
 
 // delete comment 
 exports.deleteComment = async (req, res, next) => {
-  
-    const commentId = req.body.commentId;
-  
-    if (!commentId) {
-      return next(new AppError("Request body is missing", 400));
-    }
 
-    try { 
-      // delete comment
-      const comment = await Comment.findByIdAndDelete(commentId);
-  
-      return res.status(200).json({
-        data: comment,
-        success: true,
-      });
+  const commentId = req.body.commentId;
 
-    }
-    catch (error) {
-      next(new AppError("Server Error", 500));
-    }
-  };
-
-  // update comment
-  exports.updateComment = async (req, res, next) => {
-    const commentId = req.body.commentId;
-    const description = req.body.description;
-
-    if (!commentId || !description) {
-      return next(new AppError("Request body is missing", 400));
-    }
-
-    try {
-      // update comment
-      const comment = await Comment.findByIdAndUpdate(
-        commentId,
-        req.body,
-        {
-          runValidators: true,
-          new: true,
-        });
-  
-      return res.status(200).json({
-        data: comment,
-        success: true,
-      });
-
-    } catch (error) {
-      next(new AppError("Server Error", 500));
-    }
-    
+  if (!commentId) {
+    return next(new AppError("Request body is missing", 400));
   }
+
+  try {
+    // delete comment
+    const comment = await Comment.findByIdAndDelete(commentId);
+
+    return res.status(200).json({
+      data: comment,
+      success: true,
+    });
+
+  }
+  catch (error) {
+    next(new AppError("Server Error", 500));
+  }
+};
+
+// update comment
+exports.updateComment = async (req, res, next) => {
+  const commentId = req.body.commentId;
+  const description = req.body.description;
+
+  if (!commentId || !description) {
+    return next(new AppError("Request body is missing", 400));
+  }
+
+  try {
+    // update comment
+    const comment = await Comment.findByIdAndUpdate(
+      commentId,
+      req.body,
+      {
+        runValidators: true,
+        new: true,
+      });
+
+    return res.status(200).json({
+      data: comment,
+      success: true,
+    });
+
+  } catch (error) {
+    next(new AppError("Server Error", 500));
+  }
+
+}

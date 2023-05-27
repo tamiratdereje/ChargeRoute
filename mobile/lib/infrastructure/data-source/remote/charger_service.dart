@@ -23,7 +23,7 @@ class RemoteChargerSource {
 
   Future<ChargerDto> getCharger(String id) async {
     final response = await httpClient.get('chargeStation/$id');
-    return ChargerDto.fromJson(json.decode(response.body));
+    return ChargerDto.fromJson(json.decode(response.body)["data"]);
   }
 
   Future<List<ChargerDto>> getChargersByAddress(String address) {

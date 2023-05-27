@@ -11,6 +11,8 @@ class ChargerDetailStateLoaded extends ChargerDetailState {
   ChargerDetailStateLoaded(this.charger);
 }
 
+class ChargerDetailStateChargerDeleted extends ChargerDetailState {}
+
 class ChargerDetailStateError extends ChargerDetailState {
   final String message;
 

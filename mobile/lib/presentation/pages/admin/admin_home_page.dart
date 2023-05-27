@@ -34,8 +34,8 @@ class _AdminHomePageState extends State<AdminHomePage> {
               backgroundColor: Colors.red,
             ),
           );
-        } else if (state is AdminLoadingState){
-           ScaffoldMessenger.of(context).showSnackBar(
+        } else if (state is AdminLoadingState) {
+          ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text("Users are loading "),
               backgroundColor: const Color.fromARGB(255, 6, 24, 6),
@@ -44,41 +44,48 @@ class _AdminHomePageState extends State<AdminHomePage> {
         }
       },
       builder: (context, state) {
-        
-        if (state is AdminSuccessState){
-
-          
-
+        if (state is AdminSuccessState) {
           return Scaffold(
-            appBar: CHSAppBar.build(context, "All Users", () {}, false),
-            body: ListView.builder(
-                itemCount: state.adminDomains.length,
-                itemBuilder: (context, index) {
-                  return UserCard(
-                    adminDomain: AdminDomain(
-                      id: state.adminDomains[index].id,
-                        email: state.adminDomains[index].email, name: state.adminDomains[index].name, role: state.adminDomains[index].role),
-                    onEdit: (value) {
-                      BlocProvider.of<AdminBloc>(context)
-                          .add(AdminUpdateUserEvent(adminDomains: state.adminDomains,adminDomain: value));
-                    },
-                    onDelete: (value) {
-                      BlocProvider.of<AdminBloc>(context)
-                          .add(AdminDeleteUserEvent(adminDomains: state.adminDomains, id: value));
-                    },
-                  );
-                })); 
-
-        } else if (state is AdminLoadingState){
-          
-          return Scaffold(body: Center(child: CircularProgressIndicator(color: const Color.fromARGB(255, 238, 147, 141), strokeWidth: 3, backgroundColor: const Color.fromARGB(255, 0, 253, 8),),),);
-
+              appBar: CHSAppBar.build(context, "All Users", () {}, false),
+              body: ListView.builder(
+                  itemCount: state.adminDomains.length,
+                  itemBuilder: (context, index) {
+                    return UserCard(
+                      adminDomain: AdminDomain(
+                          id: state.adminDomains[index].id,
+                          email: state.adminDomains[index].email,
+                          name: state.adminDomains[index].name,
+                          role: state.adminDomains[index].role),
+                      onEdit: (value) {
+                        BlocProvider.of<AdminBloc>(context).add(
+                            AdminUpdateUserEvent(
+                                adminDomains: state.adminDomains,
+                                adminDomain: value));
+                      },
+                      onDelete: (value) {
+                        BlocProvider.of<AdminBloc>(context).add(
+                            AdminDeleteUserEvent(
+                                adminDomains: state.adminDomains, id: value));
+                      },
+                    );
+                  }));
+        } else if (state is AdminLoadingState) {
+          return Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(
+                color: const Color.fromARGB(255, 238, 147, 141),
+                strokeWidth: 3,
+                backgroundColor: const Color.fromARGB(255, 0, 253, 8),
+              ),
+            ),
+          );
         } else {
-          
-
-          return Scaffold(body: Center(child: Text("Error while fetching "),),);
+          return Scaffold(
+            body: Center(
+              child: Text("Error while fetching "),
+            ),
+          );
         }
-        
       },
     );
   }
@@ -149,7 +156,6 @@ class UserCard extends StatelessWidget {
                         previousEmail: adminDomain.email,
                         previousName: adminDomain.name,
                         previousRole: adminDomain.role,
-
                       );
                     },
                   ))!;
@@ -164,7 +170,8 @@ class UserCard extends StatelessWidget {
                   size: 15,
                 ),
                 onPressed: () {
-                  showDeleteUserConfirmation(context, 'JohnDoe', onDelete(adminDomain.id) );                  
+                  showDeleteUserConfirmation(
+                      context, 'JohnDoe', onDelete(adminDomain.id));
                 },
               )
             ],
@@ -174,7 +181,6 @@ class UserCard extends StatelessWidget {
     );
   }
 }
-
 
 class DeleteUserConfirmationDialog extends StatelessWidget {
   final String username;
@@ -206,23 +212,22 @@ class DeleteUserConfirmationDialog extends StatelessWidget {
   }
 }
 
-
-void showDeleteUserConfirmation(BuildContext context, String username, Function() onDelete) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return DeleteUserConfirmationDialog(
-          username: username,
-          onConfirm: () {
-            // Delete user logic
-            // You can perform the deletion operation here
-            // For demonstration purposes, let's just print a message
-            print('User $username deleted.');
-            onDelete();
-            Navigator.of(context).pop();
-
-          },
-        );
-      },
-    );
-  }
+void showDeleteUserConfirmation(
+    BuildContext context, String username, Function() onDelete) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return DeleteUserConfirmationDialog(
+        username: username,
+        onConfirm: () {
+          // Delete user logic
+          // You can perform the deletion operation here
+          // For demonstration purposes, let's just print a message
+          print('User $username deleted.');
+          onDelete();
+          Navigator.of(context).pop();
+        },
+      );
+    },
+  );
+}

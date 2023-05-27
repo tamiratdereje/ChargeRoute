@@ -1,15 +1,16 @@
 import 'dart:convert';
 
 import '../../../utils/custom_http_client.dart';
+import '../../dto/review_dto.dart';
 
 class RemoteReviewSource {
   final CustomHttpClient httpClient;
 
   RemoteReviewSource(this.httpClient);
 
-  Future<void> addReview(String chargerId, String review) async {
-    httpClient.post(
-      '/chargeStation/comment',
+  Future<ReviewDto> addReview(String chargerId, String review) async {
+    var response = await httpClient.post(
+      'chargeStation/comment',
       body: json.encode(
         {
           'description': review,
@@ -17,18 +18,23 @@ class RemoteReviewSource {
         },
       ),
     );
+    return ReviewDto.fromJson(json.decode(response.body)["data"]);
   }
 
-  Future<void> deleteReview(String chargerId, String reviewId) async {
-    httpClient.delete('/chargeStation/$chargerId/comment/$reviewId');
+  Future<void> deleteReview(String reviewId) async {
+    httpClient.delete('chargeStation/comment',
+        body: json.encode({
+          "commentId": reviewId,
+        }));
   }
 
   Future<void> editReview(
       String chargerId, String reviewId, String review) async {
-    httpClient.put(
-      '/chargeStation/$chargerId/comment/$reviewId',
+    httpClient.patch(
+      'chargeStation/comment',
       body: json.encode({
         'description': review,
+        "commentId": reviewId,
       }),
     );
   }

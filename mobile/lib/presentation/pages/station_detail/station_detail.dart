@@ -3,6 +3,7 @@ import 'package:charge_station_finder/domain/review/review.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../application/auth/auth_bloc.dart';
 import '../../../domain/charger/charger_detail.dart';
 
 class StationDetail extends StatefulWidget {
@@ -24,13 +25,20 @@ class _StationDetailState extends State<StationDetail> {
     rating: -1,
     wattage: -1,
     reviews: [],
+    hasUserRated: false,
+    user: "",
+    userVote: -1,
   );
+
+  String id = "6464b5757c6df924fab36901";
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          ChargerDetailBloc()..add(ChargerDetailEventLoad("1")),
+      create: (context) => ChargerDetailBloc(
+        chargerRepository: context.read(),
+        reviewRepository: context.read(),
+      )..add(ChargerDetailEventLoad(id)),
       child: BlocConsumer<ChargerDetailBloc, ChargerDetailState>(
         listener: (context, state) {
           isLoaded |= state is ChargerDetailStateLoaded;
@@ -44,6 +52,31 @@ class _StationDetailState extends State<StationDetail> {
           return Scaffold(
             appBar: AppBar(
               title: const Text('Station Detail'),
+              actions: (isLoaded &&
+                      detail.user ==
+                          (context.read<AuthenticationBloc>().state
+                                  as AuthenticationStateAuthenticated)
+                              .userData!
+                              .user
+                              .id)
+                  ? [
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () {
+                          Navigator.of(context).pushNamed('/edit-station');
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () {
+                          context
+                              .read<ChargerDetailBloc>()
+                              .add(ChargerDetailEventDeleteCharger(detail.id));
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ]
+                  : [],
             ),
             body: SingleChildScrollView(
               child: Column(
@@ -121,7 +154,7 @@ class _StationDetailState extends State<StationDetail> {
                           ReviewHeader(
                             onPost: (content) {
                               context.read<ChargerDetailBloc>().add(
-                                  ChargerDetailEventPostReview("1", content));
+                                  ChargerDetailEventPostReview(id, content));
                             },
                           ),
                           const SizedBox(height: 16),
@@ -218,29 +251,35 @@ class _ReviewCardState extends State<ReviewCard> {
                       ),
                     ],
                   ),
-                  PopupMenuButton(
-                    itemBuilder: (context) {
-                      return [
-                        if (widget.currentEditReviewId == null)
+                  if ((context.read<AuthenticationBloc>().state
+                              as AuthenticationStateAuthenticated)
+                          .userData!
+                          .user
+                          .id ==
+                      widget.review.userId)
+                    PopupMenuButton(
+                      itemBuilder: (context) {
+                        return [
+                          if (widget.currentEditReviewId == null)
+                            const PopupMenuItem(
+                              value: 1,
+                              child: Text("Edit"),
+                            ),
                           const PopupMenuItem(
-                            value: 1,
-                            child: Text("Edit"),
+                            value: 2,
+                            child: Text("Delete"),
                           ),
-                        const PopupMenuItem(
-                          value: 2,
-                          child: Text("Delete"),
-                        ),
-                      ];
-                    },
-                    onSelected: (value) {
-                      if (value == 1) {
-                        editReviewController.text = widget.review.content;
-                        widget.setEditReviewId(widget.review.id);
-                      } else if (value == 2) {
-                        widget.onDeleteReview();
-                      }
-                    },
-                  )
+                        ];
+                      },
+                      onSelected: (value) {
+                        if (value == 1) {
+                          editReviewController.text = widget.review.content;
+                          widget.setEditReviewId(widget.review.id);
+                        } else if (value == 2) {
+                          widget.onDeleteReview();
+                        }
+                      },
+                    )
                 ],
               ),
               const SizedBox(height: 8),

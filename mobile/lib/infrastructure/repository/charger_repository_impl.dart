@@ -10,7 +10,6 @@ import 'package:charge_station_finder/infrastructure/data-source/local/database.
 import 'package:charge_station_finder/infrastructure/dto/charger_dto.dart';
 import 'package:charge_station_finder/utils/custom_http_client.dart';
 import 'package:dartz/dartz.dart';
-import 'package:flutter/widgets.dart';
 
 import '../data-source/remote/charger_service.dart';
 
@@ -27,15 +26,8 @@ class ChargerRepositoryImpl extends ChargerRepositoryInterface {
   Future<Either<Failure, void>> addCharger(ChargerForm form) async {
     try {
       await remoteChargerSource.addCharger(
-        ChargerDto(
-          null,
-          form.name,
-          form.description,
-          form.address,
-          form.phone,
-          form.wattage,
-          null,
-        ),
+        ChargerDto(null, form.name, form.description, form.address, form.phone,
+            form.wattage, null, -1, null, const []),
       );
       return right(null);
     } on ServerException catch (e) {
@@ -64,8 +56,16 @@ class ChargerRepositoryImpl extends ChargerRepositoryInterface {
   @override
   Future<Either<Failure, void>> editCharger(ChargerForm form, String id) async {
     try {
-      await remoteChargerSource.editCharger(ChargerDto(id, form.name,
-          form.description, form.address, form.phone, form.wattage, null));
+      await remoteChargerSource.editCharger(ChargerDto(
+          id,
+          form.name,
+          form.description,
+          form.address,
+          form.phone,
+          form.wattage,
+          null,
+          -1,
+          null, const []));
       return right(null);
     } on ServerException catch (e) {
       return left(Failure(e.message));
@@ -88,7 +88,10 @@ class ChargerRepositoryImpl extends ChargerRepositoryInterface {
           address: value.address,
           rating: value.rating!,
           wattage: value.wattage,
-          reviews: [],
+          reviews: value.reviews.map((e) => e.toDomain()).toList(),
+          hasUserRated: value.hasUserRated,
+          userVote: value.userVote,
+          user: value.user!,
         ));
       });
     } on ServerException catch (e) {

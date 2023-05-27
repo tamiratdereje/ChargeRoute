@@ -9,6 +9,10 @@ router.route("/")
     .post(protect, authorize("provider"), chargeStationController.createChargeStation)
     .get(protect, chargeStationController.getMyChargeStations)
 
+router.route("/comment")
+    .post(protect, chargeStationController.commentChargeStation)
+    .delete(protect, chargeStationController.deleteComment)
+    .patch(protect, chargeStationController.updateComment)
 
 router.route("/:id")
     .get(protect, chargeStationController.getChargeStation)
@@ -23,10 +27,5 @@ router.route("/rate")
 
 router.route("/search")
     .post(chargeStationController.getNearChargeStations)
-
-router.route("/comment")
-    .post(protect, chargeStationController.commentChargeStation)
-    .delete(protect, chargeStationController.deleteComment)
-    .patch(protect, chargeStationController.updateComment)
 
 module.exports = router;
