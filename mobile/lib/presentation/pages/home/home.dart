@@ -5,11 +5,14 @@ import 'package:charge_station_finder/presentation/pages/home/widgets/charger_ti
 import 'package:charge_station_finder/presentation/pages/home/widgets/filter_dialog.dart';
 import 'package:charge_station_finder/presentation/pages/home/widgets/nearby_header.dart';
 import 'package:charge_station_finder/presentation/pages/home/widgets/searchField.dart';
+import 'package:charge_station_finder/presentation/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class HomePage extends StatefulWidget {
   static const String route = "/home";
+
   const HomePage({super.key});
 
   @override
@@ -27,11 +30,12 @@ class _HomePageState extends State<HomePage> {
         return Scaffold(
           appBar: CHSAppBar.build(context, "Home", () {}, false),
           floatingActionButton: (context.read<AuthenticationBloc>().state
-                      as AuthenticationStateUserAuthenticated?) !=
-                  null
+                  is AuthenticationStateUserAuthenticated)
               ? null
               : FloatingActionButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    context.push(AppRoutes.AddStation);
+                  },
                   child: const Icon(Icons.add),
                 ),
           body: Column(
