@@ -106,10 +106,6 @@ exports.getChargeStation = async (req, res, next) => {
       count = 1;
     }
 
-    var voted = false;
-    if (chargeStation.user === req.user_id) {
-      voted = true
-    }
     console.log(chargeStation);
     var newObect = {
       _id: chargeStation._id,

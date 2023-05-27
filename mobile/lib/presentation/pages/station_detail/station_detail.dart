@@ -7,7 +7,9 @@ import '../../../application/auth/auth_bloc.dart';
 import '../../../domain/charger/charger_detail.dart';
 
 class StationDetail extends StatefulWidget {
-  const StationDetail({super.key});
+  final String id;
+
+  const StationDetail({super.key, required this.id});
 
   @override
   _StationDetailState createState() => _StationDetailState();
@@ -30,15 +32,13 @@ class _StationDetailState extends State<StationDetail> {
     userVote: -1,
   );
 
-  String id = "6464b5757c6df924fab36901";
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => ChargerDetailBloc(
         chargerRepository: context.read(),
         reviewRepository: context.read(),
-      )..add(ChargerDetailEventLoad(id)),
+      )..add(ChargerDetailEventLoad(widget.id)),
       child: BlocConsumer<ChargerDetailBloc, ChargerDetailState>(
         listener: (context, state) {
           isLoaded |= state is ChargerDetailStateLoaded;
@@ -154,7 +154,8 @@ class _StationDetailState extends State<StationDetail> {
                           ReviewHeader(
                             onPost: (content) {
                               context.read<ChargerDetailBloc>().add(
-                                  ChargerDetailEventPostReview(id, content));
+                                  ChargerDetailEventPostReview(
+                                      widget.id, content));
                             },
                           ),
                           const SizedBox(height: 16),

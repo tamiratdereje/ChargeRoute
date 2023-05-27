@@ -11,9 +11,9 @@ part 'admin_event.dart';
 part 'admin_state.dart';
 
 class AdminBloc extends Bloc<AdminEvent, AdminState> {
-  AdminRepository adminRepository = AdminRepository();
+  AdminRepository adminRepository;
 
-  AdminBloc() : super(AdminLoadingState()) {
+  AdminBloc({required this.adminRepository}) : super(AdminLoadingState()) {
 
 
     on<AdminCreateUserEvent>(((event, emit) async{

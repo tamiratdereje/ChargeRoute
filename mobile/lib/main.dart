@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'domain/contracts/IAuthRepository.dart';
+import 'infrastructure/admin/admin_repository.dart';
 import 'infrastructure/repository/authRepository.dart';
 import 'infrastructure/repository/charger_repository_impl.dart';
 import 'infrastructure/repository/review_repository_impl.dart';
@@ -38,6 +39,8 @@ class MyApp extends StatelessWidget {
     var authenticationRepository =
         AuthenticationRepository(httpClient: httpClient);
 
+    var adminRepository = AdminRepository();
+
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<ReviewRepositoryInterface>(
@@ -46,7 +49,8 @@ class MyApp extends StatelessWidget {
             create: (context) => chargerRepository),
         RepositoryProvider<IAuthenticationRepository>(
           create: (context) => authenticationRepository,
-        )
+        ),
+        
       ],
       child: MultiBlocProvider(
           providers: [
@@ -55,7 +59,7 @@ class MyApp extends StatelessWidget {
                   HomeBloc(chargerRepository: chargerRepository),
             ),
             BlocProvider<AdminBloc>(
-              create: (context) => AdminBloc()..add(AdminGetUsersEvent()),
+              create: (context) => AdminBloc(adminRepository: adminRepository)..add(AdminGetUsersEvent()),
             ),
             BlocProvider<AuthenticationBloc>(
                 create: (context) =>

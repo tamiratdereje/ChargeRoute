@@ -1,10 +1,13 @@
+import 'package:charge_station_finder/presentation/routes/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ChargerTile extends StatelessWidget {
   final String name;
   final String address;
   final double rating;
   final double wattage;
+  final String id;
 
   const ChargerTile({
     super.key,
@@ -12,6 +15,7 @@ class ChargerTile extends StatelessWidget {
     this.address = "Address",
     this.rating = 4.5,
     this.wattage = 50,
+    required this.id,
   });
 
   @override
@@ -19,7 +23,10 @@ class ChargerTile extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.fromLTRB(20, 10, 20, 0),
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          context
+              .pushNamed(AppRoutes.StationDetails, queryParameters: {"id": id});
+        },
         borderRadius: BorderRadius.circular(10),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
