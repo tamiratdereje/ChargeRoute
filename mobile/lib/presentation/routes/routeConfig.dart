@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:charge_station_finder/application/auth/auth_bloc.dart';
 import 'package:charge_station_finder/presentation/pages/admin/admin_add_users.dart';
 import 'package:charge_station_finder/presentation/pages/admin/admin_home_page.dart';
@@ -33,6 +35,11 @@ class RouterMain extends StatelessWidget {
       AppRoutes.UserAndProviderHomePage
     ];
 
+    const adminOnlyRoutes = [
+      AppRoutes.AdminHomePage,
+      AppRoutes.AdminAddUsers,
+    ];
+
     const providerOnlyRoutes = [AppRoutes.AddStation, ...userOnlyRoutes];
 
     if (authState is AuthenticationStateUnauthenticated) {
@@ -51,6 +58,12 @@ class RouterMain extends StatelessWidget {
       if (state.location == AppRoutes.Home ||
           state.location == AppRoutes.Login) {
         return AppRoutes.UserAndProviderHomePage;
+      }
+      return null;
+    } else if (authState is AuthenticationStateAdminAuthenticated) {
+      if (state.location == AppRoutes.AdminHomePage ||
+          state.location == AppRoutes.Login) {
+        return AppRoutes.AdminHomePage;
       }
       return null;
     }
