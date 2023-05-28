@@ -40,7 +40,7 @@ class ChargerDto extends Equatable {
       json['description'],
       json['address'],
       json['phone'],
-      (json['wattage'] as double?) ?? -1000,
+      ( json['wattage']!.toDouble()) ?? -1000.0,
       json['rating']!.toDouble(),
       json['voted'],
       json['user'],

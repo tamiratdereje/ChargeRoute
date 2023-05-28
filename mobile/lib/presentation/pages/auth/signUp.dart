@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../application/auth/auth_bloc.dart';
 import '../../../domain/auth/models/signUpForm.dart';
+import '../../routes/routes.dart';
 import '../core/widgets/appBar.dart';
 import '../core/widgets/formField.dart';
 import '../core/widgets/primaryButton.dart';
@@ -43,6 +45,7 @@ class _SignUpState extends State<SignUp> {
             const snackBar = SnackBar(
                 backgroundColor: Colors.green, content: Text('Success'));
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            context.go(AppRoutes.Login);
           } else if (state is AuthenticationLoading) {
             const loading = SnackBar(
                 content: Center(
@@ -89,7 +92,14 @@ class _SignUpState extends State<SignUp> {
                     const SizedBox(
                       height: 120,
                     ),
-                    PrimaryButton(text: "Sign Up", onPressed: dispatchSignUp)
+                    PrimaryButton(text: "Sign Up", onPressed: dispatchSignUp),
+                    SizedBox(
+                      height: 20,),
+                    Center(
+                      child: GestureDetector(child: Text('Login'), onTap: () {
+                        context.go(AppRoutes.Login);
+                      }),
+                    )
                   ]),
             ),
           ),

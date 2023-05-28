@@ -31,7 +31,6 @@ class ProfilePage extends StatelessWidget {
             SnackBar(backgroundColor: Colors.green, content: Text('Success'));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       } else if (state is LogoutSucceed || state is DeleteAccountSucceed) {
-        sleep(const Duration(seconds: 3));
         context.go(AppRoutes.Login);
       } else if (state is AuthenticationLoading) {
         const loading = SnackBar(
@@ -130,7 +129,8 @@ class ProfilePage extends StatelessWidget {
                 appBar: CHSAppBar.build(context, "Profile", () {}, false),
                 body: const Center(
                   child: Text("Please login to view your profile"),
-                  // Todo redirect to login page
+                  
+                  
                 ),
               );
       },

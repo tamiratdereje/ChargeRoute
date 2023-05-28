@@ -42,7 +42,8 @@ class RouterMain extends StatelessWidget {
 
     const providerOnlyRoutes = [AppRoutes.AddStation, ...userOnlyRoutes];
 
-    if (authState is AuthenticationStateUnauthenticated) {
+   
+   if (authState is AuthenticationStateUnauthenticated) {
       if (unauthenticatedRoutes.contains(state.location)) {
         return null;
       }
@@ -73,13 +74,9 @@ class RouterMain extends StatelessWidget {
   RouterMain({required this.authBloc, Key? key}) : super(key: key) {
     _router = GoRouter(
       redirect: (context, state) => redirector(state),
-      initialLocation: AppRoutes.Home,
+      initialLocation: AppRoutes.Login,
       routes: <GoRoute>[
-        GoRoute(
-          path: AppRoutes.AdminHomePage,
-          pageBuilder: (context, state) =>
-              const MaterialPage(child: AdminHomePage()),
-        ),
+        
         GoRoute(
           path: AppRoutes.AdminAddUsers,
           pageBuilder: (context, state) =>
