@@ -95,9 +95,13 @@ class RouterMain extends StatelessWidget {
           },
         ),
         GoRoute(
+          name: AppRoutes.AddStation,
           path: AppRoutes.AddStation,
           pageBuilder: (context, state) {
-            return const MaterialPage(child: CreateStation());
+            return MaterialPage(
+                child: CreateStation(
+              id: state.queryParameters["id"],
+            ));
           },
         ),
         GoRoute(

@@ -1,20 +1,14 @@
 import 'package:charge_station_finder/application/admin/admin_bloc.dart';
 import 'package:charge_station_finder/application/auth/auth_bloc.dart';
-import 'package:charge_station_finder/application/create_station/create_station_bloc.dart';
 import 'package:charge_station_finder/application/home/home_bloc.dart';
 import 'package:charge_station_finder/domain/charger/charger_repository_interface.dart';
 import 'package:charge_station_finder/domain/contracts/IAuthRepository.dart';
-import 'package:charge_station_finder/presentation/pages/auth/signIn.dart';
-import 'package:charge_station_finder/presentation/pages/auth/signUp.dart';
-import 'package:charge_station_finder/presentation/pages/create_station/createStation.dart';
-import 'package:charge_station_finder/presentation/pages/profile/profile.dart';
 import 'package:charge_station_finder/domain/review/review_repository_interface.dart';
 import 'package:charge_station_finder/presentation/routes/routeConfig.dart';
 import 'package:charge_station_finder/utils/custom_http_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'domain/contracts/IAuthRepository.dart';
 import 'infrastructure/admin/admin_repository.dart';
 import 'infrastructure/repository/authRepository.dart';
 import 'infrastructure/repository/charger_repository_impl.dart';
@@ -25,10 +19,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-
-
-  const MyApp(
-      {super.key});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +41,6 @@ class MyApp extends StatelessWidget {
         RepositoryProvider<IAuthenticationRepository>(
           create: (context) => authenticationRepository,
         ),
-        
       ],
       child: MultiBlocProvider(
           providers: [
@@ -59,15 +49,13 @@ class MyApp extends StatelessWidget {
                   HomeBloc(chargerRepository: chargerRepository),
             ),
             BlocProvider<AdminBloc>(
-              create: (context) => AdminBloc(adminRepository: adminRepository)..add(AdminGetUsersEvent()),
+              create: (context) => AdminBloc(adminRepository: adminRepository)
+                ..add(AdminGetUsersEvent()),
             ),
             BlocProvider<AuthenticationBloc>(
                 create: (context) =>
                     AuthenticationBloc(authRepository: authenticationRepository)
                       ..add(GetUserAuthCredentialEvent())),
-            BlocProvider<CreateStationBloc>(
-              create: (context) => CreateStationBloc(chargerRepository),
-            )
           ],
           child: BlocConsumer<AuthenticationBloc, AuthenticationState>(
               listener: (_, state) {

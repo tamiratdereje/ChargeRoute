@@ -9,6 +9,12 @@ class CreateStationLoading extends CreateStationState {}
 
 class CreateStationSuccess extends CreateStationState {}
 
+class CreateStationLoaded extends CreateStationState {
+  final ChargerDetail stationDetail;
+
+  CreateStationLoaded({required this.stationDetail});
+}
+
 class CreateStationFailure extends CreateStationState {
   final String message;
 

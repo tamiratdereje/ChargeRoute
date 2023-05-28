@@ -17,7 +17,7 @@ class RemoteChargerSource {
   }
 
   Future<void> editCharger(ChargerDto form) async {
-    httpClient.put('chargeStation/${form.id!}',
+    httpClient.patch('chargeStation/${form.id!}',
         body: json.encode(form.toJson()));
   }
 
