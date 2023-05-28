@@ -20,7 +20,7 @@ class ReviewDto {
         content: json['description'],
         userId: json['commentor'],
         chargerId: json['chargeStation'],
-        userName: json['name'] ?? 'Anonymous');
+        userName: json['name'] ?? 'You');
   }
 
   factory ReviewDto.fromEntity(Map<String, dynamic> queryResult) {
@@ -29,7 +29,7 @@ class ReviewDto {
         content: queryResult['description'],
         userId: queryResult['userId'],
         chargerId: queryResult['chargerId'],
-        userName: queryResult['userName'] ?? 'Anonymous');
+        userName: queryResult['userName'] ?? 'You');
   }
 
   Map<String, dynamic> toEntity() {
