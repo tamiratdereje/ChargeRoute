@@ -91,7 +91,7 @@ const getChargeStationByIdFromDb = async (id, user_id) => {
     path: 'comments'
   });
 
-  
+
   var ratingSum = 0;
 
   const ratings = await Rating.find({ chargeStation: chargeStation._id })
@@ -103,7 +103,7 @@ const getChargeStationByIdFromDb = async (id, user_id) => {
       voted = ratings[i].rating
     }
   }
-  
+
   console.log(ratingSum)
 
   var count = ratings.length
@@ -114,21 +114,21 @@ const getChargeStationByIdFromDb = async (id, user_id) => {
 
   for (var i = 0; i < chargeStation.comments.length; i += 1) {
     var commentor = await getUserByid(chargeStation.comments[i].commentor)
-    if (commentor){
+    if (commentor) {
 
       var new_single_comments = {
         "name": commentor.name,
-        "commentor" : chargeStation.comments[i].commentor,
-        "description" : chargeStation.comments[i].description,
-        "_id" : chargeStation.comments[i]._id,
-        "chargeStation" : chargeStation.comments[i].chargeStation
+        "commentor": chargeStation.comments[i].commentor,
+        "description": chargeStation.comments[i].description,
+        "_id": chargeStation.comments[i]._id,
+        "chargeStation": chargeStation.comments[i].chargeStation
       }
 
       new_comments.push(new_single_comments)
     }
-    
+
   }
-  
+
 
   console.log(chargeStation);
   return {
@@ -354,7 +354,19 @@ exports.rateChargeStation = async (req, res, next) => {
     const prevRating = await Rating.findOne({ chargeStation: req.body.chargeStation, user: req.body.user });
 
     if (prevRating) {
-      return next(new AppError("You have already rated this one"))
+      // update rating
+      const rating = await Rating.findByIdAndUpdate(
+        prevRating._id,
+        req.body,
+        {
+          runValidators: true,
+          new: true,
+        });
+
+      return res.status(200).json({
+        data: await getChargeStationByIdFromDb(req.body.chargeStation, req.user_id),
+        success: true,
+      });
     }
     // create rating
     const rating = await Rating.create(req.body);
