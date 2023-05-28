@@ -72,7 +72,11 @@ class ChargerTile extends StatelessWidget {
                           color: Colors.grey,
                         ),
                       ),
-                      const SizedBox(width: 10),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Row(
+                    children: [
                       const Icon(
                         Icons.star,
                         size: 15,
