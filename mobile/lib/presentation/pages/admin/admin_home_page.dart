@@ -170,8 +170,7 @@ class UserCard extends StatelessWidget {
                   size: 15,
                 ),
                 onPressed: () {
-                  showDeleteUserConfirmation(
-                      context, 'JohnDoe', onDelete(adminDomain.id));
+                  onDelete(adminDomain.id);
                 },
               )
             ],

@@ -55,61 +55,42 @@ class _AdminAddUserState extends State<AdminAddUser> {
                 text: "Full Name",
               ),
               CSFFormField(
-                  controller: _fullNameController,
-                  obscureText: false,
-                  hintText: "Yeab Solomon",
-                  onChanged: (value) {
-                    setState(() {
-                      _fullNameController.text = value;
-                    });
-                  },
-                  fieldName: "Name"
-                  ),
+                controller: _fullNameController,
+                obscureText: false,
+                hintText: "Yeab Solomon",
+                fieldName: "Name",
+                onChanged: () {},
+              ),
               const InputFieldHeader(
                 text: "Email",
               ),
               CSFFormField(
-                  controller: _emailController,
-                  obscureText: false,
-                  hintText: "yeab@gmail.com",
-                  onChanged: (value) {
-                    setState(() {
-                      _emailController.text = value;
-                    });
-                  },
-                  fieldName: "Email"
-                  
-                  ),
+                controller: _emailController,
+                obscureText: false,
+                hintText: "yeab@gmail.com",
+                fieldName: "Email",
+                onChanged: () {},
+              ),
               const InputFieldHeader(
                 text: "Role",
               ),
               CSFFormField(
-
-                  controller: _roleController,
-                  obscureText: false,
-                  hintText: "User or Provider",
-                  onChanged: (value) {
-                    setState(() {
-                      _roleController.text = value;
-                    });
-                  },
-                  fieldName: "role",
-                  
-                  ),
+                controller: _roleController,
+                obscureText: false,
+                hintText: "User or Provider",
+                onChanged: (value) {},
+                fieldName: "role",
+              ),
               const InputFieldHeader(
                 text: "Password",
               ),
               CSFFormField(
-                  controller: _passwordController,
-                  obscureText: false,
-                  hintText: "yeab1234",
-                  onChanged: (value) {
-                    setState(() {
-                      _passwordController.text = value;
-                    });
-                  },
-                  fieldName: "Password"
-                  ),
+                controller: _passwordController,
+                obscureText: false,
+                hintText: "yeab1234",
+                fieldName: "Password",
+                onChanged: () {},
+              ),
               const SizedBox(
                 height: 40,
               ),
