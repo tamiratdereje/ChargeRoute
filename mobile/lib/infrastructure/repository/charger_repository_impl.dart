@@ -150,4 +150,32 @@ class ChargerRepositoryImpl extends ChargerRepositoryInterface {
       return left(Failure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, ChargerDetail>> rateCharger(
+      String id, double rating) async {
+    try {
+      var res = await remoteChargerSource.rateCharger(id, rating);
+      return right(ChargerDetail(
+        id: res.id!,
+        description: res.description,
+        phone: res.phone,
+        name: res.name,
+        address: res.address,
+        rating: res.rating!,
+        wattage: res.wattage,
+        reviews: res.reviews.map((e) => e.toDomain()).toList(),
+        hasUserRated: res.hasUserRated,
+        userVote: res.userVote,
+        user: res.user!,
+      ));
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
+    } on ApiException catch (e) {
+      return left(Failure(e.message));
+    } on Exception catch (e) {
+      debugPrint(e.toString());
+      return left(Failure(e.toString()));
+    }
+  }
 }

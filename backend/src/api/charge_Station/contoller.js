@@ -79,50 +79,51 @@ exports.deleteChargeStation = async (req, res, next) => {
   }
 };
 
+const getChargeStationByIdFromDb = async (id, user_id) => {
+  const chargeStation = await ChargeStation.findById(id).populate({
+    path: 'comments'
+  });
+  var ratingSum = 0;
+
+  const ratings = await Rating.find({ chargeStation: chargeStation._id })
+  var ratingSum = 0;
+  var voted = -1;
+  for (var i = 0; i < ratings.length; i++) {
+    ratingSum += ratings[i].rating
+    if (ratings[i].user === user_id) {
+      voted = ratings[i].rating
+    }
+  }
+  console.log(ratingSum)
+
+  var count = ratings.length
+  if (count === 0) {
+    count = 1;
+  }
+
+  console.log(chargeStation);
+  return {
+    _id: chargeStation._id,
+    name: chargeStation.name,
+    description: chargeStation.description,
+    phone: chargeStation.phone,
+    address: chargeStation.address,
+    user: chargeStation.user,
+    rating: ratingSum / count,
+    voted: voted,
+    comments: chargeStation.comments,
+    wattage: chargeStation.wattage,
+  };
+};
+
 
 
 // get chargeStation_
 exports.getChargeStation = async (req, res, next) => {
-
   try {
-    const chargeStation = await ChargeStation.findById(req.params.id).populate({
-      path: 'comments'
-    });
-    var ratingSum = 0;
-
-      const ratings = await Rating.find({chargeStation : chargeStation._id})
-      var ratingSum = 0;
-      var voted = -1;
-      for (var i = 0; i< ratings.length; i++){
-        ratingSum += ratings[i].rating
-        if (ratings[i].user === req.user_id){
-          voted = ratings[i].rating
-        }
-      }
-      console.log(ratingSum)
-
-    var count = ratings.length
-    if (count === 0) {
-      count = 1;
-    }
-
-    console.log(chargeStation);
-    var newObect = {
-      _id: chargeStation._id,
-      name: chargeStation.name,
-      description: chargeStation.description,
-      phone: chargeStation.phone,
-      address: chargeStation.address,
-      user: chargeStation.user,
-      rating: ratingSum / count,
-      voted: voted,
-      comments: chargeStation.comments,
-      wattage: chargeStation.wattage,
-    }
-
     return res.status(200).json({
       success: true,
-      data: newObect,
+      data: await getChargeStationByIdFromDb(req.params.id, req.user_id),
     });
 
   } catch (error) {
@@ -144,7 +145,7 @@ exports.getAllChargeStation = async (_, res, next) => {
       for (var i = 0; i < ratings.length; i++) {
         ratingSum += ratings[i].rating
 
-        if (ratings[i].user === req.user_id){
+        if (ratings[i].user === req.user_id) {
           voted = ratings[i].rating
         }
       }
@@ -204,7 +205,7 @@ exports.getMyChargeStations = async (req, res, next) => {
       var voted = -1;
       for (var i = 0; i < ratings.length; i++) {
         ratingSum += ratings[i].rating
-        if (ratings[i].user === req.user_id){
+        if (ratings[i].user === req.user_id) {
           voted = ratings[i].rating
         }
       }
@@ -254,7 +255,7 @@ exports.getNearChargeStations = async (req, res, next) => {
     }
 
     const chargeStations = await ChargeStation.find({ address: { $regex: address } }).populate({
-      path:'comments'
+      path: 'comments'
     });
 
     var output = []
@@ -265,7 +266,7 @@ exports.getNearChargeStations = async (req, res, next) => {
       var voted = -1;
       for (var i = 0; i < ratings.length; i++) {
         ratingSum += ratings[i].rating
-        if (ratings[i].user === req.user_id){
+        if (ratings[i].user === req.user_id) {
           voted = ratings[i].rating
         }
       }
@@ -329,7 +330,7 @@ exports.rateChargeStation = async (req, res, next) => {
     const rating = await Rating.create(req.body);
 
     return res.status(200).json({
-      data: rating,
+      data: await getChargeStationByIdFromDb(req.body.chargeStation, req.user_id),
       success: true,
     });
   } catch (error) {
@@ -365,7 +366,6 @@ exports.unRateChargeStation = async (req, res, next) => {
     }
 
     chargeStation.rating
-
 
 
     return res.status(200).json({

@@ -34,3 +34,10 @@ class ChargerDetailEventUpdateReview extends ChargerDetailEvent {
 
   ChargerDetailEventUpdateReview(this.reviewId, this.content);
 }
+
+class ChargerDetailEventRateCharger extends ChargerDetailEvent {
+  final String chargerId;
+  final double rating;
+
+  ChargerDetailEventRateCharger(this.chargerId, this.rating);
+}

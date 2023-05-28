@@ -1,5 +1,6 @@
 import 'package:charge_station_finder/application/charger_detail/charger_detail_bloc.dart';
 import 'package:charge_station_finder/domain/review/review.dart';
+import 'package:charge_station_finder/presentation/pages/station_detail/widgets/rating_bar.dart';
 import 'package:charge_station_finder/presentation/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -126,22 +127,17 @@ class _StationDetailState extends State<StationDetail> {
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                           const SizedBox(height: 8.0),
+                          RatingBar(
+                            rating: detail.rating,
+                            onRatingUpdate: (rating) {
+                              context.read<ChargerDetailBloc>().add(
+                                  ChargerDetailEventRateCharger(
+                                      widget.id, rating));
+                            },
+                          ),
+                          const SizedBox(height: 8),
                           Row(
                             children: [
-                              const Icon(
-                                Icons.star,
-                                size: 20,
-                                color: Colors.grey,
-                              ),
-                              const SizedBox(width: 2),
-                              Text(
-                                detail.rating.toStringAsFixed(1),
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              const SizedBox(width: 10),
                               const Icon(
                                 Icons.bolt,
                                 size: 20,
