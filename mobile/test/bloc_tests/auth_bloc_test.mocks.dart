@@ -17,7 +17,7 @@ import 'package:charge_station_finder/domain/contracts/IAuthRepository.dart'
     as _i3;
 import 'package:charge_station_finder/infrastructure/dto/userAuthCredential.dart'
     as _i6;
-import 'package:dartz/dartz.dart' as _i2;
+import 'package:charge_station_finder/utils/either.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint

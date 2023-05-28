@@ -17,7 +17,7 @@ import 'package:charge_station_finder/domain/charger/charger_repository_interfac
 import 'package:charge_station_finder/domain/review/review.dart' as _i10;
 import 'package:charge_station_finder/domain/review/review_repository_interface.dart'
     as _i9;
-import 'package:dartz/dartz.dart' as _i2;
+import 'package:charge_station_finder/utils/either.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -161,6 +161,32 @@ class MockChargerRepositoryInterface extends _i1.Mock
           ),
         )),
       ) as _i4.Future<_i2.Either<_i5.Failure, void>>);
+  @override
+  _i4.Future<_i2.Either<_i5.Failure, _i7.ChargerDetail>> rateCharger(
+    String? id,
+    double? rating,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #rateCharger,
+          [
+            id,
+            rating,
+          ],
+        ),
+        returnValue:
+            _i4.Future<_i2.Either<_i5.Failure, _i7.ChargerDetail>>.value(
+                _FakeEither_0<_i5.Failure, _i7.ChargerDetail>(
+          this,
+          Invocation.method(
+            #rateCharger,
+            [
+              id,
+              rating,
+            ],
+          ),
+        )),
+      ) as _i4.Future<_i2.Either<_i5.Failure, _i7.ChargerDetail>>);
 }
 
 /// A class which mocks [ReviewRepositoryInterface].

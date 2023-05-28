@@ -1,7 +1,7 @@
 import 'package:charge_station_finder/common/failure.dart';
 import 'package:charge_station_finder/domain/charger/charger.dart';
 import 'package:charge_station_finder/domain/charger/charger_form.dart';
-import 'package:dartz/dartz.dart';
+import 'package:charge_station_finder/utils/either.dart';
 
 import 'charger_detail.dart';
 

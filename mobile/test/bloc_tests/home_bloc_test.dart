@@ -2,11 +2,10 @@ import 'package:charge_station_finder/application/home/home_bloc.dart';
 import 'package:charge_station_finder/common/failure.dart';
 import 'package:charge_station_finder/domain/charger/charger.dart';
 import 'package:charge_station_finder/domain/charger/charger_repository_interface.dart';
-import 'package:dartz/dartz.dart';
-import 'package:flutter/foundation.dart';
+import 'package:charge_station_finder/utils/either.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 
 import 'charge_detail_bloc_test.mocks.dart';
 
@@ -56,9 +55,11 @@ void main() {
 
     final chargers = [charger1, charger2];
 
-    test('emits [HomeStateLoading, HomeStateSuccess] when charger search is successful', () {
-      final query = 'New York';
-      final minWattage = 50.0;
+    test(
+        'emits [HomeStateLoading, HomeStateSuccess] when charger search is successful',
+        () {
+      const query = 'New York';
+      const minWattage = 50.0;
 
       when(chargerRepository.getChargersByAddress(query)).thenAnswer((_) async {
         return Right(chargers);
@@ -75,9 +76,10 @@ void main() {
       bloc.add(HomeEventSearchSubmit(query, minWattage));
     });
 
-    test('emits [HomeStateLoading, HomeStateError] when charger search fails', () {
-      final query = 'New York';
-      final errorMessage = 'Failed to fetch chargers';
+    test('emits [HomeStateLoading, HomeStateError] when charger search fails',
+        () {
+      const query = 'New York';
+      const errorMessage = 'Failed to fetch chargers';
 
       when(chargerRepository.getChargersByAddress(query)).thenAnswer((_) async {
         return Left(Failure(errorMessage));

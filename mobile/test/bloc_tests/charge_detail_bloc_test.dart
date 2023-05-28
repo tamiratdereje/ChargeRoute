@@ -1,12 +1,12 @@
 import 'package:charge_station_finder/application/charger_detail/charger_detail_bloc.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
-import 'package:mockito/annotations.dart';
-import 'package:charge_station_finder/domain/charger/charger_repository_interface.dart';
-import 'package:charge_station_finder/domain/review/review_repository_interface.dart';
 import 'package:charge_station_finder/common/failure.dart';
 import 'package:charge_station_finder/domain/charger/charger_detail.dart';
-import 'package:dartz/dartz.dart';
+import 'package:charge_station_finder/domain/charger/charger_repository_interface.dart';
+import 'package:charge_station_finder/domain/review/review_repository_interface.dart';
+import 'package:charge_station_finder/utils/either.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 
 // Import the generated mock classes
 import 'charge_detail_bloc_test.mocks.dart';
@@ -31,7 +31,8 @@ void main() {
   });
 
   group('ChargerDetailBloc', () {
-    test('emits ChargerDetailStateLoaded when charger detail loading succeeds', () {
+    test('emits ChargerDetailStateLoaded when charger detail loading succeeds',
+        () {
       final chargerId = 'charger_123';
       final chargerDetail = ChargerDetail(
         id: chargerId,

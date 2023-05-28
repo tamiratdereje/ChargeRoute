@@ -6,8 +6,9 @@ import 'package:charge_station_finder/domain/contracts/IAuthRepository.dart';
 import 'package:charge_station_finder/infrastructure/dto/SignInDto.dart';
 import 'package:charge_station_finder/infrastructure/dto/userAuthCredential.dart';
 import 'package:charge_station_finder/utils/custom_http_client.dart';
-import 'package:dartz/dartz.dart';
+import 'package:charge_station_finder/utils/either.dart';
 import 'package:flutter/widgets.dart';
+
 import '../data-source/local/sharedPrefHelper.dart';
 import '../data-source/remote/authService.dart';
 import '../dto/SignUpDto.dart';

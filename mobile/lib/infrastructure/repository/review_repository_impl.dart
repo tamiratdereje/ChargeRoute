@@ -1,7 +1,7 @@
 import 'package:charge_station_finder/common/failure.dart';
 import 'package:charge_station_finder/domain/review/review.dart';
 import 'package:charge_station_finder/domain/review/review_repository_interface.dart';
-import 'package:dartz/dartz.dart';
+import 'package:charge_station_finder/utils/either.dart';
 
 import '../../common/exceptions/ApiException.dart';
 import '../../common/exceptions/ServerException.dart';
@@ -21,11 +21,10 @@ class ReviewRepositoryImpl extends ReviewRepositoryInterface {
     try {
       var res = await remoteReviewSource.addReview(chargerId, content);
       return right(Review(
-        id: res.id,
-        content: res.content,
-        userId: res.userId,
-        chargerId: res.chargerId
-      ));
+          id: res.id,
+          content: res.content,
+          userId: res.userId,
+          chargerId: res.chargerId));
     } on ServerException catch (e) {
       return left(Failure(e.message));
     } on ApiException catch (e) {

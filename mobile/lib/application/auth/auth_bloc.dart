@@ -1,5 +1,5 @@
 import 'package:charge_station_finder/domain/auth/models/signInFormForm.dart';
-import 'package:dartz/dartz.dart';
+import 'package:charge_station_finder/utils/either.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
