@@ -17,7 +17,7 @@ class RemoteChargerSource {
   }
 
   Future<void> editCharger(ChargerDto form) async {
-    httpClient.put('chargeStation/${form.id!}',
+    httpClient.patch('chargeStation/${form.id!}',
         body: json.encode(form.toJson()));
   }
 
@@ -34,5 +34,14 @@ class RemoteChargerSource {
     return response.then((value) => (json.decode(value.body)["data"] as List)
         .map((e) => ChargerDto.fromJson(e))
         .toList());
+  }
+
+  Future<ChargerDto> rateCharger(String id, double rating) async {
+    final response = await httpClient.post('chargeStation/rate',
+        body: json.encode({
+          'chargeStation': id,
+          'rating': rating,
+        }));
+    return ChargerDto.fromJson(json.decode(response.body)["data"]);
   }
 }

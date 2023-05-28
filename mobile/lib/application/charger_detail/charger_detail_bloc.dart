@@ -73,5 +73,16 @@ class ChargerDetailBloc extends Bloc<ChargerDetailEvent, ChargerDetailState> {
         emit(ChargerDetailStateLoaded(chargerDetail!));
       });
     });
+
+    on<ChargerDetailEventRateCharger>((event, emit) async {
+      emit(ChargerDetailStateLoading());
+      var res =
+          await chargerRepository.rateCharger(event.chargerId, event.rating);
+
+      res.fold((l) => emit(ChargerDetailStateError(l.message)), (r) {
+        chargerDetail = r;
+        emit(ChargerDetailStateLoaded(r));
+      });
+    });
   }
 }

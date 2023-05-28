@@ -1,7 +1,10 @@
 import 'package:charge_station_finder/application/charger_detail/charger_detail_bloc.dart';
 import 'package:charge_station_finder/domain/review/review.dart';
+import 'package:charge_station_finder/presentation/pages/station_detail/widgets/rating_bar.dart';
+import 'package:charge_station_finder/presentation/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../application/auth/auth_bloc.dart';
 import '../../../domain/charger/charger_detail.dart';
@@ -42,10 +45,13 @@ class _StationDetailState extends State<StationDetail> {
       child: BlocConsumer<ChargerDetailBloc, ChargerDetailState>(
         listener: (context, state) {
           isLoaded |= state is ChargerDetailStateLoaded;
-          if (state is ChargerDetailStateLoaded) detail = state.charger;
-          if (state is ChargerDetailStateError) {
+          if (state is ChargerDetailStateLoaded) {
+            detail = state.charger;
+          } else if (state is ChargerDetailStateError) {
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text(state.message)));
+          } else if (state is ChargerDetailStateChargerDeleted) {
+            context.go(AppRoutes.Home);
           }
         },
         builder: (context, state) {
@@ -63,7 +69,10 @@ class _StationDetailState extends State<StationDetail> {
                       IconButton(
                         icon: const Icon(Icons.edit),
                         onPressed: () {
-                          Navigator.of(context).pushNamed('/edit-station');
+                          context.pushNamed(AppRoutes.AddStation,
+                              queryParameters: {
+                                'id': detail.id,
+                              });
                         },
                       ),
                       IconButton(
@@ -72,7 +81,6 @@ class _StationDetailState extends State<StationDetail> {
                           context
                               .read<ChargerDetailBloc>()
                               .add(ChargerDetailEventDeleteCharger(detail.id));
-                          Navigator.of(context).pop();
                         },
                       ),
                     ]
@@ -119,22 +127,17 @@ class _StationDetailState extends State<StationDetail> {
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                           const SizedBox(height: 8.0),
+                          RatingBar(
+                            rating: detail.rating,
+                            onRatingUpdate: (rating) {
+                              context.read<ChargerDetailBloc>().add(
+                                  ChargerDetailEventRateCharger(
+                                      widget.id, rating));
+                            },
+                          ),
+                          const SizedBox(height: 8),
                           Row(
                             children: [
-                              const Icon(
-                                Icons.star,
-                                size: 20,
-                                color: Colors.grey,
-                              ),
-                              const SizedBox(width: 2),
-                              Text(
-                                detail.rating.toStringAsFixed(1),
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              const SizedBox(width: 10),
                               const Icon(
                                 Icons.bolt,
                                 size: 20,
