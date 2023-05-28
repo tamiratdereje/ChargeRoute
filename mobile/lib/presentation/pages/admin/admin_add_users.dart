@@ -62,7 +62,9 @@ class _AdminAddUserState extends State<AdminAddUser> {
                     setState(() {
                       _fullNameController.text = value;
                     });
-                  }),
+                  },
+                  fieldName: "Name"
+                  ),
               const InputFieldHeader(
                 text: "Email",
               ),
@@ -74,11 +76,15 @@ class _AdminAddUserState extends State<AdminAddUser> {
                     setState(() {
                       _emailController.text = value;
                     });
-                  }),
+                  },
+                  fieldName: "Email"
+                  
+                  ),
               const InputFieldHeader(
                 text: "Role",
               ),
               CSFFormField(
+
                   controller: _roleController,
                   obscureText: false,
                   hintText: "User or Provider",
@@ -86,7 +92,10 @@ class _AdminAddUserState extends State<AdminAddUser> {
                     setState(() {
                       _roleController.text = value;
                     });
-                  }),
+                  },
+                  fieldName: "role",
+                  
+                  ),
               const InputFieldHeader(
                 text: "Password",
               ),
@@ -98,7 +107,9 @@ class _AdminAddUserState extends State<AdminAddUser> {
                     setState(() {
                       _passwordController.text = value;
                     });
-                  }),
+                  },
+                  fieldName: "Password"
+                  ),
               const SizedBox(
                 height: 40,
               ),

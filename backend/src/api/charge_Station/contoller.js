@@ -1,5 +1,5 @@
 const { ChargeStation, Rating, Comment } = require("./model.js");
-
+const User = require("../user/model.js");
 const AppError = require("../../utils/apperror.js");
 
 
@@ -79,10 +79,19 @@ exports.deleteChargeStation = async (req, res, next) => {
   }
 };
 
+// get user by id
+const getUserByid = async (id) => {
+  return await User.findById(id)
+
+}
+
+
 const getChargeStationByIdFromDb = async (id, user_id) => {
   const chargeStation = await ChargeStation.findById(id).populate({
     path: 'comments'
   });
+
+  
   var ratingSum = 0;
 
   const ratings = await Rating.find({ chargeStation: chargeStation._id })
@@ -94,12 +103,32 @@ const getChargeStationByIdFromDb = async (id, user_id) => {
       voted = ratings[i].rating
     }
   }
+  
   console.log(ratingSum)
 
   var count = ratings.length
   if (count === 0) {
     count = 1;
   }
+  var new_comments = []
+
+  for (var i = 0; i < chargeStation.comments.length; i += 1) {
+    var commentor = await getUserByid(chargeStation.comments[i].commentor)
+    if (commentor){
+
+      var new_single_comments = {
+        "name": commentor.name,
+        "commentor" : chargeStation.comments[i].commentor,
+        "description" : chargeStation.comments[i].description,
+        "_id" : chargeStation.comments[i]._id,
+        "chargeStation" : chargeStation.comments[i].chargeStation
+      }
+
+      new_comments.push(new_single_comments)
+    }
+    
+  }
+  
 
   console.log(chargeStation);
   return {
@@ -111,7 +140,7 @@ const getChargeStationByIdFromDb = async (id, user_id) => {
     user: chargeStation.user,
     rating: ratingSum / count,
     voted: voted,
-    comments: chargeStation.comments,
+    comments: new_comments,
     wattage: chargeStation.wattage,
   };
 };

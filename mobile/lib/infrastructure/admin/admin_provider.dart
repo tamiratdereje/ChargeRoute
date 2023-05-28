@@ -23,7 +23,7 @@ class AdminProvider {
     var authToken = userData!.token;
     print(adminModel.toJson());
     
-    final response = await client.post(Uri.parse("$baseUrl/user"),
+    final response = await client.post(Uri.parse(baseUrl + "user"),
     headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8',  'Authorization': 'Bearer $authToken'},
     body: jsonEncode(adminModel)
     );
@@ -58,7 +58,7 @@ class AdminProvider {
       var userData = await ShardPrefHelper.getUser();
       var authToken = userData!.token;
 
-      final response = await client.delete(Uri.parse("$baseUrl/user/$id"),
+      final response = await client.delete(Uri.parse(baseUrl + "user/$id"),
         headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8', 'Authorization': 'Bearer $authToken'},
       );     
 
@@ -75,10 +75,10 @@ class AdminProvider {
         var authToken = userData!.token;
         
         final response = await client
-            .get(Uri.parse("$baseUrl/user/all"),
+            .get(Uri.parse(baseUrl + "user/all"),
              headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8',  'Authorization': 'Bearer $authToken'},
              );
-        
+      print(response.body);
       final json =jsonDecode(response.body);
       List<dynamic> users = json["data"] ?? [];
       List<AdminModel> related1 = users.map((user) => AdminModel.fromJson(user)).toList();          
@@ -98,7 +98,7 @@ class AdminProvider {
         var authToken = userData!.token;
 
         final response = await client
-            .get(Uri.parse("$baseUrl/user/$id"),
+            .get(Uri.parse(baseUrl + "user/$id"),
              headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8', 'Authorization': 'Bearer $authToken'},
              );
 

@@ -1,7 +1,9 @@
 // create station form
 
+import 'package:charge_station_finder/presentation/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../application/auth/auth_bloc.dart';
 import '../../../domain/auth/models/signInFormForm.dart';
@@ -84,7 +86,13 @@ class _SignInState extends State<SignIn> {
                         child: state is AuthenticationLoading
                             ? const CircularProgressIndicator()
                             : PrimaryButton(
-                                text: "Sign In", onPressed: dispatchLogin))
+                                text: "Sign In", onPressed: dispatchLogin)),
+                    const SizedBox(height: 20),
+                    Center(
+                      child: GestureDetector(child: Text('Create Account'), onTap: () {
+                        context.go(AppRoutes.SignUp);
+                      }),
+                    )
                   ]),
             ),
           ),

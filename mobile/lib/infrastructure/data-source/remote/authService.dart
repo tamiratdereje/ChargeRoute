@@ -32,7 +32,7 @@ class AuthenticationService {
   }
 
   Future<NoReturns> deleteAccount() async {
-    final response = await httpClient.delete('/user');
+    final response = await httpClient.delete('user');
     return const NoReturns();
   }
 
