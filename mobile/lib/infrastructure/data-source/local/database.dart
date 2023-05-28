@@ -3,8 +3,6 @@ import 'package:charge_station_finder/infrastructure/dto/charger_dto.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../dto/review_dto.dart';
-
 class CRDatabase {
   static Future<Database> get instance async {
     return _dbInstance ??= await db();
@@ -15,7 +13,7 @@ class CRDatabase {
   static Future<Database> db() async {
     return openDatabase(
       'ChargeRoute.db',
-      version: 4,
+      version: 5,
       onCreate: (Database database, int version) async {
         await createTables(database);
       },
@@ -57,6 +55,7 @@ class CRDatabase {
         chargerId VARCHAR,
         userId VARCHAR,
         description VARCHAR,
+        userName VARCHAR,
         FOREIGN KEY(chargerId) REFERENCES chargers(id) ON DELETE CASCADE
       )
       """);

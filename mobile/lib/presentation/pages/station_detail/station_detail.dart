@@ -250,7 +250,7 @@ class _ReviewCardState extends State<ReviewCard> {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        "John Doe",
+                        widget.review.userName,
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                     ],

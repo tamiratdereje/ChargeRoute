@@ -24,7 +24,8 @@ class ReviewRepositoryImpl extends ReviewRepositoryInterface {
           id: res.id,
           content: res.content,
           userId: res.userId,
-          chargerId: res.chargerId));
+          chargerId: res.chargerId,
+          userName: res.userName));
     } on ServerException catch (e) {
       return left(Failure(e.message));
     } on ApiException catch (e) {
