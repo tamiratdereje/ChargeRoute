@@ -286,7 +286,8 @@ exports.getNearChargeStations = async (req, res, next) => {
         user: chargeStation.user,
         rating: ratingSum / count,
         voted: voted,
-        comments: chargeStation.comments
+        comments: chargeStation.comments,
+        wattage: chargeStation.wattage
       }
       console.log(newObect)
       output.push(newObect);
