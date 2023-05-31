@@ -29,63 +29,73 @@ void main() {
       reviewRepository: reviewRepository,
     );
   });
+  tearDown(() {
+    chargerDetailBloc.close();
+  });
 
   group('ChargerDetailBloc', () {
-    test('emits ChargerDetailStateLoaded when charger detail loading succeeds',
-        () {
-      final chargerId = 'charger_123';
-      final chargerDetail = ChargerDetail(
-        id: chargerId,
-        description: 'Charger description',
-        phone: '1234567890',
-        name: 'Charger name',
-        address: 'Charger address',
-        rating: 4.5,
-        wattage: 50.0,
-        reviews: [],
-        hasUserRated: false,
-        user: 'User name',
-        userVote: 0,
-      );
+    // test('initial state should be ChargeDetailStateInitial', () {
+    //   expect(chargerDetailBloc.state, ChargerDetailStateInitial());
+    // });
 
-      when(chargerRepository.getChargerDetail(chargerId)).thenAnswer((_) async {
-        return Right(chargerDetail);
-      });
 
-      expectLater(
-        chargerDetailBloc.stream,
-        emitsInOrder([
-          isA<ChargerDetailStateLoading>(),
-          ChargerDetailStateLoaded(chargerDetail),
-        ]),
-      );
-      // then((_) {
-      //   verify(chargerRepository.getChargerDetail(chargerId)).called(1);
-      // });
+// ...
 
-      // chargerDetailBloc.add(ChargerDetailEventLoad(chargerId));
-    });
+test('emits ChargerDetailStateLoaded when charger detail loading succeeds', () async {
+  final chargerId = 'charger_123';
 
-    test('emits ChargerDetailStateError when charger detail loading fails', () {
-      final chargerId = 'charger_123';
-      final errorMessage = 'Failed to load charger detail';
+  final chargerDetail = ChargerDetail(
+    id: chargerId,
+    description: 'Charger description',
+    phone: '1234567890',
+    name: 'Charger name',
+    address: 'Charger address',
+    rating: 4.5,
+    wattage: 50.0,
+    reviews: [],
+    hasUserRated: false,
+    user: 'User name',
+    userVote: 0,
+  );
 
-      when(chargerRepository.getChargerDetail(chargerId)).thenAnswer((_) async {
-        return Left(Failure(errorMessage));
-      });
+  when(chargerRepository.getChargerDetail(chargerId)).thenAnswer((_) async {
+    return Right(chargerDetail);
+  });
 
-      expectLater(
-        chargerDetailBloc.stream,
-        emitsInOrder([
-          isA<ChargerDetailStateLoading>(),
-          ChargerDetailStateError(errorMessage),
-        ]),
-      );
-      // then((_) {
-      //   verify(chargerRepository.getChargerDetail(chargerId)).called(1);
-      // });
+  // act
+  chargerDetailBloc.add(ChargerDetailEventLoad(chargerId));
 
-      // chargerDetailBloc.add(ChargerDetailEventLoad(chargerId));
-    });
+  // assert
+  await expectLater(
+    chargerDetailBloc.stream,
+    emitsInOrder([
+      isA<ChargerDetailStateLoading>(),
+      isA<ChargerDetailStateLoaded>().having((state) => state.charger, 'chargerDetail', chargerDetail),
+    ]),
+  );
+});
+
+test('emits ChargerDetailStateError when charger detail loading fails', () async {
+  final chargerId = 'charger_123';
+  final errorMessage = 'Failed to load charger detail';
+
+  when(chargerRepository.getChargerDetail(chargerId)).thenAnswer((_) async {
+    return Left(Failure(errorMessage));
+  });
+
+  // act
+  chargerDetailBloc.add(ChargerDetailEventLoad(chargerId));
+
+  // assert
+  await expectLater(
+    chargerDetailBloc.stream,
+    emitsInOrder([
+      isA<ChargerDetailStateLoading>(),
+      isA<ChargerDetailStateError>().having((state) => state.message, 'message', errorMessage),
+    ]),
+  );
+});
+
+
   });
 }
