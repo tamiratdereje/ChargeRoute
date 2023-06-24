@@ -23,7 +23,8 @@ class AdminProvider {
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $authToken'
         },
-        body: jsonEncode(adminModel));
+        body: jsonEncode(adminModel) );
+        
 
     print(response.statusCode);
 
